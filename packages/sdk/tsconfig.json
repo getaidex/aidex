@@ -2,17 +2,36 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "emitDeclarationOnly": true
   },
-  "include": ["src"],
+  "include": [
+    "src"
+  ],
   "references": [
-    { "path": "../catalog" },
-    { "path": "../core" },
-    { "path": "../engines" },
-    { "path": "../plugins" },
-    { "path": "../prompts" },
-    { "path": "../strategies" },
-    { "path": "../tools" },
-    { "path": "../workflow" }
+    {
+      "path": "../catalog"
+    },
+    {
+      "path": "../core"
+    },
+    {
+      "path": "../engines"
+    },
+    {
+      "path": "../plugins"
+    },
+    {
+      "path": "../prompts"
+    },
+    {
+      "path": "../strategies"
+    },
+    {
+      "path": "../tools"
+    },
+    {
+      "path": "../workflow"
+    }
   ]
 }
