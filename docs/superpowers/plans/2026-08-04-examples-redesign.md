@@ -920,7 +920,7 @@ Question: In one sentence, what makes TypeScript different from JavaScript?
 — demo-fast —
   success rate:   100%
   avg duration:   ~50 ms
-  avg cost:       $0.000001
+  avg cost:       $0.000014
   response:       [demo-fast demo answer] TypeScript adds static types on top of JavaScript.
 
 — demo-slow —
