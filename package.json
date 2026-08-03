@@ -41,10 +41,5 @@
   },
   "engines": {
     "node": ">=18"
-  },
-  "workspaces": [
-    "packages/*",
-    "apps/*",
-    "examples"
-  ]
+  }
 }

@@ -46,14 +46,18 @@ everything else composes it:
 | `packages/strategies` | Concrete `Strategy` implementations. |
 | `packages/plugins` | Concrete `Plugin`s + the Plugin System (`PluginManager`). |
 | `packages/engines` | `Engine` contract + `EngineRegistry`. |
+| `packages/catalog` | Queryable metadata registry of Engines from installed Feature Packs. |
 | `packages/prompts` | `PromptRegistry`. |
 | `packages/tools` | `ToolRegistry`. |
 | `packages/workflow` | Standalone sequential step orchestration. |
 | `packages/memory` | Standalone generic key/value store. |
 | `packages/observability` | Metrics, cost, timeline, unified event bus. |
 | `packages/evaluation` | Benchmarking / provider comparison. |
+| `packages/mcp` | Model Context Protocol server foundation (transport, registries). |
+| `packages/mcp-aidex` | Adapter turning any Engine into an MCP Tool. |
+| `packages/document`, `packages/design`, `packages/content`, `packages/marketing`, `packages/media` | Feature Packs — engine identifiers and typed request/response contracts for their respective domains. |
 | `packages/sdk` | The primary developer-facing façade (`AI`, `AIBuilder`). |
-| `packages/adapters`, `packages/cli` | Framework adapters and the CLI. |
+| `packages/adapters`, `packages/cli` | Framework adapters and the CLI class. |
 | `apps/playground` | A minimal reference application. |
 | `examples/` | Short, independent, runnable usage examples. |
 
