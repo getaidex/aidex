@@ -12,36 +12,43 @@ rewriting the AI stack each time.
 
 ## Status
 
-`v0.1.0-alpha`. The kernel (`@aidex/core`) is frozen and stable: public API,
-lifecycle, and type contracts are implemented and tested. Every other
-package listed below is real, tested, working code — not a roadmap item —
-but the platform as a whole is still pre-1.0 and its APIs may change. See
-[`docs/roadmap/roadmap.md`](docs/roadmap/roadmap.md) for what's next.
+`0.2.0-alpha`, published to npm under the `@aidex` scope. The
+kernel (`@aidex/core`) is frozen and stable: public API, lifecycle, and type
+contracts are implemented and tested. Every other package listed below is
+real, tested, working code — not a roadmap item — but the platform as a
+whole is still pre-1.0 and its APIs may change. See
+[`docs/roadmap/roadmap.md`](docs/roadmap/roadmap.md) for what's next and
+[`CHANGELOG.md`](CHANGELOG.md) for what shipped in `0.2.0-alpha`.
 
 ## Installation
 
-Not yet published to npm (see [FAQ](docs/FAQ.md)). To use it today, clone
-the repository and reference a package locally:
+Install only the packages you need — most applications start with
+`@aidex/sdk` plus a provider:
 
 ```sh
-git clone https://github.com/getaidex/aidex.git
-cd aidex
-npm install
-npm run build
+pnpm add @aidex/sdk @aidex/providers
 ```
 
-Then, from another project on the same machine, depend on a package via a
-local `file:` reference (the same approach this repo's own
-[`examples/`](examples/) and any application integrating Aidex would use pre-1.0):
-
-```json
-{
-  "dependencies": {
-    "@aidex/sdk": "file:../aidex/packages/sdk",
-    "@aidex/providers": "file:../aidex/packages/providers"
-  }
-}
+```sh
+npm install @aidex/sdk @aidex/providers
 ```
+
+```sh
+yarn add @aidex/sdk @aidex/providers
+```
+
+```sh
+bun add @aidex/sdk @aidex/providers
+```
+
+Every `@aidex/*` package ships ESM and CommonJS builds with matching
+TypeScript declarations for both (`moduleResolution: node16`/`nodenext`
+included) — see each package's own README for its individual install line
+and public API.
+
+Working on Aidex itself, not just consuming it? See
+[CONTRIBUTING.md](CONTRIBUTING.md) for cloning the repo and the pnpm-based
+dev workflow.
 
 ## Quick Start
 
@@ -80,7 +87,7 @@ packages/workflow                — standalone sequential step orchestration
 packages/memory                  — standalone generic key/value store
 packages/observability            — metrics, cost, timeline, unified event bus
 packages/evaluation                — benchmark engines, compare providers
-packages/adapters, packages/cli    — Express/Node adapters, executable CLI
+packages/adapters, packages/cli    — Express/Node adapters, command-dispatch CLI class
 ```
 
 Every arrow points one way — dependents depend on `@aidex/core`'s contracts,
