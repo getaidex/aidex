@@ -12,7 +12,8 @@
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 
 const color = {
   cyan: (s: string) => `\x1b[36m${s}\x1b[0m`,
