@@ -1,8 +1,12 @@
 # Examples Redesign — Design
 
 Date: 2026-08-03
-Status: Approved (roster + open decisions confirmed by user 2026-08-03)
-Scope: `examples/` only (source, package.json, tsconfig references, per-example README, master README). No changes to `packages/*`, `apps/*`, runtime code, public APIs, or architecture docs.
+Status: Approved (roster + open decisions confirmed by user 2026-08-03; capstone example + tutorial doc + README framework added same day per user follow-up)
+Scope: `examples/` only (source, package.json, tsconfig references, per-example README, master README, one tutorial doc). No changes to `packages/*`, `apps/*`, runtime code, public APIs, or architecture docs.
+
+## Guiding principle: honesty over polish
+
+Every example must be trustworthy. If a capability is text-only today, say so. If an example is running in demo mode (no API key), say so, visibly, before any output. Never imply real image/PDF/audio processing where none exists. A developer who reads the README and runs the code should never be surprised by a gap between what's claimed and what's real.
 
 ## Problem
 
@@ -20,7 +24,7 @@ Current `examples/` (8 folders) are API demonstrations — one API surface per f
 - **No CLI color/prompt library** (chalk/inquirer/ora/prompts) is an actual dependency anywhere in the repo today (only transitive, via vitest/tsup). Per user decision: do not add one — hand-roll ANSI color codes and use Node's built-in `readline/promises` for interactive menus.
 - **Examples convention**: each example is a fully independent, self-contained program (own `src/<NN-name>/index.ts`, own script in `examples/package.json`), importing only published `@aidex/*` package APIs, no cross-imports between examples. Per user decision, this independence is preserved even at the cost of duplicating small helpers (demo-provider stub, ANSI/readline helper) across files — no new shared internal module.
 
-## Roster (14 examples, 8 levels)
+## Roster (15 examples, 9 levels incl. capstone)
 
 | # | Folder | Level | Concept | Fate |
 |---|--------|-------|---------|------|
@@ -41,14 +45,31 @@ Current `examples/` (8 folders) are API demonstrations — one API surface per f
 
 Not built as a standalone example (deliberate YAGNI, cross-linked instead in master README "explore next"): `@aidex/content` (overlaps document/marketing for this course), `@aidex/media` (no real media processing exists — would mislead), `@aidex/cli` (belongs to a "build a CLI on Aidex" example that's out of this scope).
 
+### 15. Capstone — `15-real-world-assistant` (added per user follow-up 2026-08-03)
+
+The "wow, I understand Aidex" example. Not a new API surface — a synthesis of levels 1–8 into one small interactive assistant app, run last. Flow: choose provider → optional system prompt → enter a request → request is rendered through a versioned prompt template → executed via `AIBuilder`/`AI` façade → routed to one of a small menu of engines already introduced earlier (e.g. document summarize, or content-style text generation) → observability summary printed (latency/tokens/cost for that turn) → formatted output → loop until `exit`. Every piece of this must be something an earlier example already taught individually — the capstone's job is showing them composed, not introducing anything new. Same demo-mode/GEMINI_API_KEY honesty rule applies.
+
+Level: 9 (Capstone) — sits after Level 8 in the learning path, explicitly framed as "you've learned all the pieces, here's how they fit together."
+
 ## Per-example structure (all 14)
 
 ```
 examples/src/<NN-name>/
   index.ts        # the program
-  fixtures/        # only for 07, 08, 09, 10, 11 — sample .md/.txt input files
-  README.md        # Purpose / Requirements / Install / Run / Expected output / Concepts learned / Related packages / Next example
+  fixtures/        # only for 07, 08, 09, 10, 11, 15 — sample .md/.txt input files
+  README.md        # see template below
 ```
+
+### README template (every example, including capstone)
+
+Each README must answer four questions explicitly and up front, not bury them in API description — this is the difference between documenting an API and teaching an engineering decision:
+
+1. **What problem does this solve?**
+2. **Why would I use this Aidex feature?**
+3. **When should I use this in a real project?**
+4. **What should I learn next?**
+
+Full section order: Purpose (answers Q1–Q3 directly, in plain language, before any code) → Requirements → Install → Run → Expected output → Concepts learned → Related packages → Next example (answers Q4, links forward). Avoid restating what the code obviously does; explain the decision the code embodies.
 
 Every example:
 - Detects `GEMINI_API_KEY` at startup. If present: real `GeminiProvider`. If absent: prints a one-line notice ("No GEMINI_API_KEY found — running in demo mode with canned responses. Set GEMINI_API_KEY for real output.") and uses a small inline deterministic JSON-emitting demo provider (for examples 05, 06, 07, 08, 09, 10, 11 whose engines require valid JSON) or `StubProvider` directly (for 01, 02, 03, 04, 12, 13, 14 whose calls are plain-text `ai.text()` or don't require JSON parsing).
@@ -66,9 +87,13 @@ Becomes a portal:
 - Package cross-reference table (which `@aidex/*` package each example touches, plus a short "explore next" row for `@aidex/content`, `@aidex/media`, `@aidex/cli`).
 - Running instructions (build once via `tsc -b`, then per-example `pnpm --filter @aidex/examples <script>`).
 
+## Tutorial doc — `examples/BUILD-YOUR-FIRST-AIDEX-APP.md` (added per user follow-up 2026-08-03)
+
+Not an example project — a guided prose walkthrough, 5–10 minute read, that a developer follows to build a tiny working app from scratch by copy-pasting as they go. Distinct from the 15 runnable examples: no `src/` folder, no script, just markdown with inline code blocks the reader assembles themselves. Structure: Install → Configure a provider → Create an `AIBuilder` → Send your first prompt (`ai.text()`) → Register a custom engine → Execute it (`ai.engine(id).execute()`) → Next steps (cross-links into Level 1 and Level 8 examples, and the master README's level table). This is the front door for someone who lands on the repo and wants working code in one sitting, before they commit to working through the full course.
+
 ## Build/config changes
 
-- `examples/package.json`: rename/add scripts for all 14 (`getting-started`, `prompt-templates`, `interactive-chat`, `custom-provider`, `provider-comparison`, `observability`, `document-intelligence`, `resume-analyzer`, `brand-kit-generator`, `marketing-campaign`, `workflow-orchestration`, `plugin-example`, `tool-registry`, `custom-engine`).
+- `examples/package.json`: rename/add scripts for all 15 (`getting-started`, `prompt-templates`, `interactive-chat`, `custom-provider`, `provider-comparison`, `observability`, `document-intelligence`, `resume-analyzer`, `brand-kit-generator`, `marketing-campaign`, `workflow-orchestration`, `plugin-example`, `tool-registry`, `custom-engine`, `real-world-assistant`).
 - `examples/tsconfig.json`: add project references for `@aidex/document`, `@aidex/design`, `@aidex/marketing`, `@aidex/evaluation` (new deps for examples 05, 07, 08, 09, 10).
 - Delete/replace old folders `01-hello-world` through `08-observability` per the mapping table above (git will show renames where content carries over).
 
@@ -79,6 +104,17 @@ Becomes a portal:
 - Run every example once with no `GEMINI_API_KEY` set (demo-mode path) — must complete without throwing, output must look clean.
 - Confirm no example imports anything outside published `@aidex/*` package barrels (no deep `dist/` or `src/` reaches into another package).
 - Known gap: no live `GEMINI_API_KEY` available in this environment, so the real-Gemini code path is reviewed for correctness but not executed live. Will be called out explicitly in the final report rather than claimed as verified.
+
+### Final review gate (added per user follow-up 2026-08-03)
+
+After all 15 examples + tutorial + master README are built and passing the checks above, do one more pass reading as a first-time Aidex visitor, not as the implementer. Check explicitly:
+- Is the learning path natural — does each level build on the previous one without unexplained jumps?
+- Does each README's Purpose section actually teach a decision, not just restate the API?
+- Are there difficulty spikes (e.g. level 3 suddenly requiring concepts never introduced in levels 1–2)?
+- After finishing all 15, would a developer understand *why* Aidex exists, not just what its functions do?
+- Is overall polish comparable to onboarding docs of React/Vite/Prisma/Next.js/LangChain — i.e., does anything still read like an API reference instead of a real-world tutorial?
+
+Any example that fails this bar gets rewritten before the task is considered done — this gate is not optional polish, it's part of "complete."
 
 ## Out of scope (explicit)
 
