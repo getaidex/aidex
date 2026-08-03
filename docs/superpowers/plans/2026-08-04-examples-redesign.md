@@ -27,7 +27,7 @@
   - `Engine<TResult>`: `{ readonly id, name, description, version; execute(context: ExecutionContext): Promise<TResult> }`. `ExecutionContext` only requires `{ config: { provider }, provider }` to construct by hand.
   - `PromptTemplate`: `{ readonly id, version, template, variables?: readonly string[] }`. `PromptRegistry`: `.register(t)`, `.render(id, vars?, version?): string`, `.listVersions(id): PromptTemplate[]`.
   - `Tool`: `{ readonly id, name, description, permissions?: readonly string[]; execute(input): Promise<TResult> }`. `ToolRegistry.execute(id, input, grantedPermissions: string[] = [])` — throws `ToolPermissionDeniedError` on mismatch.
-  - `ObservabilityBus`: `.subscribe(fn)`, `.trackProvider/.trackTokens/.trackDuration/.trackCost(metadata)`, `.trackDurationFromMetrics(metrics: ExecutionMetrics, extra?)`, `.trackCostFromEstimate(input: CostEstimateInput, extra?)`, `.getTimeline(): ObservabilityEvent[]`. `ExecutionMetrics.recordStart(ts = Date.now())` / `.recordEnd(ts = Date.now())` take plain numbers. `GeminiProvider` auto-emits `provider`/`duration`/`tokens`/`cost` events when constructed with `{ observability, pricing }` — `StubProvider` emits nothing automatically.
+  - `ObservabilityBus`: `.subscribe(fn)`, `.trackProvider/.trackTokens/.trackDuration/.trackCost(metadata)`, `.trackDurationFromMetrics(metrics: ExecutionMetrics, extra?)`, `.trackCostFromEstimate(input: CostEstimateInput, extra?)`, `.getTimeline(): ObservabilityEvent[]`. `ExecutionMetrics.recordStart(ts = Date.now())` / `.recordEnd(ts = Date.now())` take plain numbers. `GeminiProvider` auto-emits `provider`/`duration`/`tokens`/`cost` events when constructed with `{ observability, pricing }` — `StubProvider` emits nothing automatically. **`ObservabilityEvent` shape is `{ event: string; metadata?: Record<string, unknown> }`** — the event-name field is literally called `event`, not `type` (that's `WorkflowEvent`'s field name, a different type from `@aidex/workflow` — don't confuse the two), and anything `trackDurationFromMetrics`/`trackCostFromEstimate`/etc. attach (like `durationMs`) lives inside `event.metadata`, never top-level on the event.
   - `Evaluator` (`@aidex/evaluation`): `.compare(cases: BenchmarkCase[], options?: {pricing?, runs?}): Promise<BenchmarkSummary[]>`. `BenchmarkCase = { name, execute(): Promise<T>, scoreOutput?(r), estimateTokens?(r): {inputTokens, outputTokens} }`. `BenchmarkSummary = { caseName, runs, successRate, averageDurationMs?, averageQualityScore?, averageCost? }`.
   - `Workflow<TState>`: `.addStep({ name, execute(context: TState): Promise<void> })`. `WorkflowExecutor.execute(workflow, context, { onEvent?, signal? }): Promise<TState>`. `WorkflowEvent.type` ∈ `'workflow-started'|'workflow-completed'|'workflow-cancelled'|'step-started'|'step-completed'|'step-failed'`. Cancellation throws `WorkflowCancelledError`.
   - `ExtendedPlugin`: `{ name; registerEngines?(): Engine[]; registerPrompts?(): PromptTemplate[]; registerTools?(): Tool[] }`. `PluginManager`: `constructor(aidex: Aidex)`, `.use(plugin)`, `.getEngineRegistry()/.getPromptRegistry()/.getToolRegistry()`. Requires a raw `new Aidex({ provider })` kernel instance — the SDK façade (`AIBuilder`/`AI`) never constructs a `PluginManager`; this is intentional two-tier architecture (kernel plugin system vs. SDK façade), not a gap to apologize for.
@@ -987,7 +987,7 @@ const illustrativePricing = { inputPricePerMillion: 0.15, outputPricePerMillion:
 async function main() {
   const bus = new ObservabilityBus();
   bus.subscribe((event) => {
-    console.log(`[event] ${event.type ?? 'unknown'}`, event);
+    console.log(`[event] ${event.event}`, event.metadata ?? {});
   });
 
   const apiKey = process.env.GEMINI_API_KEY;
@@ -2784,8 +2784,9 @@ async function main() {
       console.log(`${color.dim('Assistant:')} ${reply}`);
     }
 
-    const lastDuration = bus.getTimeline().at(-1);
-    console.log(color.green(`  (took ${(lastDuration as { durationMs?: number } | undefined)?.durationMs ?? '?'}ms)\n`));
+    const lastEvent = bus.getTimeline().at(-1);
+    const durationMs = lastEvent?.metadata?.durationMs as number | undefined;
+    console.log(color.green(`  (took ${durationMs ?? '?'}ms)\n`));
   }
 }
 
