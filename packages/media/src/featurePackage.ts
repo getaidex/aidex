@@ -43,7 +43,7 @@ export type MediaWorkflow = ImageEnhancementWorkflow | VideoPreparationWorkflow 
  */
 export const MEDIA_FEATURE_PACKAGE: FeaturePackage<MediaWorkflow> = {
   name: '@aidex/media',
-  version: '0.1.0-alpha',
+  version: '0.2.0-alpha',
   engines: [
     new ImageGenerateEngine(),
     new ImageEditEngine(),

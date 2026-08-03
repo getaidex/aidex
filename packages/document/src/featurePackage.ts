@@ -43,7 +43,7 @@ export type DocumentWorkflow =
  */
 export const DOCUMENT_FEATURE_PACKAGE: FeaturePackage<DocumentWorkflow> = {
   name: '@aidex/document',
-  version: '0.1.0-alpha',
+  version: '0.2.0-alpha',
   engines: [
     new DocumentExtractEngine(),
     new DocumentOcrEngine(),

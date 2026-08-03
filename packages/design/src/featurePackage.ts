@@ -44,7 +44,7 @@ export type DesignWorkflow = BrandKitWorkflow | PresentationWorkflow;
  */
 export const DESIGN_FEATURE_PACKAGE: FeaturePackage<DesignWorkflow> = {
   name: '@aidex/design',
-  version: '0.1.0-alpha',
+  version: '0.2.0-alpha',
   engines: [
     new DesignGenerateEngine(),
     new DesignLayoutEngine(),

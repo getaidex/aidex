@@ -1,6 +1,6 @@
 {
   "name": "@aidex/examples",
-  "version": "0.0.1",
+  "version": "0.2.0-alpha",
   "private": true,
   "description": "Aidex Examples — short, independent, buildable programs demonstrating each platform capability through public APIs only.",
   "license": "MIT",
@@ -29,13 +29,13 @@
   },
   "dependencies": {
     "@aidex/core": "workspace:*",
-    "@aidex/sdk": "workspace:*",
-    "@aidex/providers": "workspace:*",
     "@aidex/engines": "workspace:*",
+    "@aidex/observability": "workspace:*",
     "@aidex/plugins": "workspace:*",
     "@aidex/prompts": "workspace:*",
+    "@aidex/providers": "workspace:*",
+    "@aidex/sdk": "workspace:*",
     "@aidex/tools": "workspace:*",
-    "@aidex/workflow": "workspace:*",
-    "@aidex/observability": "workspace:*"
+    "@aidex/workflow": "workspace:*"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@aidex/content",
-  "version": "0.1.0-alpha",
+  "version": "0.2.0-alpha",
   "description": "Aidex Content — an Aidex Feature Pack: engine identifiers and typed request/response contracts for content generation and editing (generate, rewrite, expand, shorten, translate, summarize, tone, SEO, blog, email, social, product descriptions, headlines, taglines).",
   "keywords": [
     "ai",

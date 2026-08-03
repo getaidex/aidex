@@ -1,6 +1,6 @@
 {
   "name": "@aidex/providers",
-  "version": "0.1.0-alpha",
+  "version": "0.2.0-alpha",
   "description": "Aidex Providers — concrete Provider implementations (model vendors) supplied by applications.",
   "keywords": [
     "ai",

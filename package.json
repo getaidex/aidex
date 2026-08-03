@@ -1,6 +1,6 @@
 {
   "name": "aidex",
-  "version": "0.1.0-alpha",
+  "version": "0.2.0-alpha",
   "private": true,
   "description": "Aidex — a modular, provider-agnostic AI application platform: kernel, SDK, providers, strategies, plugins, engines, prompts, tools, workflow, memory, and observability.",
   "keywords": [

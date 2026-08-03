@@ -1,6 +1,6 @@
 {
   "name": "@aidex/playground",
-  "version": "0.0.1",
+  "version": "0.2.0-alpha",
   "private": true,
   "description": "Aidex Playground — the simplest runnable Aidex application, a reference implementation for SDK usage. Not production software.",
   "license": "MIT",
@@ -23,7 +23,7 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@aidex/sdk": "workspace:*",
-    "@aidex/providers": "workspace:*"
+    "@aidex/providers": "workspace:*",
+    "@aidex/sdk": "workspace:*"
   }
 }

@@ -54,7 +54,7 @@ export type ContentWorkflow =
  */
 export const CONTENT_FEATURE_PACKAGE: FeaturePackage<ContentWorkflow> = {
   name: '@aidex/content',
-  version: '0.1.0-alpha',
+  version: '0.2.0-alpha',
   engines: [
     new ContentGenerateEngine(),
     new ContentRewriteEngine(),

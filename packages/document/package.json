@@ -1,6 +1,6 @@
 {
   "name": "@aidex/document",
-  "version": "0.1.0-alpha",
+  "version": "0.2.0-alpha",
   "description": "Aidex Document — the first Aidex Feature Pack: engine identifiers and typed request/response contracts for document intelligence (extraction, OCR, translation, summarization, resume analysis, invoice extraction, contract review).",
   "keywords": [
     "ai",

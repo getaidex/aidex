@@ -1,6 +1,6 @@
 {
   "name": "@aidex/plugins",
-  "version": "0.1.0-alpha",
+  "version": "0.2.0-alpha",
   "description": "Aidex Plugins — concrete Plugin implementations, plus the Aidex Plugin System (PluginManager) for installing plugins that register engines/strategies/prompts/tools.",
   "keywords": [
     "ai",
