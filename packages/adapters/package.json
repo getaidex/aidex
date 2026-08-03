@@ -1,0 +1,53 @@
+{
+  "name": "@aidex/adapters",
+  "version": "0.1.0-alpha",
+  "private": true,
+  "description": "Aidex Adapters — thin wrappers connecting external frameworks (Express, plain Node) to @aidex/sdk. No AI logic.",
+  "keywords": [
+    "ai",
+    "express",
+    "adapter",
+    "integration"
+  ],
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex/tree/main/packages/adapters#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git",
+    "directory": "packages/adapters"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "@aidex/sdk": "0.1.0-alpha"
+  },
+  "devDependencies": {
+    "@aidex/providers": "0.1.0-alpha"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

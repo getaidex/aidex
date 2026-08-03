@@ -1,0 +1,51 @@
+name: Feature Request
+description: Propose a new capability, package, or change to Aidex.
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before requesting a kernel change specifically, read
+        [ADR-001](https://github.com/getaidex/aidex/blob/main/docs/decisions/ADR-001-kernel-philosophy.md)'s
+        Golden Rule: *"if a feature is required by only one application, it
+        does not belong inside Aidex."* Most new capabilities belong in a new
+        or existing package (a `Provider`, `Strategy`, `Plugin`, `Tool`, or
+        `Engine`), not inside `packages/core` — see
+        [CONTRIBUTING.md](https://github.com/getaidex/aidex/blob/main/CONTRIBUTING.md#project-structure).
+
+  - type: input
+    id: package
+    attributes:
+      label: Where should this live?
+      description: An existing package, a new package, or "not sure"?
+      placeholder: "@aidex/providers, a new @aidex/openai-provider, not sure, ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What are you trying to do today that Aidex doesn't support?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would the API/behavior look like? Code sketch welcome.
+      render: ts
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any other ways to solve this, including doing it outside Aidex entirely?
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context

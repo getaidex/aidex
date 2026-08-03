@@ -1,0 +1,51 @@
+{
+  "name": "@aidex/prompts",
+  "version": "0.1.0-alpha",
+  "private": true,
+  "description": "Aidex Prompts — a central, versioned Prompt Registry with variable substitution and validation.",
+  "keywords": [
+    "ai",
+    "prompt",
+    "prompt-management",
+    "prompt-registry",
+    "templating"
+  ],
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex/tree/main/packages/prompts#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git",
+    "directory": "packages/prompts"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "@aidex/core": "0.1.0-alpha"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

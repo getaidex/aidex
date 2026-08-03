@@ -1,0 +1,29 @@
+{
+  "name": "@aidex/playground",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Aidex Playground — the simplest runnable Aidex application, a reference implementation for SDK usage. Not production software.",
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex/tree/main/apps/playground#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git",
+    "directory": "apps/playground"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --noEmit",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@aidex/sdk": "0.1.0-alpha",
+    "@aidex/providers": "0.1.0-alpha"
+  }
+}

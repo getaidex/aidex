@@ -1,0 +1,14 @@
+export { Aidex } from './kernel/Aidex.js';
+export type { AidexConfig } from './kernel/configuration/AidexConfig.js';
+export { StrategyNotFoundError } from './kernel/errors/StrategyNotFoundError.js';
+export { DuplicateRegistrationError } from './kernel/errors/DuplicateRegistrationError.js';
+export type { AidexRequest } from './types/AidexRequest.js';
+export type { AidexOptions } from './types/AidexOptions.js';
+export type { ExecutionContext } from './types/ExecutionContext.js';
+export type { Prompt } from './types/Prompt.js';
+export type { ProviderResponse } from './types/ProviderResponse.js';
+export type { Metadata } from './types/Metadata.js';
+export type { Strategy } from './types/Strategy.js';
+export type { Provider } from './types/Provider.js';
+export type { Plugin } from './types/Plugin.js';
+export type { ILogger } from './types/ILogger.js';

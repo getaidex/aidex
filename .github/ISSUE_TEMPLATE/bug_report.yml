@@ -1,0 +1,70 @@
+name: Bug Report
+description: Something in Aidex isn't working as documented.
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please search
+        [existing issues](https://github.com/getaidex/aidex/issues) first —
+        someone may have already reported it.
+
+        For a security vulnerability, do **not** open a public issue — see
+        [SECURITY.md](https://github.com/getaidex/aidex/blob/main/SECURITY.md)
+        instead.
+
+  - type: input
+    id: package
+    attributes:
+      label: Affected package
+      description: Which package(s)? e.g. @aidex/core, @aidex/providers, @aidex/sdk
+      placeholder: "@aidex/core"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: >
+        Smallest code snippet that reproduces the issue. Include the exact
+        Aidex call sequence (e.g. `new AIBuilder().provider(...).build()`,
+        `aidex.execute(...)`).
+      render: ts
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-actual
+    attributes:
+      label: Expected vs. actual behavior
+
+  - type: input
+    id: version
+    attributes:
+      label: Commit SHA or package version
+      description: Since packages aren't published yet, the commit SHA on `main` you tested against.
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      placeholder: "node --version"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Logs, stack traces, or anything else relevant.

@@ -1,0 +1,62 @@
+{
+  "name": "@aidex/content",
+  "version": "0.1.0-alpha",
+  "private": true,
+  "description": "Aidex Content — an Aidex Feature Pack: engine identifiers and typed request/response contracts for content generation and editing (generate, rewrite, expand, shorten, translate, summarize, tone, SEO, blog, email, social, product descriptions, headlines, taglines).",
+  "keywords": [
+    "ai",
+    "content",
+    "copywriting",
+    "seo",
+    "feature-pack",
+    "content-generation",
+    "marketing"
+  ],
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex/tree/main/packages/content#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git",
+    "directory": "packages/content"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "@aidex/catalog": "0.1.0-alpha",
+    "@aidex/core": "0.1.0-alpha",
+    "@aidex/engines": "0.1.0-alpha",
+    "@aidex/observability": "0.1.0-alpha",
+    "@aidex/prompts": "0.1.0-alpha",
+    "@aidex/sdk": "0.1.0-alpha",
+    "@aidex/workflow": "0.1.0-alpha"
+  },
+  "devDependencies": {
+    "@aidex/providers": "0.1.0-alpha"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

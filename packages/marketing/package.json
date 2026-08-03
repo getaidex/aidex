@@ -1,0 +1,60 @@
+{
+  "name": "@aidex/marketing",
+  "version": "0.1.0-alpha",
+  "private": true,
+  "description": "Aidex Marketing — an Aidex Feature Pack: engine identifiers and typed request/response contracts for campaign planning, SEO, social media, email marketing, and marketing analytics.",
+  "keywords": [
+    "ai",
+    "marketing",
+    "campaign",
+    "seo",
+    "social-media",
+    "email-marketing",
+    "analytics",
+    "feature-pack"
+  ],
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex/tree/main/packages/marketing#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git",
+    "directory": "packages/marketing"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "@aidex/catalog": "0.1.0-alpha",
+    "@aidex/core": "0.1.0-alpha",
+    "@aidex/engines": "0.1.0-alpha",
+    "@aidex/observability": "0.1.0-alpha",
+    "@aidex/prompts": "0.1.0-alpha",
+    "@aidex/sdk": "0.1.0-alpha",
+    "@aidex/workflow": "0.1.0-alpha"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

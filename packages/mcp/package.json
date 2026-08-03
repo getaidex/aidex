@@ -1,0 +1,51 @@
+{
+  "name": "@aidex/mcp",
+  "version": "0.1.0-alpha",
+  "private": true,
+  "description": "Aidex MCP — a reusable Model Context Protocol server foundation: transport, and Tool/Resource/Prompt registries. No engine execution, no providers, no workflows.",
+  "keywords": [
+    "ai",
+    "mcp",
+    "model-context-protocol",
+    "server",
+    "transport"
+  ],
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex/tree/main/packages/mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git",
+    "directory": "packages/mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "@aidex/core": "0.1.0-alpha"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

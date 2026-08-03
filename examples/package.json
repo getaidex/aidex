@@ -1,0 +1,41 @@
+{
+  "name": "@aidex/examples",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Aidex Examples — short, independent, buildable programs demonstrating each platform capability through public APIs only.",
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex/tree/main/examples#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git",
+    "directory": "examples"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --noEmit",
+    "hello-world": "node dist/01-hello-world/index.js",
+    "custom-provider": "node dist/02-custom-provider/index.js",
+    "custom-engine": "node dist/03-custom-engine/index.js",
+    "plugin": "node dist/04-plugin/index.js",
+    "workflow": "node dist/05-workflow/index.js",
+    "prompt-registry": "node dist/06-prompt-registry/index.js",
+    "tool-registry": "node dist/07-tool-registry/index.js",
+    "observability": "node dist/08-observability/index.js"
+  },
+  "dependencies": {
+    "@aidex/core": "0.1.0-alpha",
+    "@aidex/sdk": "0.1.0-alpha",
+    "@aidex/providers": "0.1.0-alpha",
+    "@aidex/engines": "0.1.0-alpha",
+    "@aidex/plugins": "0.1.0-alpha",
+    "@aidex/prompts": "0.1.0-alpha",
+    "@aidex/tools": "0.1.0-alpha",
+    "@aidex/workflow": "0.1.0-alpha",
+    "@aidex/observability": "0.1.0-alpha"
+  }
+}

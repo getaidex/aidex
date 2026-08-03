@@ -1,0 +1,60 @@
+{
+  "name": "@aidex/sdk",
+  "version": "0.1.0-alpha",
+  "private": true,
+  "description": "Aidex SDK — the developer-facing façade over @aidex/core (AI, AIBuilder, AIConfiguration).",
+  "keywords": [
+    "ai",
+    "sdk",
+    "developer-experience",
+    "facade"
+  ],
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex/tree/main/packages/sdk#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git",
+    "directory": "packages/sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "@aidex/catalog": "0.1.0-alpha",
+    "@aidex/core": "0.1.0-alpha",
+    "@aidex/engines": "0.1.0-alpha",
+    "@aidex/plugins": "0.1.0-alpha",
+    "@aidex/prompts": "0.1.0-alpha",
+    "@aidex/strategies": "0.1.0-alpha",
+    "@aidex/tools": "0.1.0-alpha",
+    "@aidex/workflow": "0.1.0-alpha"
+  },
+  "devDependencies": {
+    "@aidex/providers": "0.1.0-alpha"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

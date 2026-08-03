@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../packages/core" },
+    { "path": "../packages/engines" },
+    { "path": "../packages/observability" },
+    { "path": "../packages/plugins" },
+    { "path": "../packages/prompts" },
+    { "path": "../packages/providers" },
+    { "path": "../packages/sdk" },
+    { "path": "../packages/tools" },
+    { "path": "../packages/workflow" }
+  ]
+}

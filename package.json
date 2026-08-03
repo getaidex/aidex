@@ -1,0 +1,49 @@
+{
+  "name": "aidex",
+  "version": "0.1.0-alpha",
+  "private": true,
+  "description": "Aidex — a modular, provider-agnostic AI application platform: kernel, SDK, providers, strategies, plugins, engines, prompts, tools, workflow, memory, and observability.",
+  "keywords": [
+    "ai",
+    "llm",
+    "kernel",
+    "orchestration",
+    "provider-agnostic",
+    "gemini",
+    "typescript",
+    "monorepo"
+  ],
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "tsc -b --clean",
+    "typecheck": "tsc -b",
+    "test": "vitest run",
+    "lint": "eslint packages/*/src apps/*/src examples/src"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.9",
+    "eslint": "^9.15.0",
+    "typescript-eslint": "^8.15.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "examples"
+  ]
+}
