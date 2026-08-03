@@ -34,7 +34,7 @@ pnpm --filter @aidex/examples custom-provider
 ## Expected output
 ```
 Prompt: Aidex makes it easy to swap providers
-Response (Caesar-shifted by 3): Dlghc pdnhv lw hdvb wr vzds surylghuv
+Response (Caesar-shifted by 3): Dlgha pdnhv lw hdvb wr vzds surylghuv
 ```
 
 ## Concepts learned
