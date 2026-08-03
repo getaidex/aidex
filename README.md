@@ -118,10 +118,9 @@ for why Aidex exists, or the Quick Start above for how to use it.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Questions and ideas are welcome in
-[GitHub Discussions](https://github.com/getaidex/aidex/discussions);
-use [Issues](https://github.com/getaidex/aidex/issues) for bugs and
-concrete feature requests.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Questions, ideas, and feature
+requests, as well as bugs, are all welcome in
+[Issues](https://github.com/getaidex/aidex/issues).
 
 ## Security
 

@@ -7,8 +7,8 @@ single file, 25–60 lines, that runs standalone.
 ## Running an example
 
 ```sh
-npm run build --workspace=@aidex/examples
-npm run hello-world --workspace=@aidex/examples
+pnpm --filter @aidex/examples build
+pnpm --filter @aidex/examples hello-world
 ```
 
 Every example has its own npm script (`hello-world`, `custom-provider`,

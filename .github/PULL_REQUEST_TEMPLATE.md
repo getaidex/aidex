@@ -8,10 +8,10 @@
 
 ## Checklist
 
-- [ ] `npm run typecheck` passes
-- [ ] `npm run lint` passes
-- [ ] `npm test` passes
-- [ ] `npm run build` passes
+- [ ] `pnpm typecheck` passes
+- [ ] `pnpm lint` passes
+- [ ] `pnpm test` passes
+- [ ] `pnpm build` passes
 - [ ] Tests added/updated for the behavior this PR changes
 - [ ] If this touches `packages/core`'s public API, lifecycle ordering, or
       another already-recorded architectural decision: a new ADR is included

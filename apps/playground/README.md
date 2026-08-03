@@ -12,8 +12,8 @@ no web server, just `console.log` of whatever `ai.text(...)` returns.
 ## Running it
 
 ```sh
-npm run build --workspace=@aidex/playground
-npm run start --workspace=@aidex/playground
+pnpm --filter @aidex/playground build
+pnpm --filter @aidex/playground start
 ```
 
 ## What it shows

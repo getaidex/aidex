@@ -22,19 +22,21 @@ writing code.
 ## Setup
 
 ```bash
-npm install
-npm run typecheck   # tsc -b --noEmit
-npm run lint         # eslint packages/*/src apps/*/src examples/src
-npm test              # vitest run
-npm run build        # tsc -b
+pnpm install
+pnpm typecheck   # tsc -b
+pnpm lint        # eslint packages/*/src apps/*/src examples/src
+pnpm test        # vitest run
+pnpm build       # pnpm -r run build (tsc -b && tsup in each package)
 ```
 
 All four must pass before a PR is reviewed. Node `>=18` is required (see
-`engines` in the root `package.json`).
+`engines` in the root `package.json`), and this repo uses
+[pnpm](https://pnpm.io) — install it first if you don't have it
+(`corepack enable` on Node 16.9+, or see pnpm's own install docs).
 
 ## Project structure
 
-This is an npm-workspaces monorepo. `packages/core` is the frozen kernel;
+This is a pnpm-workspace monorepo (see `pnpm-workspace.yaml`). `packages/core` is the frozen kernel;
 everything else composes it:
 
 | Package | What it is |
@@ -108,11 +110,10 @@ same interface). A new AI task is a `Strategy`. A cross-cutting concern is a
 ## Reporting bugs and requesting features
 
 Open an [issue](https://github.com/getaidex/aidex/issues) using the bug
-report or feature request template. For open-ended questions or ideas that
-aren't yet a concrete bug/feature, use
-[Discussions](https://github.com/getaidex/aidex/discussions) instead.
-For anything security-related, see [SECURITY.md](SECURITY.md) instead of a
-public issue.
+report or feature request template. The feature request template is also
+the right place for open-ended questions or ideas that aren't yet a
+concrete bug/feature. For anything security-related, see
+[SECURITY.md](SECURITY.md) instead of a public issue.
 
 ## Code of Conduct
 

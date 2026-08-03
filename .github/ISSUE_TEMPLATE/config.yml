@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Questions & ideas
-    url: https://github.com/getaidex/aidex/discussions
-    about: Open-ended questions, "how do I…", and early-stage ideas belong in Discussions, not Issues.
+    url: https://github.com/getaidex/aidex/issues/new?template=feature_request.yml
+    about: Open-ended questions, "how do I…", and early-stage ideas — use the feature request template, it's fine if it's still rough.
   - name: Security vulnerability
     url: https://github.com/getaidex/aidex/blob/main/SECURITY.md
     about: Do not open a public issue for a security vulnerability — see SECURITY.md for how to report it privately.

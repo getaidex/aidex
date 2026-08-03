@@ -96,7 +96,8 @@ do exactly that where the SDK doesn't (yet) have a façade for something
 
 ## Where do I ask questions vs. file a bug?
 
-[GitHub Discussions](https://github.com/getaidex/aidex/discussions)
-for questions, ideas, and "how do I…"; [GitHub Issues](https://github.com/getaidex/aidex/issues)
-for bugs and concrete, actionable feature requests. Security vulnerabilities
-go through [SECURITY.md](../SECURITY.md), never a public issue.
+Both go through [GitHub Issues](https://github.com/getaidex/aidex/issues) —
+the bug report template for bugs, the feature request template for ideas,
+"how do I…" questions, and concrete, actionable feature requests. Security
+vulnerabilities go through [SECURITY.md](../SECURITY.md), never a public
+issue.
