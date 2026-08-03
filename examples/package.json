@@ -18,14 +18,21 @@
   "scripts": {
     "build": "tsc -b",
     "typecheck": "tsc -b --noEmit",
-    "hello-world": "node dist/01-hello-world/index.js",
-    "custom-provider": "node dist/02-custom-provider/index.js",
-    "custom-engine": "node dist/03-custom-engine/index.js",
-    "plugin": "node dist/04-plugin/index.js",
-    "workflow": "node dist/05-workflow/index.js",
-    "prompt-registry": "node dist/06-prompt-registry/index.js",
-    "tool-registry": "node dist/07-tool-registry/index.js",
-    "observability": "node dist/08-observability/index.js"
+    "getting-started": "node dist/01-getting-started/index.js",
+    "prompt-templates": "node dist/02-prompt-templates/index.js",
+    "interactive-chat": "node dist/03-interactive-chat/index.js",
+    "custom-provider": "node dist/04-custom-provider/index.js",
+    "provider-comparison": "node dist/05-provider-comparison/index.js",
+    "observability": "node dist/06-observability/index.js",
+    "document-intelligence": "node dist/07-document-intelligence/index.js",
+    "resume-analyzer": "node dist/08-resume-analyzer/index.js",
+    "brand-kit-generator": "node dist/09-brand-kit-generator/index.js",
+    "marketing-campaign": "node dist/10-marketing-campaign/index.js",
+    "workflow-orchestration": "node dist/11-workflow-orchestration/index.js",
+    "plugin-example": "node dist/12-plugin-example/index.js",
+    "tool-registry": "node dist/13-tool-registry/index.js",
+    "custom-engine": "node dist/14-custom-engine/index.js",
+    "real-world-assistant": "node dist/15-real-world-assistant/index.js"
   },
   "dependencies": {
     "@aidex/core": "workspace:*",
@@ -36,6 +43,10 @@
     "@aidex/providers": "workspace:*",
     "@aidex/sdk": "workspace:*",
     "@aidex/tools": "workspace:*",
-    "@aidex/workflow": "workspace:*"
+    "@aidex/workflow": "workspace:*",
+    "@aidex/document": "workspace:*",
+    "@aidex/design": "workspace:*",
+    "@aidex/marketing": "workspace:*",
+    "@aidex/evaluation": "workspace:*"
   }
 }

@@ -14,6 +14,10 @@
     { "path": "../packages/providers" },
     { "path": "../packages/sdk" },
     { "path": "../packages/tools" },
-    { "path": "../packages/workflow" }
+    { "path": "../packages/workflow" },
+    { "path": "../packages/document" },
+    { "path": "../packages/design" },
+    { "path": "../packages/marketing" },
+    { "path": "../packages/evaluation" }
   ]
 }
