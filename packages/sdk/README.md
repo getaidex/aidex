@@ -1,5 +1,15 @@
 # @aidex/sdk
 
+## Installation
+
+```sh
+pnpm add @aidex/sdk
+```
+
+```sh
+npm install @aidex/sdk
+```
+
 **Kernel = architecture. SDK = developer experience.**
 
 `@aidex/core` is the frozen, minimal kernel — `new Aidex(config)`, `.use()`,

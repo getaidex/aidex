@@ -1,5 +1,15 @@
 # @aidex/plugins
 
+## Installation
+
+```sh
+pnpm add @aidex/plugins
+```
+
+```sh
+npm install @aidex/plugins
+```
+
 Concrete `Plugin` implementations for the Aidex kernel (`@aidex/core`). Plugins are
 application-land code per `docs/architecture/plugin-development-guide.md` —
 cross-cutting *observers* of the kernel's own lifecycle, registered via

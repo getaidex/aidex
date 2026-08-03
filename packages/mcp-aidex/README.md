@@ -1,5 +1,15 @@
 # @aidex/mcp-aidex
 
+## Installation
+
+```sh
+pnpm add @aidex/mcp-aidex
+```
+
+```sh
+npm install @aidex/mcp-aidex
+```
+
 The adapter layer between **Aidex Engines** (`@aidex/engines`) and
 **MCP Tools** (`@aidex/mcp`). Any `Engine`, from any Feature Pack, becomes
 a real, executable MCP Tool with zero feature-pack-specific code.

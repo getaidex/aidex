@@ -1,5 +1,15 @@
 # @aidex/prompts
 
+## Installation
+
+```sh
+pnpm add @aidex/prompts
+```
+
+```sh
+npm install @aidex/prompts
+```
+
 A central registry for managing prompts: register, version, look up by id,
 and render with variable substitution and validation.
 

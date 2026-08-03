@@ -1,5 +1,15 @@
 # @aidex/providers
 
+## Installation
+
+```sh
+pnpm add @aidex/providers
+```
+
+```sh
+npm install @aidex/providers
+```
+
 Concrete `Provider` implementations for the Aidex kernel (`@aidex/core`). Providers
 are application-land code per `docs/architecture/provider-development-guide.md` —
 this package supplies them so an app can `new Aidex({ provider: new StubProvider() })`

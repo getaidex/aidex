@@ -1,5 +1,15 @@
 # @aidex/tools
 
+## Installation
+
+```sh
+pnpm add @aidex/tools
+```
+
+```sh
+npm install @aidex/tools
+```
+
 A central registry providing reusable tools for engines: register once,
 discover by id or by required permission, execute by id with permission
 validation gating every call.

@@ -1,5 +1,15 @@
 # @aidex/memory
 
+## Installation
+
+```sh
+pnpm add @aidex/memory
+```
+
+```sh
+npm install @aidex/memory
+```
+
 A generic, in-memory key/value storage primitive for Aidex. **This is not AI
 chat memory, not a vector database, and not tied to prompts in any way** — it
 is a reusable KV abstraction, nothing more.

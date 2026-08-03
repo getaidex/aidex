@@ -1,5 +1,15 @@
 # @aidex/observability
 
+## Installation
+
+```sh
+pnpm add @aidex/observability
+```
+
+```sh
+npm install @aidex/observability
+```
+
 Reusable observability utilities for Aidex: measuring execution duration,
 collecting an ordered event timeline, estimating token cost, and logging a
 strategy's start/finish safely. **This package is not a Plugin** — it has no

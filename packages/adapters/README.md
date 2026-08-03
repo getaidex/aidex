@@ -1,5 +1,15 @@
 # @aidex/adapters
 
+## Installation
+
+```sh
+pnpm add @aidex/adapters
+```
+
+```sh
+npm install @aidex/adapters
+```
+
 Adapters connect application frameworks to the SDK (`@aidex/sdk`). **They
 never contain AI logic.** An adapter's entire job is: hold an `AI` instance,
 translate one framework's call shape into `ai.text(...)`/`ai.execute(...)`,

@@ -1,5 +1,15 @@
 # @aidex/media
 
+## Installation
+
+```sh
+pnpm add @aidex/media
+```
+
+```sh
+npm install @aidex/media
+```
+
 An **Aidex Feature Pack** — image, video, and audio generation, editing,
 and transcription, built to the reference architecture `@aidex/document`,
 `@aidex/content`, and `@aidex/design` established.

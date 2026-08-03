@@ -1,5 +1,15 @@
 # @aidex/core
 
+## Installation
+
+```sh
+pnpm add @aidex/core
+```
+
+```sh
+npm install @aidex/core
+```
+
 The Aidex kernel. This is the one package in the entire platform every other
 package ultimately depends on — and the one package that depends on nothing.
 It is frozen: architecture-complete, not under active redesign, and every

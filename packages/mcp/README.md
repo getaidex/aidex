@@ -1,5 +1,15 @@
 # @aidex/mcp
 
+## Installation
+
+```sh
+pnpm add @aidex/mcp
+```
+
+```sh
+npm install @aidex/mcp
+```
+
 A reusable **Model Context Protocol (MCP) server** — a real JSON-RPC 2.0
 message handler over Tool/Resource/Prompt registries, plus one transport.
 Not tied to Aidex Engines, Providers, Workflows, or any external MCP SDK.

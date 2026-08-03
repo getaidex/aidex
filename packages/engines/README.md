@@ -1,5 +1,15 @@
 # @aidex/engines
 
+## Installation
+
+```sh
+pnpm add @aidex/engines
+```
+
+```sh
+npm install @aidex/engines
+```
+
 A central registry for registering and executing **Engines** — a
 provider-agnostic, domain-agnostic unit of work, dispatched by `id` rather
 than compiled in by name. Modeled directly on `@aidex/core`'s

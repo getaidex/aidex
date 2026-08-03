@@ -1,5 +1,15 @@
 # @aidex/strategies
 
+## Installation
+
+```sh
+pnpm add @aidex/strategies
+```
+
+```sh
+npm install @aidex/strategies
+```
+
 Concrete `Strategy` implementations for the Aidex kernel (`@aidex/core`). Strategies
 are application-land code per `docs/architecture/strategy-development-guide.md` —
 this package supplies reusable ones so an app can

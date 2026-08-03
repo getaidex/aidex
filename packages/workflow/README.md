@@ -1,5 +1,15 @@
 # @aidex/workflow
 
+## Installation
+
+```sh
+pnpm add @aidex/workflow
+```
+
+```sh
+npm install @aidex/workflow
+```
+
 Reusable workflow primitives for Aidex: an ordered sequence of steps
 (`Workflow`), the contract each step satisfies (`WorkflowStep`), the shared
 state threaded between them (`WorkflowContext`), and a minimal sequential

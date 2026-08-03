@@ -1,5 +1,15 @@
 # @aidex/evaluation
 
+## Installation
+
+```sh
+pnpm add @aidex/evaluation
+```
+
+```sh
+npm install @aidex/evaluation
+```
+
 Benchmarks engines (or anything expressible as `() => Promise<TResult>`):
 output quality, token usage, cost, latency, and success rate — and allows
 comparing providers by running several named cases side by side.

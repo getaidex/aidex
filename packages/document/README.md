@@ -1,5 +1,15 @@
 # @aidex/document
 
+## Installation
+
+```sh
+pnpm add @aidex/document
+```
+
+```sh
+npm install @aidex/document
+```
+
 The first official **Aidex Feature Pack** — and the reference architecture
 every future Feature Pack should copy.
 

@@ -1,5 +1,15 @@
 # @aidex/catalog
 
+## Installation
+
+```sh
+pnpm add @aidex/catalog
+```
+
+```sh
+npm install @aidex/catalog
+```
+
 A discoverable, queryable registry of **Engine metadata** — for every
 Feature Pack installed in an Aidex application, not any one specific pack.
 

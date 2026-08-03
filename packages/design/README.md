@@ -1,5 +1,15 @@
 # @aidex/design
 
+## Installation
+
+```sh
+pnpm add @aidex/design
+```
+
+```sh
+npm install @aidex/design
+```
+
 An **Aidex Feature Pack** — creative design generation, built to the
 reference architecture `@aidex/document` and `@aidex/content` established.
 

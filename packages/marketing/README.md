@@ -1,5 +1,15 @@
 # @aidex/marketing
 
+## Installation
+
+```sh
+pnpm add @aidex/marketing
+```
+
+```sh
+npm install @aidex/marketing
+```
+
 An **Aidex Feature Pack** — campaign planning, SEO, social media, email
 marketing, and marketing analytics, built to the reference architecture
 `@aidex/document`, `@aidex/content`, `@aidex/design`, and `@aidex/media`

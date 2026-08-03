@@ -1,5 +1,15 @@
 # @aidex/cli
 
+## Installation
+
+```sh
+pnpm add @aidex/cli
+```
+
+```sh
+npm install @aidex/cli
+```
+
 The command-dispatch interface to Aidex — the first real application built
 on `@aidex/sdk`, proving the SDK can be consumed end to end. `CLI` is a
 class you instantiate and call, not a terminal binary — there is no `bin`

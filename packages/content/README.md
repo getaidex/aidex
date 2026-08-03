@@ -1,5 +1,15 @@
 # @aidex/content
 
+## Installation
+
+```sh
+pnpm add @aidex/content
+```
+
+```sh
+npm install @aidex/content
+```
+
 An **Aidex Feature Pack** — content generation and editing, built to the
 reference architecture `@aidex/document` established.
 
