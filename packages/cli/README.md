@@ -1,10 +1,11 @@
 # @aidex/cli
 
-The executable interface to Aidex — the first real application built on
-`@aidex/sdk`, proving the SDK can be consumed end to end. **It contains no AI
-logic.** Every command is a one-line delegation to the SDK; the CLI itself
-never builds a prompt, never touches a provider, and never makes a decision
-about what to ask a model.
+The command-dispatch interface to Aidex — the first real application built
+on `@aidex/sdk`, proving the SDK can be consumed end to end. `CLI` is a
+class you instantiate and call, not a terminal binary — there is no `bin`
+entry or shell command. **It contains no AI logic.** Every command is a
+one-line delegation to the SDK; the CLI itself never builds a prompt, never
+touches a provider, and never makes a decision about what to ask a model.
 
 ## Contents
 
