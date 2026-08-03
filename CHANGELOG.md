@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0-alpha] - 2026-08-03
+
 ### Added
 
 - **`@aidex/providers`** — a provider capability model: `ProviderCapability`,
@@ -14,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `CapableProvider`. Both `StubProvider` and `GeminiProvider` now implement
   `CapableProvider` and expose `getCapabilities()`.
 
-Fourteen new packages built on top of the frozen `0.1.0-alpha` kernel. The
+Twenty-one new packages built on top of the frozen `0.1.0-alpha` kernel. The
 kernel itself (`packages/core`) is unchanged — every addition below composes
 its public contracts rather than modifying them.
 
@@ -70,10 +72,37 @@ its public contracts rather than modifying them.
   directly.
 - **`@aidex/adapters`** — `ExpressAdapter` and `NodeAdapter`, thin
   framework-integration wrappers around the SDK. No AI logic.
-- **`@aidex/cli`** — `CLI`, the first executable application built on the
-  SDK (`text`/`version` commands, extensible via `register()`).
+- **`@aidex/cli`** — `CLI`, a command-dispatch class built on the SDK
+  (`text`/`version` commands, extensible via `register()`).
 - **`examples/`** — eight short, independent, runnable programs
   demonstrating every package above through public APIs only.
+
+### Added — MCP, Feature Packs, Catalog
+
+- **`@aidex/mcp`** — a reusable Model Context Protocol server foundation:
+  transport, and Tool/Resource/Prompt registries. No engine execution, no
+  providers, no workflows.
+- **`@aidex/mcp-aidex`** — the adapter layer between Aidex Engines and
+  `@aidex/mcp` Tools. Any Engine becomes an MCP Tool with zero
+  feature-pack-specific code. No protocol implementation, no providers, no
+  AI execution.
+- **`@aidex/catalog`** — a queryable, pure-metadata registry describing
+  every Engine provided by installed Feature Packs (no provider logic, no
+  execution logic).
+- **`@aidex/document`** — the first Aidex Feature Pack: engine identifiers
+  and typed request/response contracts for document intelligence
+  (extraction, OCR, translation, summarization, resume analysis, invoice
+  extraction, contract review).
+- **`@aidex/design`** — an Aidex Feature Pack for creative design generation
+  (layouts, brand identity, palettes, typography, posters, flyers, business
+  cards, banners, logos, social posts, presentations, mockups, templates).
+- **`@aidex/content`** — an Aidex Feature Pack for content generation and
+  editing (generate, rewrite, expand, shorten, translate, summarize, tone,
+  SEO, blog, email, social, product descriptions, headlines, taglines).
+- **`@aidex/marketing`** — an Aidex Feature Pack for campaign planning, SEO,
+  social media, email marketing, and marketing analytics.
+- **`@aidex/media`** — an Aidex Feature Pack for image, video, and audio
+  generation, editing, and transcription.
 
 ### Added — Consistency and hardening passes
 
@@ -94,8 +123,7 @@ its public contracts rather than modifying them.
 No `OpenAIProvider`/`ClaudeProvider`/`OllamaProvider` yet (only Gemini). No
 Provider Manager, provider fallback, or runtime provider switching — a
 deliberate, settled kernel design decision (see
-[ADR-001](docs/decisions/ADR-001-kernel-philosophy.md)), not a gap. No MCP
-server. Nothing in this release has been published to any package registry.
+[ADR-001](docs/decisions/ADR-001-kernel-philosophy.md)), not a gap.
 
 ## [0.1.0-alpha] - 2026-07-25
 
