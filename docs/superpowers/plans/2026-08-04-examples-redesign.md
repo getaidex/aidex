@@ -478,7 +478,8 @@ git commit -m "feat(examples): add 02-prompt-templates"
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 
 const color = {
   cyan: (s: string) => `\x1b[36m${s}\x1b[0m`,
@@ -795,7 +796,8 @@ git commit -m "feat(examples): add 04-custom-provider"
  * numbers require a key.
  */
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { Evaluator, type BenchmarkCase } from '@aidex/evaluation';
 
 const question = 'In one sentence, what makes TypeScript different from JavaScript?';
@@ -1170,7 +1172,8 @@ import path from 'node:path';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
 
 async function ask(question: string): Promise<string> {
@@ -1398,7 +1401,8 @@ Kubernetes experience is a strong plus.
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
 
 function createProvider(): Provider {
@@ -1556,7 +1560,8 @@ git commit -m "feat(examples): add 08-resume-analyzer"
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { DESIGN_FEATURE_PACKAGE, DesignEngineId } from '@aidex/design';
 
 async function ask(question: string): Promise<string> {
@@ -1761,7 +1766,8 @@ git commit -m "feat(examples): add 09-brand-kit-generator"
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { MARKETING_FEATURE_PACKAGE, MarketingEngineId } from '@aidex/marketing';
 
 async function ask(question: string): Promise<string> {
@@ -1974,7 +1980,8 @@ and schema versioning discipline, or debugging becomes archaeology.
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { AIBuilder, type AI } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
 import { Workflow, WorkflowExecutor, WorkflowCancelledError, type WorkflowEvent } from '@aidex/workflow';
 
@@ -2694,7 +2701,8 @@ git commit -m "feat(examples): add 14-custom-engine"
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { PromptRegistry, type PromptTemplate } from '@aidex/prompts';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
 import { ObservabilityBus, ExecutionMetrics } from '@aidex/observability';
