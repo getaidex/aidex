@@ -1,6 +1,6 @@
 {
   "name": "@aidex/strategies",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "description": "Aidex Strategies — concrete Strategy implementations built on @aidex/core, provider-agnostic.",
   "keywords": [
     "ai",

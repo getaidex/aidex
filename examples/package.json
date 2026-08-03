@@ -1,6 +1,6 @@
 {
   "name": "@aidex/examples",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "private": true,
   "description": "Aidex Examples — short, independent, buildable programs demonstrating each platform capability through public APIs only.",
   "license": "MIT",

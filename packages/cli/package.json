@@ -1,6 +1,6 @@
 {
   "name": "@aidex/cli",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "description": "Aidex CLI — a command-dispatch class (CLI) built on @aidex/sdk, proving the SDK can be consumed end to end via named commands. A library, not a terminal executable. No AI logic; delegates everything to the SDK.",
   "keywords": [
     "ai",

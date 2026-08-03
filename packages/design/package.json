@@ -1,6 +1,6 @@
 {
   "name": "@aidex/design",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "description": "Aidex Design — an Aidex Feature Pack: engine identifiers and typed request/response contracts for creative design generation (layouts, brand identity, palettes, typography, posters, flyers, business cards, banners, logos, social posts, presentations, mockups, and templates).",
   "keywords": [
     "ai",

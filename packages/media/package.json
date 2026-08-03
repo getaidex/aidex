@@ -1,6 +1,6 @@
 {
   "name": "@aidex/media",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "description": "Aidex Media — an Aidex Feature Pack: engine identifiers and typed request/response contracts for image, video, and audio generation, editing, and transcription.",
   "keywords": [
     "ai",

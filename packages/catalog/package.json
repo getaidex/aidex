@@ -1,6 +1,6 @@
 {
   "name": "@aidex/catalog",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "description": "Aidex Catalog — a queryable, pure-metadata registry describing every Engine provided by installed Feature Packs (no provider logic, no execution logic).",
   "keywords": [
     "ai",

@@ -1,6 +1,6 @@
 {
   "name": "@aidex/adapters",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "description": "Aidex Adapters — thin wrappers connecting external frameworks (Express, plain Node) to @aidex/sdk. No AI logic.",
   "keywords": [
     "ai",

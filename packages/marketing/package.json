@@ -1,6 +1,6 @@
 {
   "name": "@aidex/marketing",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "description": "Aidex Marketing — an Aidex Feature Pack: engine identifiers and typed request/response contracts for campaign planning, SEO, social media, email marketing, and marketing analytics.",
   "keywords": [
     "ai",

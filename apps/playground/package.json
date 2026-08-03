@@ -1,6 +1,6 @@
 {
   "name": "@aidex/playground",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "private": true,
   "description": "Aidex Playground — the simplest runnable Aidex application, a reference implementation for SDK usage. Not production software.",
   "license": "MIT",

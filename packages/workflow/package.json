@@ -1,6 +1,6 @@
 {
   "name": "@aidex/workflow",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "description": "Aidex Workflow — reusable, provider-agnostic sequential step orchestration primitives.",
   "keywords": [
     "workflow",

@@ -1,6 +1,6 @@
 {
   "name": "@aidex/engines",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "description": "Aidex Engines — a provider-agnostic Engine contract and central EngineRegistry for registering and executing engines by id.",
   "keywords": [
     "ai",

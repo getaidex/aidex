@@ -47,7 +47,7 @@ export type MarketingWorkflow = CampaignWorkflow | SocialWorkflow | EmailWorkflo
  */
 export const MARKETING_FEATURE_PACKAGE: FeaturePackage<MarketingWorkflow> = {
   name: '@aidex/marketing',
-  version: '0.2.0-alpha',
+  version: '0.2.1-alpha',
   engines: [
     new CampaignPlanEngine(),
     new CampaignBriefEngine(),

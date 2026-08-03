@@ -1,6 +1,6 @@
 {
   "name": "@aidex/mcp-aidex",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "description": "Aidex MCP Aidex — the adapter layer between Aidex Engines and @aidex/mcp Tools. Any Engine becomes an MCP Tool with zero feature-pack-specific code. No protocol implementation, no providers, no AI execution.",
   "keywords": [
     "ai",

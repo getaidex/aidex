@@ -1,6 +1,6 @@
 {
   "name": "@aidex/tools",
-  "version": "0.2.0-alpha",
+  "version": "0.2.1-alpha",
   "description": "Aidex Tools — a central Tool Registry providing reusable, permission-gated tools for engines.",
   "keywords": [
     "ai",
