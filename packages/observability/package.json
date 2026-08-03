@@ -1,7 +1,6 @@
 {
   "name": "@aidex/observability",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Observability — reusable execution metrics, timeline, cost estimation, and logging utilities. Not a Plugin itself.",
   "keywords": [
     "observability",
@@ -43,7 +42,7 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/core": "0.1.0-alpha"
+    "@aidex/core": "workspace:*"
   },
   "engines": {
     "node": ">=18"

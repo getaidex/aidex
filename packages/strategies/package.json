@@ -1,7 +1,6 @@
 {
   "name": "@aidex/strategies",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Strategies — concrete Strategy implementations built on @aidex/core, provider-agnostic.",
   "keywords": [
     "ai",
@@ -42,10 +41,10 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/core": "0.1.0-alpha"
+    "@aidex/core": "workspace:*"
   },
   "devDependencies": {
-    "@aidex/providers": "0.1.0-alpha"
+    "@aidex/providers": "workspace:*"
   },
   "engines": {
     "node": ">=18"

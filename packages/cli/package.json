@@ -1,7 +1,6 @@
 {
   "name": "@aidex/cli",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex CLI — the first executable application built on @aidex/sdk. No AI logic; delegates everything to the SDK.",
   "keywords": [
     "ai",
@@ -41,10 +40,10 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/sdk": "0.1.0-alpha"
+    "@aidex/sdk": "workspace:*"
   },
   "devDependencies": {
-    "@aidex/providers": "0.1.0-alpha"
+    "@aidex/providers": "workspace:*"
   },
   "engines": {
     "node": ">=18"

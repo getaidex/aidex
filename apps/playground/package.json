@@ -23,7 +23,7 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@aidex/sdk": "0.1.0-alpha",
-    "@aidex/providers": "0.1.0-alpha"
+    "@aidex/sdk": "workspace:*",
+    "@aidex/providers": "workspace:*"
   }
 }

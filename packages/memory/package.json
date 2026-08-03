@@ -1,7 +1,6 @@
 {
   "name": "@aidex/memory",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Memory — a standalone, generic in-memory key/value storage primitive. Not AI chat memory, not a vector store.",
   "keywords": [
     "memory",

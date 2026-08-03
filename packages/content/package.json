@@ -1,7 +1,6 @@
 {
   "name": "@aidex/content",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Content — an Aidex Feature Pack: engine identifiers and typed request/response contracts for content generation and editing (generate, rewrite, expand, shorten, translate, summarize, tone, SEO, blog, email, social, product descriptions, headlines, taglines).",
   "keywords": [
     "ai",
@@ -45,16 +44,16 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/catalog": "0.1.0-alpha",
-    "@aidex/core": "0.1.0-alpha",
-    "@aidex/engines": "0.1.0-alpha",
-    "@aidex/observability": "0.1.0-alpha",
-    "@aidex/prompts": "0.1.0-alpha",
-    "@aidex/sdk": "0.1.0-alpha",
-    "@aidex/workflow": "0.1.0-alpha"
+    "@aidex/catalog": "workspace:*",
+    "@aidex/core": "workspace:*",
+    "@aidex/engines": "workspace:*",
+    "@aidex/observability": "workspace:*",
+    "@aidex/prompts": "workspace:*",
+    "@aidex/sdk": "workspace:*",
+    "@aidex/workflow": "workspace:*"
   },
   "devDependencies": {
-    "@aidex/providers": "0.1.0-alpha"
+    "@aidex/providers": "workspace:*"
   },
   "engines": {
     "node": ">=18"

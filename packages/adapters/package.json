@@ -1,7 +1,6 @@
 {
   "name": "@aidex/adapters",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Adapters — thin wrappers connecting external frameworks (Express, plain Node) to @aidex/sdk. No AI logic.",
   "keywords": [
     "ai",
@@ -42,10 +41,10 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/sdk": "0.1.0-alpha"
+    "@aidex/sdk": "workspace:*"
   },
   "devDependencies": {
-    "@aidex/providers": "0.1.0-alpha"
+    "@aidex/providers": "workspace:*"
   },
   "engines": {
     "node": ">=18"

@@ -28,14 +28,14 @@
     "observability": "node dist/08-observability/index.js"
   },
   "dependencies": {
-    "@aidex/core": "0.1.0-alpha",
-    "@aidex/sdk": "0.1.0-alpha",
-    "@aidex/providers": "0.1.0-alpha",
-    "@aidex/engines": "0.1.0-alpha",
-    "@aidex/plugins": "0.1.0-alpha",
-    "@aidex/prompts": "0.1.0-alpha",
-    "@aidex/tools": "0.1.0-alpha",
-    "@aidex/workflow": "0.1.0-alpha",
-    "@aidex/observability": "0.1.0-alpha"
+    "@aidex/core": "workspace:*",
+    "@aidex/sdk": "workspace:*",
+    "@aidex/providers": "workspace:*",
+    "@aidex/engines": "workspace:*",
+    "@aidex/plugins": "workspace:*",
+    "@aidex/prompts": "workspace:*",
+    "@aidex/tools": "workspace:*",
+    "@aidex/workflow": "workspace:*",
+    "@aidex/observability": "workspace:*"
   }
 }

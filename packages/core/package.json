@@ -1,7 +1,6 @@
 {
   "name": "@aidex/core",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Core — the frozen AI kernel: dispatch, lifecycle, registries, and the Strategy/Provider/Plugin contracts. No concrete implementations.",
   "keywords": [
     "ai",

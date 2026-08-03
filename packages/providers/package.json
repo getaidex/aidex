@@ -1,7 +1,6 @@
 {
   "name": "@aidex/providers",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Providers — concrete Provider implementations (model vendors) supplied by applications.",
   "keywords": [
     "ai",
@@ -43,8 +42,8 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/core": "0.1.0-alpha",
-    "@aidex/observability": "0.1.0-alpha",
+    "@aidex/core": "workspace:*",
+    "@aidex/observability": "workspace:*",
     "@google/genai": "^2.13.0"
   },
   "engines": {

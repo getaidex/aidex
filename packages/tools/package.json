@@ -1,7 +1,6 @@
 {
   "name": "@aidex/tools",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Tools — a central Tool Registry providing reusable, permission-gated tools for engines.",
   "keywords": [
     "ai",
@@ -43,7 +42,7 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/core": "0.1.0-alpha"
+    "@aidex/core": "workspace:*"
   },
   "engines": {
     "node": ">=18"

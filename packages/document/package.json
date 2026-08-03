@@ -1,7 +1,6 @@
 {
   "name": "@aidex/document",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Document — the first Aidex Feature Pack: engine identifiers and typed request/response contracts for document intelligence (extraction, OCR, translation, summarization, resume analysis, invoice extraction, contract review).",
   "keywords": [
     "ai",
@@ -46,16 +45,16 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/catalog": "0.1.0-alpha",
-    "@aidex/core": "0.1.0-alpha",
-    "@aidex/engines": "0.1.0-alpha",
-    "@aidex/observability": "0.1.0-alpha",
-    "@aidex/prompts": "0.1.0-alpha",
-    "@aidex/sdk": "0.1.0-alpha",
-    "@aidex/workflow": "0.1.0-alpha"
+    "@aidex/catalog": "workspace:*",
+    "@aidex/core": "workspace:*",
+    "@aidex/engines": "workspace:*",
+    "@aidex/observability": "workspace:*",
+    "@aidex/prompts": "workspace:*",
+    "@aidex/sdk": "workspace:*",
+    "@aidex/workflow": "workspace:*"
   },
   "devDependencies": {
-    "@aidex/providers": "0.1.0-alpha"
+    "@aidex/providers": "workspace:*"
   },
   "engines": {
     "node": ">=18"

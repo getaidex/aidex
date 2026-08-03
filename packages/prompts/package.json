@@ -1,7 +1,6 @@
 {
   "name": "@aidex/prompts",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Prompts — a central, versioned Prompt Registry with variable substitution and validation.",
   "keywords": [
     "ai",
@@ -43,7 +42,7 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/core": "0.1.0-alpha"
+    "@aidex/core": "workspace:*"
   },
   "engines": {
     "node": ">=18"

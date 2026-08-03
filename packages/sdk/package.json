@@ -1,7 +1,6 @@
 {
   "name": "@aidex/sdk",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex SDK — the developer-facing façade over @aidex/core (AI, AIBuilder, AIConfiguration).",
   "keywords": [
     "ai",
@@ -42,17 +41,17 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/catalog": "0.1.0-alpha",
-    "@aidex/core": "0.1.0-alpha",
-    "@aidex/engines": "0.1.0-alpha",
-    "@aidex/plugins": "0.1.0-alpha",
-    "@aidex/prompts": "0.1.0-alpha",
-    "@aidex/strategies": "0.1.0-alpha",
-    "@aidex/tools": "0.1.0-alpha",
-    "@aidex/workflow": "0.1.0-alpha"
+    "@aidex/catalog": "workspace:*",
+    "@aidex/core": "workspace:*",
+    "@aidex/engines": "workspace:*",
+    "@aidex/plugins": "workspace:*",
+    "@aidex/prompts": "workspace:*",
+    "@aidex/strategies": "workspace:*",
+    "@aidex/tools": "workspace:*",
+    "@aidex/workflow": "workspace:*"
   },
   "devDependencies": {
-    "@aidex/providers": "0.1.0-alpha"
+    "@aidex/providers": "workspace:*"
   },
   "engines": {
     "node": ">=18"

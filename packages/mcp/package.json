@@ -1,7 +1,6 @@
 {
   "name": "@aidex/mcp",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex MCP — a reusable Model Context Protocol server foundation: transport, and Tool/Resource/Prompt registries. No engine execution, no providers, no workflows.",
   "keywords": [
     "ai",
@@ -43,7 +42,7 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/core": "0.1.0-alpha"
+    "@aidex/core": "workspace:*"
   },
   "engines": {
     "node": ">=18"

@@ -1,7 +1,6 @@
 {
   "name": "@aidex/plugins",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Plugins — concrete Plugin implementations, plus the Aidex Plugin System (PluginManager) for installing plugins that register engines/strategies/prompts/tools.",
   "keywords": [
     "ai",
@@ -42,10 +41,10 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/core": "0.1.0-alpha",
-    "@aidex/engines": "0.1.0-alpha",
-    "@aidex/prompts": "0.1.0-alpha",
-    "@aidex/tools": "0.1.0-alpha"
+    "@aidex/core": "workspace:*",
+    "@aidex/engines": "workspace:*",
+    "@aidex/prompts": "workspace:*",
+    "@aidex/tools": "workspace:*"
   },
   "engines": {
     "node": ">=18"

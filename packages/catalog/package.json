@@ -1,7 +1,6 @@
 {
   "name": "@aidex/catalog",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Catalog — a queryable, pure-metadata registry describing every Engine provided by installed Feature Packs (no provider logic, no execution logic).",
   "keywords": [
     "ai",
@@ -44,11 +43,11 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/core": "0.1.0-alpha",
-    "@aidex/providers": "0.1.0-alpha"
+    "@aidex/core": "workspace:*",
+    "@aidex/providers": "workspace:*"
   },
   "devDependencies": {
-    "@aidex/engines": "0.1.0-alpha"
+    "@aidex/engines": "workspace:*"
   },
   "engines": {
     "node": ">=18"

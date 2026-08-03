@@ -1,7 +1,6 @@
 {
   "name": "@aidex/engines",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Engines — a provider-agnostic Engine contract and central EngineRegistry for registering and executing engines by id.",
   "keywords": [
     "ai",
@@ -41,8 +40,8 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/core": "0.1.0-alpha",
-    "@aidex/providers": "0.1.0-alpha"
+    "@aidex/core": "workspace:*",
+    "@aidex/providers": "workspace:*"
   },
   "engines": {
     "node": ">=18"

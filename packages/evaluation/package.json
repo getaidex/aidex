@@ -1,7 +1,6 @@
 {
   "name": "@aidex/evaluation",
   "version": "0.1.0-alpha",
-  "private": true,
   "description": "Aidex Evaluation Framework — benchmark engines for output quality, token usage, cost, latency, and success rate, and compare providers.",
   "keywords": [
     "ai",
@@ -42,7 +41,7 @@
     "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@aidex/observability": "0.1.0-alpha"
+    "@aidex/observability": "workspace:*"
   },
   "engines": {
     "node": ">=18"
