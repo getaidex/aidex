@@ -4,6 +4,7 @@ export { GeminiProvider } from './gemini/GeminiProvider.js';
 export type { GeminiProviderConfig, GeminiPricing } from './gemini/GeminiProvider.js';
 export { ProviderCapability, createProviderCapabilities } from './capabilities/index.js';
 export type { ProviderCapabilities, CapableProvider } from './capabilities/index.js';
+export type { Provider } from '@aidex/core';
 export {
   ProviderError,
   ProviderAuthenticationError,
