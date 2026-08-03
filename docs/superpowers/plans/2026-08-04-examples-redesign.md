@@ -1169,12 +1169,17 @@ Total due: $7,650.00 USD
  */
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
 import { GeminiProvider, StubProvider } from '@aidex/providers';
 import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
+
+// `import.meta.dirname` needs Node 20.11+/21.2+ — this repo supports
+// Node >=18, so resolve __dirname the portable way instead.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function ask(question: string): Promise<string> {
   const rl = createInterface({ input: stdin, output: stdout });
@@ -1248,7 +1253,7 @@ async function main() {
   console.log('\nChoose a document: [1] contract.md  [2] invoice.md');
   const fileChoice = await ask('> ');
   const filename = fileChoice === '2' ? 'invoice.md' : 'contract.md';
-  const content = await readFile(path.join(import.meta.dirname, 'fixtures', filename), 'utf8');
+  const content = await readFile(path.join(__dirname, 'fixtures', filename), 'utf8');
 
   const provider = createProvider(operation.id);
   const ai = new AIBuilder().provider(provider).use(DOCUMENT_FEATURE_PACKAGE).build();
@@ -1400,10 +1405,15 @@ Kubernetes experience is a strong plus.
  */
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { AIBuilder } from '@aidex/sdk';
 import { GeminiProvider, StubProvider } from '@aidex/providers';
 import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
+
+// `import.meta.dirname` needs Node 20.11+/21.2+ — this repo supports
+// Node >=18, so resolve __dirname the portable way instead.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function createProvider(): Provider {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -1426,7 +1436,7 @@ function createProvider(): Provider {
 }
 
 async function main() {
-  const fixturesDir = path.join(import.meta.dirname, 'fixtures');
+  const fixturesDir = path.join(__dirname, 'fixtures');
   const resume = await readFile(path.join(fixturesDir, 'resume.md'), 'utf8');
   const jobDescription = await readFile(path.join(fixturesDir, 'job-description.md'), 'utf8');
 
@@ -1979,10 +1989,15 @@ and schema versioning discipline, or debugging becomes archaeology.
  */
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { AIBuilder, type AI } from '@aidex/sdk';
 import { GeminiProvider, StubProvider } from '@aidex/providers';
 import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
+
+// `import.meta.dirname` needs Node 20.11+/21.2+ — this repo supports
+// Node >=18, so resolve __dirname the portable way instead.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import { Workflow, WorkflowExecutor, WorkflowCancelledError, type WorkflowEvent } from '@aidex/workflow';
 
 interface PipelineState {
@@ -2076,7 +2091,7 @@ async function main() {
     console.log('No GEMINI_API_KEY found — using a demo provider with canned per-step JSON.\n');
   }
 
-  const content = await readFile(path.join(import.meta.dirname, 'fixtures', 'article.md'), 'utf8');
+  const content = await readFile(path.join(__dirname, 'fixtures', 'article.md'), 'utf8');
   const ai = new AIBuilder().provider(createProvider()).use(DOCUMENT_FEATURE_PACKAGE).build();
   const workflow = buildPipeline(ai);
   const executor = new WorkflowExecutor();
