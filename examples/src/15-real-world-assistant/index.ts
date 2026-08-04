@@ -106,10 +106,11 @@ async function main() {
     const durationMs = lastEvent?.metadata?.durationMs as number | undefined;
     console.log(color.green(`  (took ${durationMs ?? '?'}ms)\n`));
   }
-  rl.close();
 }
 
-main().catch((error) => {
-  console.error('Example failed:', error);
-  process.exitCode = 1;
-});
+main()
+  .catch((error) => {
+    console.error('Example failed:', error);
+    process.exitCode = 1;
+  })
+  .finally(() => rl.close());

@@ -15,8 +15,20 @@ with [01 — Getting Started](src/01-getting-started/README.md) instead.
 ```bash
 mkdir my-aidex-app && cd my-aidex-app
 npm init -y
+npm pkg set type=module
 npm install @aidex/sdk @aidex/providers @aidex/engines typescript --save
+npm install --save-dev @types/node
 npx tsc --init --target ES2022 --module NodeNext --moduleResolution NodeNext
+```
+
+`tsc --init` generates a `tsconfig.json` with `"types": []` (which
+blocks the `@types/node` you just installed) and `"outDir"` commented
+out (so compiled output would land next to your source instead of in
+`dist/`, as Step 6 expects). Open `tsconfig.json` and set both:
+
+```json
+"outDir": "./dist",
+"types": ["node"],
 ```
 
 ## 2. Configure a provider

@@ -113,10 +113,11 @@ async function main() {
   console.log(`\nRunning "${operation.label}" on ${filename}...\n`);
   const result = await ai.engine(operation.id).execute({ source: { content, mimeType: 'text/plain' } });
   console.log(JSON.stringify(result, null, 2));
-  rl.close();
 }
 
-main().catch((error) => {
-  console.error('Example failed:', error);
-  process.exitCode = 1;
-});
+main()
+  .catch((error) => {
+    console.error('Example failed:', error);
+    process.exitCode = 1;
+  })
+  .finally(() => rl.close());

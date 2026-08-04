@@ -117,10 +117,11 @@ async function main() {
 
   console.log('\nLogo concept (text description — no image is actually rendered, see README):');
   console.log(`  ${decodeURIComponent(logo.primary.assetUrl.replace('data:text/plain,', ''))}`);
-  rl.close();
 }
 
-main().catch((error) => {
-  console.error('Example failed:', error);
-  process.exitCode = 1;
-});
+main()
+  .catch((error) => {
+    console.error('Example failed:', error);
+    process.exitCode = 1;
+  })
+  .finally(() => rl.close());

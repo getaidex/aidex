@@ -89,11 +89,11 @@ async function main() {
     history.push({ role: 'assistant', content: reply });
     console.log(`${color.dim('Assistant:')} ${reply}\n`);
   }
-
-  rl.close();
 }
 
-main().catch((error) => {
-  console.error('Example failed:', error);
-  process.exitCode = 1;
-});
+main()
+  .catch((error) => {
+    console.error('Example failed:', error);
+    process.exitCode = 1;
+  })
+  .finally(() => rl.close());

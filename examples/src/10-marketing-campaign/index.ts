@@ -110,10 +110,11 @@ async function main() {
   console.log(`  Channels: ${plan.channels.join(', ')}`);
   for (const objective of plan.objectives) console.log(`  Objective: ${objective.goal}${objective.metric ? ` (metric: ${objective.metric})` : ''}`);
   console.log(`  Summary: ${plan.summary}`);
-  rl.close();
 }
 
-main().catch((error) => {
-  console.error('Example failed:', error);
-  process.exitCode = 1;
-});
+main()
+  .catch((error) => {
+    console.error('Example failed:', error);
+    process.exitCode = 1;
+  })
+  .finally(() => rl.close());
