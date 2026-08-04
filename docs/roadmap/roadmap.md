@@ -50,9 +50,9 @@ breakdown, an owner, or a target date.
   purely additive work in `@aidex/providers` (or a new package).
 - **`PluginManager` support in `@aidex/sdk`** — `AIBuilder`/`AI` currently
   have no façade over `PluginManager`; using it means constructing a raw
-  `Aidex` instance directly (see `examples/README.md`, "Limitations
-  discovered"). A future SDK addition could close this gap without touching
-  the kernel.
+  `Aidex` instance directly (see
+  [12 — Plugin Example](../../examples/src/12-plugin-example/README.md)).
+  A future SDK addition could close this gap without touching the kernel.
 - **An `EngineRegistry` façade in the SDK** — same shape of gap: running an
   engine today means building an `ExecutionContext` by hand and calling
   `EngineRegistry.execute()` directly.

@@ -27,7 +27,7 @@
   - `Engine<TResult>`: `{ readonly id, name, description, version; execute(context: ExecutionContext): Promise<TResult> }`. `ExecutionContext` only requires `{ config: { provider }, provider }` to construct by hand.
   - `PromptTemplate`: `{ readonly id, version, template, variables?: readonly string[] }`. `PromptRegistry`: `.register(t)`, `.render(id, vars?, version?): string`, `.listVersions(id): PromptTemplate[]`.
   - `Tool`: `{ readonly id, name, description, permissions?: readonly string[]; execute(input): Promise<TResult> }`. `ToolRegistry.execute(id, input, grantedPermissions: string[] = [])` — throws `ToolPermissionDeniedError` on mismatch.
-  - `ObservabilityBus`: `.subscribe(fn)`, `.trackProvider/.trackTokens/.trackDuration/.trackCost(metadata)`, `.trackDurationFromMetrics(metrics: ExecutionMetrics, extra?)`, `.trackCostFromEstimate(input: CostEstimateInput, extra?)`, `.getTimeline(): ObservabilityEvent[]`. `ExecutionMetrics.recordStart(ts = Date.now())` / `.recordEnd(ts = Date.now())` take plain numbers. `GeminiProvider` auto-emits `provider`/`duration`/`tokens`/`cost` events when constructed with `{ observability, pricing }` — `StubProvider` emits nothing automatically.
+  - `ObservabilityBus`: `.subscribe(fn)`, `.trackProvider/.trackTokens/.trackDuration/.trackCost(metadata)`, `.trackDurationFromMetrics(metrics: ExecutionMetrics, extra?)`, `.trackCostFromEstimate(input: CostEstimateInput, extra?)`, `.getTimeline(): ObservabilityEvent[]`. `ExecutionMetrics.recordStart(ts = Date.now())` / `.recordEnd(ts = Date.now())` take plain numbers. `GeminiProvider` auto-emits `provider`/`duration`/`tokens`/`cost` events when constructed with `{ observability, pricing }` — `StubProvider` emits nothing automatically. **`ObservabilityEvent` shape is `{ event: string; metadata?: Record<string, unknown> }`** — the event-name field is literally called `event`, not `type` (that's `WorkflowEvent`'s field name, a different type from `@aidex/workflow` — don't confuse the two), and anything `trackDurationFromMetrics`/`trackCostFromEstimate`/etc. attach (like `durationMs`) lives inside `event.metadata`, never top-level on the event.
   - `Evaluator` (`@aidex/evaluation`): `.compare(cases: BenchmarkCase[], options?: {pricing?, runs?}): Promise<BenchmarkSummary[]>`. `BenchmarkCase = { name, execute(): Promise<T>, scoreOutput?(r), estimateTokens?(r): {inputTokens, outputTokens} }`. `BenchmarkSummary = { caseName, runs, successRate, averageDurationMs?, averageQualityScore?, averageCost? }`.
   - `Workflow<TState>`: `.addStep({ name, execute(context: TState): Promise<void> })`. `WorkflowExecutor.execute(workflow, context, { onEvent?, signal? }): Promise<TState>`. `WorkflowEvent.type` ∈ `'workflow-started'|'workflow-completed'|'workflow-cancelled'|'step-started'|'step-completed'|'step-failed'`. Cancellation throws `WorkflowCancelledError`.
   - `ExtendedPlugin`: `{ name; registerEngines?(): Engine[]; registerPrompts?(): PromptTemplate[]; registerTools?(): Tool[] }`. `PluginManager`: `constructor(aidex: Aidex)`, `.use(plugin)`, `.getEngineRegistry()/.getPromptRegistry()/.getToolRegistry()`. Requires a raw `new Aidex({ provider })` kernel instance — the SDK façade (`AIBuilder`/`AI`) never constructs a `PluginManager`; this is intentional two-tier architecture (kernel plugin system vs. SDK façade), not a gap to apologize for.
@@ -56,9 +56,12 @@
 
 ## Task 1: Scaffolding — clear old examples, wire new build config
 
+> **Amendment (discovered while implementing Task 9):** `tsc` never copies non-`.ts` files — the `.md` fixtures under `examples/src/07-document-intelligence/fixtures/`, `08-resume-analyzer/fixtures/`, and `11-workflow-orchestration/fixtures/` do NOT end up in `dist/` from `tsc -b` alone, so those examples' `readFile(path.join(__dirname, 'fixtures', ...))` calls would throw `ENOENT` on a real clean build. Step 3 below now also creates `examples/scripts/copy-fixtures.js` and wires it into the `build` script. Whichever task's implementer reaches this first should add it if a prior task hasn't already.
+
 **Files:**
 - Modify: `examples/tsconfig.json`
 - Modify: `examples/package.json`
+- Create: `examples/scripts/copy-fixtures.js`
 - Delete: `examples/src/01-hello-world/`, `examples/src/02-custom-provider/`, `examples/src/03-custom-engine/`, `examples/src/04-plugin/`, `examples/src/05-workflow/`, `examples/src/06-prompt-registry/`, `examples/src/07-tool-registry/`, `examples/src/08-observability/`
 
 **Interfaces:**
@@ -109,7 +112,7 @@ Read the current file first to preserve `name`/`version`/`private`/`type` fields
 ```json
 {
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc -b && node scripts/copy-fixtures.js",
     "typecheck": "tsc -b --noEmit",
     "getting-started": "node dist/01-getting-started/index.js",
     "prompt-templates": "node dist/02-prompt-templates/index.js",
@@ -147,15 +150,45 @@ Read the current file first to preserve `name`/`version`/`private`/`type` fields
 
 Check the existing `dependencies` block's version-range style (likely `"workspace:*"` already, matching every other package in the monorepo) before finalizing — match it exactly rather than assuming.
 
-- [ ] **Step 4: Verify the scaffold is coherent**
+- [ ] **Step 4: Create `examples/scripts/copy-fixtures.js`**
+
+`tsc` only emits `.ts`/`.d.ts` output — it silently ignores non-TS files like the `.md` fixtures under each example's `fixtures/` folder, so they never reach `dist/`. This script copies every example's `fixtures/` folder (if it has one) from `src/` to `dist/` after each build:
+
+```javascript
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const srcDir = path.join(__dirname, '..', 'src');
+const distDir = path.join(__dirname, '..', 'dist');
+
+function copyFixtures() {
+  const examples = fs.readdirSync(srcDir).filter(
+    (name) => fs.statSync(path.join(srcDir, name)).isDirectory()
+  );
+
+  for (const example of examples) {
+    const srcFixtures = path.join(srcDir, example, 'fixtures');
+    if (fs.existsSync(srcFixtures)) {
+      const distFixtures = path.join(distDir, example, 'fixtures');
+      fs.cpSync(srcFixtures, distFixtures, { recursive: true, force: true });
+    }
+  }
+}
+
+copyFixtures();
+```
+
+- [ ] **Step 5: Verify the scaffold is coherent**
 
 Run: `pnpm install` (picks up new workspace deps) then `pnpm --filter @aidex/examples build`
 Expected: fails only because `src/` has no files yet matching `rootDir`/`include` unless at least a placeholder exists — that's fine, later tasks add real files. If `tsc -b` errors about an empty `src` dir, that's expected at this point; do not treat it as a scaffolding bug. Confirm instead that `pnpm install` succeeds and lists the 4 new workspace deps resolved.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
-git add examples/tsconfig.json examples/package.json
+git add examples/tsconfig.json examples/package.json examples/scripts/copy-fixtures.js
 git commit -m "chore(examples): clear old examples, wire config for redesign"
 ```
 
@@ -478,7 +511,8 @@ git commit -m "feat(examples): add 02-prompt-templates"
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 
 const color = {
   cyan: (s: string) => `\x1b[36m${s}\x1b[0m`,
@@ -486,13 +520,19 @@ const color = {
   yellow: (s: string) => `\x1b[33m${s}\x1b[0m`,
 };
 
-async function ask(question: string): Promise<string> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    return (await rl.question(question)).trim();
-  } finally {
-    rl.close();
-  }
+// A single shared readline interface, not one created per prompt:
+// rl.question() only reliably resolves once per process when stdin is
+// piped (e.g. automated smoke tests) — every prompt after the first
+// silently hangs forever. Reading through the interface's line
+// iterator instead works correctly both interactively and piped.
+// Returns null when stdin has no more input (EOF) rather than looping.
+const rl = createInterface({ input: stdin, output: stdout });
+const rlLines = rl[Symbol.asyncIterator]();
+
+async function ask(question: string): Promise<string | null> {
+  stdout.write(question);
+  const { value, done } = await rlLines.next();
+  return done ? null : value.trim();
 }
 
 async function chooseProvider(): Promise<Provider> {
@@ -525,14 +565,14 @@ async function main() {
   const provider = await chooseProvider();
   const ai = new AIBuilder().provider(provider).build();
 
-  const systemPrompt = await ask('Optional system prompt (press Enter to skip): ');
+  const systemPrompt = (await ask('Optional system prompt (press Enter to skip): ')) ?? '';
   console.log(color.dim("\nType 'exit' or 'quit' to end the conversation.\n"));
 
   const history: Turn[] = [];
 
   while (true) {
     const userInput = await ask(color.cyan('You: '));
-    if (userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'quit') {
+    if (userInput === null || userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'quit') {
       console.log('Goodbye!');
       break;
     }
@@ -548,6 +588,7 @@ async function main() {
     history.push({ role: 'assistant', content: reply });
     console.log(`${color.dim('Assistant:')} ${reply}\n`);
   }
+  rl.close();
 }
 
 main().catch((error) => {
@@ -736,7 +777,7 @@ pnpm --filter @aidex/examples custom-provider
 ## Expected output
 ```
 Prompt: Aidex makes it easy to swap providers
-Response (Caesar-shifted by 3): Dlghc pdnhv lw hdvb wr vzds surylghuv
+Response (Caesar-shifted by 3): Dlgha pdnhv lw hdvb wr vzds surylghuv
 ```
 
 ## Concepts learned
@@ -795,7 +836,8 @@ git commit -m "feat(examples): add 04-custom-provider"
  * numbers require a key.
  */
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { Evaluator, type BenchmarkCase } from '@aidex/evaluation';
 
 const question = 'In one sentence, what makes TypeScript different from JavaScript?';
@@ -918,7 +960,7 @@ Question: In one sentence, what makes TypeScript different from JavaScript?
 — demo-fast —
   success rate:   100%
   avg duration:   ~50 ms
-  avg cost:       $0.000001
+  avg cost:       $0.000014
   response:       [demo-fast demo answer] TypeScript adds static types on top of JavaScript.
 
 — demo-slow —
@@ -985,7 +1027,7 @@ const illustrativePricing = { inputPricePerMillion: 0.15, outputPricePerMillion:
 async function main() {
   const bus = new ObservabilityBus();
   bus.subscribe((event) => {
-    console.log(`[event] ${event.type ?? 'unknown'}`, event);
+    console.log(`[event] ${event.event}`, event.metadata ?? {});
   });
 
   const apiKey = process.env.GEMINI_API_KEY;
@@ -1167,19 +1209,31 @@ Total due: $7,650.00 USD
  */
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
 
-async function ask(question: string): Promise<string> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    return (await rl.question(question)).trim();
-  } finally {
-    rl.close();
-  }
+// `import.meta.dirname` needs Node 20.11+/21.2+ — this repo supports
+// Node >=18, so resolve __dirname the portable way instead.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// A single shared readline interface, not one created per prompt:
+// rl.question() only reliably resolves once per process when stdin is
+// piped (e.g. automated smoke tests) — every prompt after the first
+// silently hangs forever. Reading through the interface's line
+// iterator instead works correctly both interactively and piped.
+// Returns null when stdin has no more input (EOF).
+const rl = createInterface({ input: stdin, output: stdout });
+const rlLines = rl[Symbol.asyncIterator]();
+
+async function ask(question: string): Promise<string | null> {
+  stdout.write(question);
+  const { value, done } = await rlLines.next();
+  return done ? null : value.trim();
 }
 
 const operations = [
@@ -1245,7 +1299,7 @@ async function main() {
   console.log('\nChoose a document: [1] contract.md  [2] invoice.md');
   const fileChoice = await ask('> ');
   const filename = fileChoice === '2' ? 'invoice.md' : 'contract.md';
-  const content = await readFile(path.join(import.meta.dirname, 'fixtures', filename), 'utf8');
+  const content = await readFile(path.join(__dirname, 'fixtures', filename), 'utf8');
 
   const provider = createProvider(operation.id);
   const ai = new AIBuilder().provider(provider).use(DOCUMENT_FEATURE_PACKAGE).build();
@@ -1253,6 +1307,7 @@ async function main() {
   console.log(`\nRunning "${operation.label}" on ${filename}...\n`);
   const result = await ai.engine(operation.id).execute({ source: { content, mimeType: 'text/plain' } });
   console.log(JSON.stringify(result, null, 2));
+  rl.close();
 }
 
 main().catch((error) => {
@@ -1397,9 +1452,15 @@ Kubernetes experience is a strong plus.
  */
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
+
+// `import.meta.dirname` needs Node 20.11+/21.2+ — this repo supports
+// Node >=18, so resolve __dirname the portable way instead.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function createProvider(): Provider {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -1422,7 +1483,7 @@ function createProvider(): Provider {
 }
 
 async function main() {
-  const fixturesDir = path.join(import.meta.dirname, 'fixtures');
+  const fixturesDir = path.join(__dirname, 'fixtures');
   const resume = await readFile(path.join(fixturesDir, 'resume.md'), 'utf8');
   const jobDescription = await readFile(path.join(fixturesDir, 'job-description.md'), 'utf8');
 
@@ -1538,7 +1599,7 @@ git commit -m "feat(examples): add 08-resume-analyzer"
 - Create: `examples/src/09-brand-kit-generator/README.md`
 
 **Interfaces:**
-- Consumes: `AIBuilder` from `@aidex/sdk`; `GeminiProvider`/`StubProvider` from `@aidex/providers`; `DESIGN_FEATURE_PACKAGE`, `DesignEngineId` from `@aidex/design`; `Provider` from `@aidex/core`; `createInterface` from `node:readline/promises`.
+- Consumes: `AIBuilder` from `@aidex/sdk`; `GeminiProvider` from `@aidex/providers`; `DESIGN_FEATURE_PACKAGE`, `DesignEngineId` from `@aidex/design`; `Provider` from `@aidex/core`; `createInterface` from `node:readline/promises`.
 
 - [ ] **Step 1: Write `index.ts`**
 
@@ -1556,16 +1617,21 @@ git commit -m "feat(examples): add 08-resume-analyzer"
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { DESIGN_FEATURE_PACKAGE, DesignEngineId } from '@aidex/design';
 
-async function ask(question: string): Promise<string> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    return (await rl.question(question)).trim();
-  } finally {
-    rl.close();
-  }
+// A single shared readline interface (see 03-interactive-chat for the
+// full rationale: rl.question() only reliably resolves once per
+// process under piped/automated input). This example only asks one
+// question, but the pattern stays consistent across the whole course.
+const rl = createInterface({ input: stdin, output: stdout });
+const rlLines = rl[Symbol.asyncIterator]();
+
+async function ask(question: string): Promise<string | null> {
+  stdout.write(question);
+  const { value, done } = await rlLines.next();
+  return done ? null : value.trim();
 }
 
 function demoResponseFor(engineId: string): string {
@@ -1616,7 +1682,7 @@ async function main() {
 
   const brief = (await ask('Describe your company in one sentence: ')) || 'A sustainable coffee subscription startup';
 
-  let engineId = DesignEngineId.Brand;
+  let engineId: string = DesignEngineId.Brand;
   const provider = createProvider(() => engineId);
   const ai = new AIBuilder().provider(provider).use(DESIGN_FEATURE_PACKAGE).build();
 
@@ -1657,6 +1723,7 @@ async function main() {
 
   console.log('\nLogo concept (text description — no image is actually rendered, see README):');
   console.log(`  ${decodeURIComponent(logo.primary.assetUrl.replace('data:text/plain,', ''))}`);
+  rl.close();
 }
 
 main().catch((error) => {
@@ -1744,7 +1811,7 @@ git commit -m "feat(examples): add 09-brand-kit-generator"
 - Create: `examples/src/10-marketing-campaign/README.md`
 
 **Interfaces:**
-- Consumes: `AIBuilder` from `@aidex/sdk`; `GeminiProvider`/`StubProvider` from `@aidex/providers`; `MARKETING_FEATURE_PACKAGE`, `MarketingEngineId` from `@aidex/marketing`; `Provider` from `@aidex/core`; `createInterface` from `node:readline/promises`.
+- Consumes: `AIBuilder` from `@aidex/sdk`; `GeminiProvider` from `@aidex/providers`; `MARKETING_FEATURE_PACKAGE`, `MarketingEngineId` from `@aidex/marketing`; `Provider` from `@aidex/core`; `createInterface` from `node:readline/promises`.
 
 - [ ] **Step 1: Write `index.ts`**
 
@@ -1761,16 +1828,21 @@ git commit -m "feat(examples): add 09-brand-kit-generator"
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { MARKETING_FEATURE_PACKAGE, MarketingEngineId } from '@aidex/marketing';
 
-async function ask(question: string): Promise<string> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    return (await rl.question(question)).trim();
-  } finally {
-    rl.close();
-  }
+// A single shared readline interface (see 03-interactive-chat for the
+// full rationale: rl.question() only reliably resolves once per
+// process under piped/automated input). This example only asks one
+// question, but the pattern stays consistent across the whole course.
+const rl = createInterface({ input: stdin, output: stdout });
+const rlLines = rl[Symbol.asyncIterator]();
+
+async function ask(question: string): Promise<string | null> {
+  stdout.write(question);
+  const { value, done } = await rlLines.next();
+  return done ? null : value.trim();
 }
 
 function demoResponseFor(engineId: string): string {
@@ -1856,6 +1928,7 @@ async function main() {
   console.log(`  Channels: ${plan.channels.join(', ')}`);
   for (const objective of plan.objectives) console.log(`  Objective: ${objective.goal}${objective.metric ? ` (metric: ${objective.metric})` : ''}`);
   console.log(`  Summary: ${plan.summary}`);
+  rl.close();
 }
 
 main().catch((error) => {
@@ -1941,7 +2014,7 @@ git commit -m "feat(examples): add 10-marketing-campaign"
 - Create: `examples/src/11-workflow-orchestration/README.md`
 
 **Interfaces:**
-- Consumes: `AIBuilder`, `AI` from `@aidex/sdk`; `GeminiProvider`/`StubProvider` from `@aidex/providers`; `DOCUMENT_FEATURE_PACKAGE`, `DocumentEngineId` from `@aidex/document`; `Workflow`, `WorkflowExecutor`, `WorkflowCancelledError` from `@aidex/workflow`; `Provider` from `@aidex/core`.
+- Consumes: `AIBuilder`, `AI` from `@aidex/sdk`; `GeminiProvider` from `@aidex/providers`; `DOCUMENT_FEATURE_PACKAGE`, `DocumentEngineId` from `@aidex/document`; `Workflow`, `WorkflowExecutor`, `WorkflowCancelledError` from `@aidex/workflow`; `Provider` from `@aidex/core`.
 
 - [ ] **Step 1: Write fixture `fixtures/article.md`**
 
@@ -1973,10 +2046,16 @@ and schema versioning discipline, or debugging becomes archaeology.
  */
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { AIBuilder, type AI } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
 import { Workflow, WorkflowExecutor, WorkflowCancelledError, type WorkflowEvent } from '@aidex/workflow';
+
+// `import.meta.dirname` needs Node 20.11+/21.2+ — this repo supports
+// Node >=18, so resolve __dirname the portable way instead.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 interface PipelineState {
   source: { content: string; mimeType: string };
@@ -1986,7 +2065,7 @@ interface PipelineState {
   reviewFindings?: { issue: string; severity: string; recommendation: string }[];
 }
 
-let currentStepEngineId = DocumentEngineId.Extract;
+let currentStepEngineId: string = DocumentEngineId.Extract;
 
 function demoResponseFor(engineId: string): string {
   switch (engineId) {
@@ -2069,7 +2148,7 @@ async function main() {
     console.log('No GEMINI_API_KEY found — using a demo provider with canned per-step JSON.\n');
   }
 
-  const content = await readFile(path.join(import.meta.dirname, 'fixtures', 'article.md'), 'utf8');
+  const content = await readFile(path.join(__dirname, 'fixtures', 'article.md'), 'utf8');
   const ai = new AIBuilder().provider(createProvider()).use(DOCUMENT_FEATURE_PACKAGE).build();
   const workflow = buildPipeline(ai);
   const executor = new WorkflowExecutor();
@@ -2340,7 +2419,7 @@ Rendering its prompt template:
   Write a one-sentence intro for a blog post titled "Ten Tips For Better TypeScript".
 
 Executing its tool:
-  word count: 9
+  word count: 8
 ```
 
 ## Concepts learned
@@ -2635,7 +2714,7 @@ pnpm --filter @aidex/examples custom-engine
 ```
 Title: Ten Tips For Better TypeScript
 Slug: ten-tips-for-better-typescript
-Word count: 84
+Word count: 72
 Estimated reading time: 1 minute(s)
 ```
 
@@ -2694,7 +2773,8 @@ git commit -m "feat(examples): add 14-custom-engine"
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider, type Provider } from '@aidex/providers';
+import { GeminiProvider, StubProvider } from '@aidex/providers';
+import type { Provider } from '@aidex/core';
 import { PromptRegistry, type PromptTemplate } from '@aidex/prompts';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
 import { ObservabilityBus, ExecutionMetrics } from '@aidex/observability';
@@ -2706,13 +2786,19 @@ const color = {
   green: (s: string) => `\x1b[32m${s}\x1b[0m`,
 };
 
-async function ask(question: string): Promise<string> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    return (await rl.question(question)).trim();
-  } finally {
-    rl.close();
-  }
+// A single shared readline interface, not one created per prompt:
+// rl.question() only reliably resolves once per process when stdin is
+// piped (e.g. automated smoke tests) — every prompt after the first
+// silently hangs forever. Reading through the interface's line
+// iterator instead works correctly both interactively and piped.
+// Returns null when stdin has no more input (EOF) rather than looping.
+const rl = createInterface({ input: stdin, output: stdout });
+const rlLines = rl[Symbol.asyncIterator]();
+
+async function ask(question: string): Promise<string | null> {
+  stdout.write(question);
+  const { value, done } = await rlLines.next();
+  return done ? null : value.trim();
 }
 
 const requestTemplate: PromptTemplate = {
@@ -2749,7 +2835,7 @@ async function main() {
 
   while (true) {
     const request = await ask(color.cyan('You: '));
-    if (request.toLowerCase() === 'exit' || request.toLowerCase() === 'quit') {
+    if (request === null || request.toLowerCase() === 'exit' || request.toLowerCase() === 'quit') {
       console.log('Goodbye!');
       break;
     }
@@ -2759,7 +2845,7 @@ async function main() {
     metrics.recordStart();
 
     if (request.toLowerCase() === 'summarize') {
-      const text = await ask('Paste the text to summarize: ');
+      const text = (await ask('Paste the text to summarize: ')) ?? '';
       const result = (await ai.engine(DocumentEngineId.Summarize).execute({
         source: { content: text, mimeType: 'text/plain' },
       })) as { summary: string };
@@ -2776,9 +2862,11 @@ async function main() {
       console.log(`${color.dim('Assistant:')} ${reply}`);
     }
 
-    const lastDuration = bus.getTimeline().at(-1);
-    console.log(color.green(`  (took ${(lastDuration as { durationMs?: number } | undefined)?.durationMs ?? '?'}ms)\n`));
+    const lastEvent = bus.getTimeline().at(-1);
+    const durationMs = lastEvent?.metadata?.durationMs as number | undefined;
+    console.log(color.green(`  (took ${durationMs ?? '?'}ms)\n`));
   }
+  rl.close();
 }
 
 main().catch((error) => {
@@ -2830,6 +2918,7 @@ else to chat, or `exit` to quit.
 
 ## Expected output
 ```
+Choose a provider — [1] Gemini  [2] Stub (demo):
 Optional system prompt (press Enter for a sensible default):
 Commands: type a request, 'summarize' to paste text to summarize, or 'exit' to quit.
 
@@ -2840,6 +2929,7 @@ Assistant: ...
 You: exit
 Goodbye!
 ```
+(The "Choose a provider" prompt only appears when `GEMINI_API_KEY` is set — omit the key and the demo-mode notice replaces it, same as 03-interactive-chat.)
 
 ## Concepts learned
 - Nothing new by design — recognizing every piece from levels 1-8, composed
@@ -2932,11 +3022,12 @@ build an `AI` instance.
 ## 4. Send your first prompt
 
 ```typescript
-async function main() {
-  const response = await ai.text('Give me a one-sentence pitch for a todo app.');
-  console.log(response);
-}
+const response = await ai.text('Give me a one-sentence pitch for a todo app.');
+console.log(response);
 ```
+
+(This snippet uses `await` directly — it'll live inside the one `main()`
+function Step 6 assembles everything into, not run standalone.)
 
 `ai.text(input)` is single-shot — no conversation memory. If you want a
 chat loop, see [03 — Interactive Chat](src/03-interactive-chat/README.md)
@@ -2968,8 +3059,14 @@ const aiWithEngine = new AIBuilder().provider(provider).engine(slugEngine).build
 
 ## 6. Execute it
 
+Put every `await` snippet above into one `main()` and call it — this is
+the only function declaration in the whole file:
+
 ```typescript
 async function main() {
+  const response = await ai.text('Give me a one-sentence pitch for a todo app.');
+  console.log(response);
+
   const slug = await aiWithEngine.engine<string>('text.slugify').execute({ title: 'Hello Aidex World' });
   console.log(slug); // "hello-aidex-world"
 }
@@ -3093,8 +3190,8 @@ the levels above it, and 15 deliberately introduces nothing new.
 
 | Package | Used by | Explore next |
 |---|---|---|
-| `@aidex/sdk` | all | — |
-| `@aidex/providers` | 01, 03, 04, 05, 06, 07-15 | — |
+| `@aidex/sdk` | 01-11, 14, 15 (not 12, 13 — they use the kernel/tools APIs directly, no `AIBuilder`/`AI` façade) | — |
+| `@aidex/providers` | 01, 02, 03, 05, 06, 07-12, 14, 15 (not 04, which implements `Provider` itself instead of importing a built-in one; not 13, which has no provider) | — |
 | `@aidex/prompts` | 02, 15 | — |
 | `@aidex/document` | 07, 08, 11, 15 | — |
 | `@aidex/design` | 09 | — |
@@ -3102,10 +3199,10 @@ the levels above it, and 15 deliberately introduces nothing new.
 | `@aidex/evaluation` | 05 | — |
 | `@aidex/workflow` | 11 | — |
 | `@aidex/plugins` | 12 | — |
-| `@aidex/tools` | 12, 13 | — |
+| `@aidex/tools` | 13 (12 also exercises the tool registry, but indirectly via `PluginManager.getToolRegistry()`, not a direct import) | — |
 | `@aidex/observability` | 06, 15 | — |
 | `@aidex/engines` | 14 | — |
-| `@aidex/core` | 12, 14 | — |
+| `@aidex/core` | 03, 04, 05, 07, 08, 09, 10, 11, 12, 15 (wherever `Provider` is imported as a type, or the raw kernel is used) | — |
 | `@aidex/content` | none | Overlaps document/marketing scope for this course — worth exploring if you need general-purpose rewrite/tone/expand-style content generation |
 | `@aidex/media` | none | No real image/audio/video processing exists yet (provider abstraction is text-only) — explore its engine shapes if you're prototyping against that future |
 | `@aidex/cli` | none | A real "first application built on Aidex" — explore its README if you want to build your own CLI on top of the SDK |
@@ -3155,10 +3252,10 @@ git commit -m "docs(examples): rewrite master README as a learning-path portal"
 **Interfaces:**
 - Consumes: all outputs of Tasks 1-18.
 
-- [ ] **Step 1: Full build and typecheck**
+- [ ] **Step 1: Full build and typecheck (from a genuinely clean `dist/`)**
 
-Run: `pnpm --filter @aidex/examples build`
-Expected: exits 0, no TypeScript errors.
+Run: `rm -rf examples/dist examples/tsconfig.tsbuildinfo && pnpm --filter @aidex/examples build`
+Expected: exits 0, no TypeScript errors. Starting from a deleted `dist/` matters here — a stale `dist/` from an earlier partial/interrupted run can mask a real bug (e.g. leftover fixture files from a previous attempt making a fixture-reading example appear to work when a genuinely clean build wouldn't have produced those files). Confirm every example under `examples/src/*/fixtures/` has a matching `examples/dist/*/fixtures/` after this build (`copy-fixtures.js`, added in Task 1, is what produces these).
 
 Run: `pnpm --filter @aidex/examples typecheck`
 Expected: exits 0.

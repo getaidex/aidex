@@ -1,68 +1,107 @@
-# @aidex/examples
+# Aidex Examples
 
-Short, independent, buildable programs demonstrating each Aidex capability
-through public APIs — never internal/private classes. Each example is a
-single file, 25–60 lines, that runs standalone.
+A hands-on course, not a reference dump. Each example is a small, real
+program — runnable immediately, most requiring zero setup (they fall
+back to demo/stub behavior without a `GEMINI_API_KEY`, and always say
+so out loud when they do).
 
-## Running an example
+New to Aidex and want working code in one sitting before committing to
+the full course? Start with
+[BUILD-YOUR-FIRST-AIDEX-APP.md](BUILD-YOUR-FIRST-AIDEX-APP.md).
 
-```sh
-pnpm --filter @aidex/examples build
-pnpm --filter @aidex/examples hello-world
+## Prerequisites
+
+- Node ≥18, pnpm
+- From the repo root: `pnpm install` then `pnpm --filter @aidex/examples build`
+- Optional: `export GEMINI_API_KEY=...` — every example works without
+  it (demo mode), and upgrades automatically to real output with it.
+
+## Learning path
+
+```
+Level 1  Getting Started   →  01, 02, 03
+Level 2  Providers         →  04, 05, 06
+Level 3  Documents         →  07, 08
+Level 4  Design            →  09
+Level 5  Marketing         →  10
+Level 6  Workflow          →  11
+Level 7  Plugins           →  12, 13
+Level 8  Custom Engines    →  14
+Level 9  Capstone          →  15
 ```
 
-Every example has its own npm script (`hello-world`, `custom-provider`,
-`custom-engine`, `plugin`, `workflow`, `prompt-registry`, `tool-registry`,
-`observability`) that runs its compiled output directly:
-`node dist/<folder>/index.js`.
+Work through them in order — each level assumes everything taught in
+the levels above it, and 15 deliberately introduces nothing new.
 
-## The examples
+| # | Example | Level | Difficulty | Time | Concept |
+|---|---------|-------|------------|------|---------|
+| 01 | [Getting Started](src/01-getting-started/README.md) | 1. Getting Started | Beginner | 5 min | `AIBuilder`, provider fallback, `ai.text()` |
+| 02 | [Prompt Templates](src/02-prompt-templates/README.md) | 1. Getting Started | Beginner | 5 min | Versioned prompts via `PromptRegistry` |
+| 03 | [Interactive Chat](src/03-interactive-chat/README.md) | 1. Getting Started | Beginner | 10 min | Client-managed conversation state |
+| 04 | [Custom Provider](src/04-custom-provider/README.md) | 2. Providers | Beginner | 5 min | Implementing the `Provider` interface |
+| 05 | [Provider Comparison](src/05-provider-comparison/README.md) | 2. Providers | Intermediate | 10 min | `Evaluator.compare()` across configs |
+| 06 | [Observability](src/06-observability/README.md) | 2. Providers | Intermediate | 10 min | `ObservabilityBus`, auto vs. manual instrumentation |
+| 07 | [Document Intelligence](src/07-document-intelligence/README.md) | 3. Documents | Intermediate | 10 min | `@aidex/document` feature package |
+| 08 | [Resume Analyzer](src/08-resume-analyzer/README.md) | 3. Documents | Intermediate | 10 min | One engine (`resume.analyze`) in depth |
+| 09 | [Brand Kit Generator](src/09-brand-kit-generator/README.md) | 4. Design | Intermediate | 10 min | `@aidex/design`, composing 4 engines |
+| 10 | [Marketing Campaign](src/10-marketing-campaign/README.md) | 5. Marketing | Intermediate | 10 min | `@aidex/marketing`, composing 4 engines |
+| 11 | [Workflow Orchestration](src/11-workflow-orchestration/README.md) | 6. Workflow | Advanced | 15 min | `Workflow`/`WorkflowExecutor`, real step dependencies, cancellation |
+| 12 | [Plugin Example](src/12-plugin-example/README.md) | 7. Plugins | Advanced | 10 min | `ExtendedPlugin` + `PluginManager` |
+| 13 | [Tool Registry](src/13-tool-registry/README.md) | 7. Plugins | Intermediate | 5 min | Permission-gated `Tool` execution |
+| 14 | [Custom Engine](src/14-custom-engine/README.md) | 8. Custom Engines | Advanced | 10 min | Building your own `Engine`, façade path |
+| 15 | [Real-World Assistant](src/15-real-world-assistant/README.md) | 9. Capstone | Advanced | 15 min | Every concept above, composed |
 
-| # | Folder | Demonstrates |
+## Which example teaches X?
+
+- **Provider abstraction:** 01, 04, 05
+- **Engines (built-in feature packages):** 07, 08, 09, 10
+- **Engines (your own):** 14
+- **Workflows:** 11
+- **Plugins:** 12
+- **Tools/permissions:** 13
+- **Prompt templates:** 02
+- **Observability/cost/telemetry:** 05, 06
+- **Conversation/chat patterns:** 03, 15
+
+## Package cross-reference
+
+| Package | Used by | Explore next |
 |---|---|---|
-| 1 | `01-hello-world/` | `AIBuilder` (from `@aidex/sdk`) assembling an `Aidex` instance around `GeminiProvider`, then `ai.text()`. Falls back to `StubProvider` when `GEMINI_API_KEY` isn't set, so it always runs; set a real key to see it call Gemini. |
-| 2 | `02-custom-provider/` | Implementing `Provider` yourself (a deterministic string-reverser, no vendor SDK), registering it via `AIBuilder.provider()`, and executing a request. `Provider` is imported from `@aidex/sdk` itself. |
-| 3 | `03-custom-engine/` | Implementing `Engine`, registering it into an `EngineRegistry`, and executing it by id. Engines dispatch independently of `Aidex.execute()` — this builds a minimal `ExecutionContext` by hand rather than going through the SDK. |
-| 4 | `04-plugin/` | One `ExtendedPlugin` declaring an Engine, a Prompt, and a Tool all at once; `PluginManager.use()` registers each into its real registry (`EngineRegistry`/`PromptRegistry`/`ToolRegistry`) in a single call. |
-| 5 | `05-workflow/` | `Workflow` + `WorkflowExecutor`: a 3-step sequential pipeline with `onEvent` observability callbacks, then a separate cancellation example using `AbortController`. |
-| 6 | `06-prompt-registry/` | Registering two versions of the same prompt id, rendering the latest by default, rendering an explicit older version, and listing all versions. |
-| 7 | `07-tool-registry/` | Registering a permission-gated `Tool`, executing it with the required permission granted, and the `ToolPermissionDeniedError` path when it isn't. |
-| 8 | `08-observability/` | `ObservabilityBus.subscribe()`/`.trackProvider()`/`.trackTokens()`/`.trackDurationFromMetrics()`/`.trackCostFromEstimate()`, and reading back the full ordered `getTimeline()`. |
+| `@aidex/sdk` | 01-11, 14, 15 (not 12, 13 — they use the kernel/tools APIs directly, no `AIBuilder`/`AI` façade) | — |
+| `@aidex/providers` | 01, 02, 03, 05, 06, 07-12, 14, 15 (not 04, which implements `Provider` itself instead of importing a built-in one; not 13, which has no provider) | — |
+| `@aidex/prompts` | 02, 15 | — |
+| `@aidex/document` | 07, 08, 11, 15 | — |
+| `@aidex/design` | 09 | — |
+| `@aidex/marketing` | 10 | — |
+| `@aidex/evaluation` | 05 | — |
+| `@aidex/workflow` | 11 | — |
+| `@aidex/plugins` | 12 | — |
+| `@aidex/tools` | 13 (12 also exercises the tool registry, but indirectly via `PluginManager.getToolRegistry()`, not a direct import) | — |
+| `@aidex/observability` | 06, 15 | — |
+| `@aidex/engines` | 14 | — |
+| `@aidex/core` | 03, 04, 05, 07, 08, 09, 10, 11, 12, 15 (wherever `Provider` is imported as a type, or the raw kernel is used) | — |
+| `@aidex/content` | none | Overlaps document/marketing scope for this course — worth exploring if you need general-purpose rewrite/tone/expand-style content generation |
+| `@aidex/media` | none | No real image/audio/video processing exists yet (provider abstraction is text-only) — explore its engine shapes if you're prototyping against that future |
+| `@aidex/cli` | none | A real "first application built on Aidex" — explore its README if you want to build your own CLI on top of the SDK |
 
 ## Design notes
 
-- **Independent**: no example imports another; each is a self-contained
-  entry point under `src/<number>-<name>/index.ts`.
-- **Public API only, with one documented exception**: every example imports
-  from a package's `index.ts` barrel, never a deep/internal path. The one
-  case that reaches `@aidex/core` directly (`04-plugin/`) is because
-  `PluginManager` currently composes a raw `Aidex` instance, not the SDK's
-  `AI` façade — see "Limitations discovered" below.
-- **`Provider`/`Plugin` come from `@aidex/sdk`**, not `@aidex/core`, wherever
-  the example only needs the SDK — demonstrating the SDK's own re-exported
-  types rather than reaching past it.
-- Examples that need a shared kernel type not exposed by the SDK
-  (`ExecutionContext`, used to build a context for `EngineRegistry.execute()`
-  directly) import it from `@aidex/core`, since no SDK equivalent exists for
-  that use case yet.
+- Every example is fully independent — no example imports from another
+  example's folder. Small helpers (ANSI color, `readline` prompts, demo
+  provider fallbacks) are duplicated per file on purpose, so each
+  example stays copy-pasteable on its own.
+- Every example that calls an LLM checks `GEMINI_API_KEY` and falls
+  back to a deterministic demo provider when it's unset — printing a
+  visible notice, never silently pretending to be live.
+- Nothing here fakes a capability the SDK doesn't have: no real
+  image/PDF/audio processing exists in Aidex today, and examples that
+  touch `@aidex/design`/`@aidex/media`-adjacent output say so
+  explicitly rather than implying otherwise.
 
-## Limitations discovered
+## Running an example
 
-- **`PluginManager` requires a raw `Aidex` instance**, not the SDK's `AI`
-  façade — `@aidex/sdk`'s `AI` class wraps `Aidex` privately with no accessor
-  to extract it, and `AIBuilder` has no method to attach a `PluginManager`.
-  The plugin example (`04-plugin/`) therefore constructs `Aidex` directly,
-  the only example that does. If the SDK grows plugin-manager support, this
-  example would be the one to simplify.
-- **`EngineRegistry` isn't wired into `Aidex.execute()`**, and the SDK has no
-  façade over it either — `03-custom-engine/` and `04-plugin/` both build an
-  `ExecutionContext` by hand to call `registry.execute()` directly. This is
-  by design (engines dispatch independently of the Strategy pipeline), but
-  it means "run an engine" has no one-line SDK equivalent to `ai.text()`.
-- **`GeminiProvider`'s automatic observability wiring couldn't be
-  demonstrated live** without either a real `GEMINI_API_KEY` (not available
-  in this environment, and not something to spend without authorization) or
-  a network-boundary mock (not a legitimate pattern to show end users in a
-  production example). `08-observability/` instead drives `ObservabilityBus`
-  directly, which exercises the exact same four `track*` methods
-  `GeminiProvider` calls internally — just without a real HTTP round trip.
+```bash
+pnpm install
+pnpm --filter @aidex/examples build
+pnpm --filter @aidex/examples <script-name>   # e.g. getting-started, interactive-chat, custom-engine
+```

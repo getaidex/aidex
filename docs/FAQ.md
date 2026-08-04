@@ -40,7 +40,7 @@ for.
 Claude, Ollama, a local model) means implementing that interface, not
 waiting on or patching the kernel. See
 [`docs/architecture/provider-development-guide.md`](architecture/provider-development-guide.md)
-and the `02-custom-provider` example in [`examples/`](../examples/).
+and the `04-custom-provider` example in [`examples/`](../examples/).
 
 ## Can I use more than one provider at once?
 
@@ -91,8 +91,9 @@ before generating one line of text; the SDK hides that assembly. Advanced
 use cases that need direct access to lifecycle hooks, multiple strategies,
 or the `PluginManager`'s extension registries can construct `Aidex` from
 `@aidex/core` directly — several of this repo's own [`examples/`](../examples/)
-do exactly that where the SDK doesn't (yet) have a façade for something
-(see `examples/README.md`, "Limitations discovered").
+do exactly that where the SDK doesn't (yet) have a façade for something —
+see [12 — Plugin Example](../examples/src/12-plugin-example/README.md) for
+why `PluginManager` needs a raw `Aidex` instead of the SDK façade.
 
 ## Where do I ask questions vs. file a bug?
 

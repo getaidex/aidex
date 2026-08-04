@@ -100,11 +100,12 @@ README with the same level of detail.
 
 ## Examples
 
-[`examples/`](examples/) has eight short, independent, runnable programs —
-Hello World, a custom Provider, a custom Engine, a Plugin registering an
-Engine/Prompt/Tool together, a multi-step Workflow with cancellation, the
-Prompt Registry, the Tool Registry, and Observability. See
-[`examples/README.md`](examples/README.md).
+[`examples/`](examples/) is a hands-on course of 15 short, independent,
+runnable programs organized into a 9-level learning path — Getting Started,
+Providers, Documents, Design, Marketing, Workflow, Plugins, Custom Engines,
+and a Capstone that composes everything taught along the way. Every example
+runs with zero setup, falling back to a deterministic demo provider when no
+`GEMINI_API_KEY` is set. See [`examples/README.md`](examples/README.md).
 
 ## Documentation
 
