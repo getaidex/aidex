@@ -2065,7 +2065,7 @@ interface PipelineState {
   reviewFindings?: { issue: string; severity: string; recommendation: string }[];
 }
 
-let currentStepEngineId = DocumentEngineId.Extract;
+let currentStepEngineId: string = DocumentEngineId.Extract;
 
 function demoResponseFor(engineId: string): string {
   switch (engineId) {
