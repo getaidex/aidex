@@ -487,13 +487,19 @@ const color = {
   yellow: (s: string) => `\x1b[33m${s}\x1b[0m`,
 };
 
-async function ask(question: string): Promise<string> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    return (await rl.question(question)).trim();
-  } finally {
-    rl.close();
-  }
+// A single shared readline interface, not one created per prompt:
+// rl.question() only reliably resolves once per process when stdin is
+// piped (e.g. automated smoke tests) — every prompt after the first
+// silently hangs forever. Reading through the interface's line
+// iterator instead works correctly both interactively and piped.
+// Returns null when stdin has no more input (EOF) rather than looping.
+const rl = createInterface({ input: stdin, output: stdout });
+const rlLines = rl[Symbol.asyncIterator]();
+
+async function ask(question: string): Promise<string | null> {
+  stdout.write(question);
+  const { value, done } = await rlLines.next();
+  return done ? null : value.trim();
 }
 
 async function chooseProvider(): Promise<Provider> {
@@ -526,14 +532,14 @@ async function main() {
   const provider = await chooseProvider();
   const ai = new AIBuilder().provider(provider).build();
 
-  const systemPrompt = await ask('Optional system prompt (press Enter to skip): ');
+  const systemPrompt = (await ask('Optional system prompt (press Enter to skip): ')) ?? '';
   console.log(color.dim("\nType 'exit' or 'quit' to end the conversation.\n"));
 
   const history: Turn[] = [];
 
   while (true) {
     const userInput = await ask(color.cyan('You: '));
-    if (userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'quit') {
+    if (userInput === null || userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'quit') {
       console.log('Goodbye!');
       break;
     }
@@ -549,6 +555,7 @@ async function main() {
     history.push({ role: 'assistant', content: reply });
     console.log(`${color.dim('Assistant:')} ${reply}\n`);
   }
+  rl.close();
 }
 
 main().catch((error) => {
@@ -1181,13 +1188,19 @@ import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
 // Node >=18, so resolve __dirname the portable way instead.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-async function ask(question: string): Promise<string> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    return (await rl.question(question)).trim();
-  } finally {
-    rl.close();
-  }
+// A single shared readline interface, not one created per prompt:
+// rl.question() only reliably resolves once per process when stdin is
+// piped (e.g. automated smoke tests) — every prompt after the first
+// silently hangs forever. Reading through the interface's line
+// iterator instead works correctly both interactively and piped.
+// Returns null when stdin has no more input (EOF).
+const rl = createInterface({ input: stdin, output: stdout });
+const rlLines = rl[Symbol.asyncIterator]();
+
+async function ask(question: string): Promise<string | null> {
+  stdout.write(question);
+  const { value, done } = await rlLines.next();
+  return done ? null : value.trim();
 }
 
 const operations = [
@@ -1261,6 +1274,7 @@ async function main() {
   console.log(`\nRunning "${operation.label}" on ${filename}...\n`);
   const result = await ai.engine(operation.id).execute({ source: { content, mimeType: 'text/plain' } });
   console.log(JSON.stringify(result, null, 2));
+  rl.close();
 }
 
 main().catch((error) => {
@@ -1574,13 +1588,17 @@ import { GeminiProvider, StubProvider } from '@aidex/providers';
 import type { Provider } from '@aidex/core';
 import { DESIGN_FEATURE_PACKAGE, DesignEngineId } from '@aidex/design';
 
-async function ask(question: string): Promise<string> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    return (await rl.question(question)).trim();
-  } finally {
-    rl.close();
-  }
+// A single shared readline interface (see 03-interactive-chat for the
+// full rationale: rl.question() only reliably resolves once per
+// process under piped/automated input). This example only asks one
+// question, but the pattern stays consistent across the whole course.
+const rl = createInterface({ input: stdin, output: stdout });
+const rlLines = rl[Symbol.asyncIterator]();
+
+async function ask(question: string): Promise<string | null> {
+  stdout.write(question);
+  const { value, done } = await rlLines.next();
+  return done ? null : value.trim();
 }
 
 function demoResponseFor(engineId: string): string {
@@ -1672,6 +1690,7 @@ async function main() {
 
   console.log('\nLogo concept (text description — no image is actually rendered, see README):');
   console.log(`  ${decodeURIComponent(logo.primary.assetUrl.replace('data:text/plain,', ''))}`);
+  rl.close();
 }
 
 main().catch((error) => {
@@ -1780,13 +1799,17 @@ import { GeminiProvider, StubProvider } from '@aidex/providers';
 import type { Provider } from '@aidex/core';
 import { MARKETING_FEATURE_PACKAGE, MarketingEngineId } from '@aidex/marketing';
 
-async function ask(question: string): Promise<string> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    return (await rl.question(question)).trim();
-  } finally {
-    rl.close();
-  }
+// A single shared readline interface (see 03-interactive-chat for the
+// full rationale: rl.question() only reliably resolves once per
+// process under piped/automated input). This example only asks one
+// question, but the pattern stays consistent across the whole course.
+const rl = createInterface({ input: stdin, output: stdout });
+const rlLines = rl[Symbol.asyncIterator]();
+
+async function ask(question: string): Promise<string | null> {
+  stdout.write(question);
+  const { value, done } = await rlLines.next();
+  return done ? null : value.trim();
 }
 
 function demoResponseFor(engineId: string): string {
@@ -1872,6 +1895,7 @@ async function main() {
   console.log(`  Channels: ${plan.channels.join(', ')}`);
   for (const objective of plan.objectives) console.log(`  Objective: ${objective.goal}${objective.metric ? ` (metric: ${objective.metric})` : ''}`);
   console.log(`  Summary: ${plan.summary}`);
+  rl.close();
 }
 
 main().catch((error) => {
@@ -2729,13 +2753,19 @@ const color = {
   green: (s: string) => `\x1b[32m${s}\x1b[0m`,
 };
 
-async function ask(question: string): Promise<string> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    return (await rl.question(question)).trim();
-  } finally {
-    rl.close();
-  }
+// A single shared readline interface, not one created per prompt:
+// rl.question() only reliably resolves once per process when stdin is
+// piped (e.g. automated smoke tests) — every prompt after the first
+// silently hangs forever. Reading through the interface's line
+// iterator instead works correctly both interactively and piped.
+// Returns null when stdin has no more input (EOF) rather than looping.
+const rl = createInterface({ input: stdin, output: stdout });
+const rlLines = rl[Symbol.asyncIterator]();
+
+async function ask(question: string): Promise<string | null> {
+  stdout.write(question);
+  const { value, done } = await rlLines.next();
+  return done ? null : value.trim();
 }
 
 const requestTemplate: PromptTemplate = {
@@ -2772,7 +2802,7 @@ async function main() {
 
   while (true) {
     const request = await ask(color.cyan('You: '));
-    if (request.toLowerCase() === 'exit' || request.toLowerCase() === 'quit') {
+    if (request === null || request.toLowerCase() === 'exit' || request.toLowerCase() === 'quit') {
       console.log('Goodbye!');
       break;
     }
@@ -2782,7 +2812,7 @@ async function main() {
     metrics.recordStart();
 
     if (request.toLowerCase() === 'summarize') {
-      const text = await ask('Paste the text to summarize: ');
+      const text = (await ask('Paste the text to summarize: ')) ?? '';
       const result = (await ai.engine(DocumentEngineId.Summarize).execute({
         source: { content: text, mimeType: 'text/plain' },
       })) as { summary: string };
@@ -2803,6 +2833,7 @@ async function main() {
     const durationMs = lastEvent?.metadata?.durationMs as number | undefined;
     console.log(color.green(`  (took ${durationMs ?? '?'}ms)\n`));
   }
+  rl.close();
 }
 
 main().catch((error) => {
