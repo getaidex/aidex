@@ -45,5 +45,6 @@ rendered prompt.
 `@aidex/prompts`, `@aidex/sdk`
 
 ## Next example
-[03 — Interactive Chat](../03-interactive-chat/README.md) — use a
-rendered prompt as a system prompt inside a real conversation loop.
+[03 — Interactive Chat](../03-interactive-chat/README.md) — put a
+prompt to work inside a real, multi-turn conversation loop instead of a
+single one-shot call.

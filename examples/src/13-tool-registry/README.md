@@ -47,6 +47,6 @@ Executing WITHOUT the required permission:
 `@aidex/tools`
 
 ## Next example
-[14 — Custom Engine](../14-custom-engine/README.md) — the flagship
-closing example: build and register your own engine through the modern
-SDK façade.
+[14 — Custom Engine](../14-custom-engine/README.md) — the last new
+concept before the capstone: build and register your own engine
+through the modern SDK façade.
