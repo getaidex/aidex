@@ -56,9 +56,12 @@
 
 ## Task 1: Scaffolding — clear old examples, wire new build config
 
+> **Amendment (discovered while implementing Task 9):** `tsc` never copies non-`.ts` files — the `.md` fixtures under `examples/src/07-document-intelligence/fixtures/`, `08-resume-analyzer/fixtures/`, and `11-workflow-orchestration/fixtures/` do NOT end up in `dist/` from `tsc -b` alone, so those examples' `readFile(path.join(__dirname, 'fixtures', ...))` calls would throw `ENOENT` on a real clean build. Step 3 below now also creates `examples/scripts/copy-fixtures.js` and wires it into the `build` script. Whichever task's implementer reaches this first should add it if a prior task hasn't already.
+
 **Files:**
 - Modify: `examples/tsconfig.json`
 - Modify: `examples/package.json`
+- Create: `examples/scripts/copy-fixtures.js`
 - Delete: `examples/src/01-hello-world/`, `examples/src/02-custom-provider/`, `examples/src/03-custom-engine/`, `examples/src/04-plugin/`, `examples/src/05-workflow/`, `examples/src/06-prompt-registry/`, `examples/src/07-tool-registry/`, `examples/src/08-observability/`
 
 **Interfaces:**
@@ -109,7 +112,7 @@ Read the current file first to preserve `name`/`version`/`private`/`type` fields
 ```json
 {
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc -b && node scripts/copy-fixtures.js",
     "typecheck": "tsc -b --noEmit",
     "getting-started": "node dist/01-getting-started/index.js",
     "prompt-templates": "node dist/02-prompt-templates/index.js",
@@ -147,15 +150,45 @@ Read the current file first to preserve `name`/`version`/`private`/`type` fields
 
 Check the existing `dependencies` block's version-range style (likely `"workspace:*"` already, matching every other package in the monorepo) before finalizing — match it exactly rather than assuming.
 
-- [ ] **Step 4: Verify the scaffold is coherent**
+- [ ] **Step 4: Create `examples/scripts/copy-fixtures.js`**
+
+`tsc` only emits `.ts`/`.d.ts` output — it silently ignores non-TS files like the `.md` fixtures under each example's `fixtures/` folder, so they never reach `dist/`. This script copies every example's `fixtures/` folder (if it has one) from `src/` to `dist/` after each build:
+
+```javascript
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const srcDir = path.join(__dirname, '..', 'src');
+const distDir = path.join(__dirname, '..', 'dist');
+
+function copyFixtures() {
+  const examples = fs.readdirSync(srcDir).filter(
+    (name) => fs.statSync(path.join(srcDir, name)).isDirectory()
+  );
+
+  for (const example of examples) {
+    const srcFixtures = path.join(srcDir, example, 'fixtures');
+    if (fs.existsSync(srcFixtures)) {
+      const distFixtures = path.join(distDir, example, 'fixtures');
+      fs.cpSync(srcFixtures, distFixtures, { recursive: true, force: true });
+    }
+  }
+}
+
+copyFixtures();
+```
+
+- [ ] **Step 5: Verify the scaffold is coherent**
 
 Run: `pnpm install` (picks up new workspace deps) then `pnpm --filter @aidex/examples build`
 Expected: fails only because `src/` has no files yet matching `rootDir`/`include` unless at least a placeholder exists — that's fine, later tasks add real files. If `tsc -b` errors about an empty `src` dir, that's expected at this point; do not treat it as a scaffolding bug. Confirm instead that `pnpm install` succeeds and lists the 4 new workspace deps resolved.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
-git add examples/tsconfig.json examples/package.json
+git add examples/tsconfig.json examples/package.json examples/scripts/copy-fixtures.js
 git commit -m "chore(examples): clear old examples, wire config for redesign"
 ```
 
@@ -3210,10 +3243,10 @@ git commit -m "docs(examples): rewrite master README as a learning-path portal"
 **Interfaces:**
 - Consumes: all outputs of Tasks 1-18.
 
-- [ ] **Step 1: Full build and typecheck**
+- [ ] **Step 1: Full build and typecheck (from a genuinely clean `dist/`)**
 
-Run: `pnpm --filter @aidex/examples build`
-Expected: exits 0, no TypeScript errors.
+Run: `rm -rf examples/dist examples/tsconfig.tsbuildinfo && pnpm --filter @aidex/examples build`
+Expected: exits 0, no TypeScript errors. Starting from a deleted `dist/` matters here — a stale `dist/` from an earlier partial/interrupted run can mask a real bug (e.g. leftover fixture files from a previous attempt making a fixture-reading example appear to work when a genuinely clean build wouldn't have produced those files). Confirm every example under `examples/src/*/fixtures/` has a matching `examples/dist/*/fixtures/` after this build (`copy-fixtures.js`, added in Task 1, is what produces these).
 
 Run: `pnpm --filter @aidex/examples typecheck`
 Expected: exits 0.
