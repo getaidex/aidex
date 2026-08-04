@@ -44,7 +44,7 @@ Rendering its prompt template:
   Write a one-sentence intro for a blog post titled "Ten Tips For Better TypeScript".
 
 Executing its tool:
-  word count: 9
+  word count: 8
 ```
 
 ## Concepts learned
