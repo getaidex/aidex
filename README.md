@@ -12,13 +12,13 @@ rewriting the AI stack each time.
 
 ## Status
 
-`0.2.0-alpha`, published to npm under the `@aidex` scope. The
+`0.2.1-alpha`, published to npm under the `@aidex` scope. The
 kernel (`@aidex/core`) is frozen and stable: public API, lifecycle, and type
 contracts are implemented and tested. Every other package listed below is
 real, tested, working code — not a roadmap item — but the platform as a
 whole is still pre-1.0 and its APIs may change. See
 [`docs/roadmap/roadmap.md`](docs/roadmap/roadmap.md) for what's next and
-[`CHANGELOG.md`](CHANGELOG.md) for what shipped in `0.2.0-alpha`.
+[`CHANGELOG.md`](CHANGELOG.md) for what shipped in `0.2.1-alpha`.
 
 ## Installation
 
