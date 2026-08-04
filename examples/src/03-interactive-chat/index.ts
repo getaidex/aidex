@@ -21,13 +21,19 @@ const color = {
   yellow: (s: string) => `\x1b[33m${s}\x1b[0m`,
 };
 
-async function ask(question: string): Promise<string> {
-  const rl = createInterface({ input: stdin, output: stdout });
-  try {
-    return (await rl.question(question)).trim();
-  } finally {
-    rl.close();
-  }
+// A single shared readline interface, not one created per prompt:
+// rl.question() only reliably resolves once per process when stdin is
+// piped (e.g. automated smoke tests) — every prompt after the first
+// silently hangs forever. Reading through the interface's line
+// iterator instead works correctly both interactively and piped.
+// Returns null when stdin has no more input (EOF) rather than looping.
+const rl = createInterface({ input: stdin, output: stdout });
+const rlLines = rl[Symbol.asyncIterator]();
+
+async function ask(question: string): Promise<string | null> {
+  stdout.write(question);
+  const { value, done } = await rlLines.next();
+  return done ? null : value.trim();
 }
 
 async function chooseProvider(): Promise<Provider> {
@@ -60,14 +66,14 @@ async function main() {
   const provider = await chooseProvider();
   const ai = new AIBuilder().provider(provider).build();
 
-  const systemPrompt = await ask('Optional system prompt (press Enter to skip): ');
+  const systemPrompt = (await ask('Optional system prompt (press Enter to skip): ')) ?? '';
   console.log(color.dim("\nType 'exit' or 'quit' to end the conversation.\n"));
 
   const history: Turn[] = [];
 
   while (true) {
     const userInput = await ask(color.cyan('You: '));
-    if (userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'quit') {
+    if (userInput === null || userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'quit') {
       console.log('Goodbye!');
       break;
     }
@@ -83,6 +89,8 @@ async function main() {
     history.push({ role: 'assistant', content: reply });
     console.log(`${color.dim('Assistant:')} ${reply}\n`);
   }
+
+  rl.close();
 }
 
 main().catch((error) => {
