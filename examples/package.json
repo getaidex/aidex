@@ -16,7 +16,7 @@
   },
   "type": "module",
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc -b && node scripts/copy-fixtures.js",
     "typecheck": "tsc -b --noEmit",
     "getting-started": "node dist/01-getting-started/index.js",
     "prompt-templates": "node dist/02-prompt-templates/index.js",

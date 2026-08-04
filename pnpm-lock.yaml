@@ -41,9 +41,21 @@ importers:
       '@aidex/core':
         specifier: workspace:*
         version: link:../packages/core
+      '@aidex/design':
+        specifier: workspace:*
+        version: link:../packages/design
+      '@aidex/document':
+        specifier: workspace:*
+        version: link:../packages/document
       '@aidex/engines':
         specifier: workspace:*
         version: link:../packages/engines
+      '@aidex/evaluation':
+        specifier: workspace:*
+        version: link:../packages/evaluation
+      '@aidex/marketing':
+        specifier: workspace:*
+        version: link:../packages/marketing
       '@aidex/observability':
         specifier: workspace:*
         version: link:../packages/observability
