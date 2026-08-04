@@ -64,6 +64,19 @@ const result = await ai.text('Say hello to Aidex in one short sentence.');
 console.log(result);
 ```
 
+Every `@aidex/*` package ships a CommonJS build too — the same example with `require`:
+
+```js
+const { AIBuilder } = require('@aidex/sdk');
+const { GeminiProvider } = require('@aidex/providers');
+
+const ai = new AIBuilder()
+  .provider(new GeminiProvider({ apiKey: process.env.GEMINI_API_KEY }))
+  .build();
+
+ai.text('Say hello to Aidex in one short sentence.').then(console.log);
+```
+
 That's the entire public surface most applications ever touch:
 `new AIBuilder().provider(p).build()`, then `ai.text()` or `ai.execute()`.
 The SDK hides kernel construction, strategy registration, and lifecycle
