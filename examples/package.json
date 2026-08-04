@@ -32,7 +32,12 @@
     "plugin-example": "node dist/12-plugin-example/index.js",
     "tool-registry": "node dist/13-tool-registry/index.js",
     "custom-engine": "node dist/14-custom-engine/index.js",
-    "real-world-assistant": "node dist/15-real-world-assistant/index.js"
+    "real-world-assistant": "node dist/15-real-world-assistant/index.js",
+    "framework-adapters": "node dist/16-framework-adapters/index.js",
+    "memory-store": "node dist/17-memory-store/index.js",
+    "mcp-server": "node dist/18-mcp-server/index.js",
+    "mcp-engine-bridge": "node dist/19-mcp-engine-bridge/index.js",
+    "build-a-cli": "node dist/20-build-a-cli/index.js"
   },
   "dependencies": {
     "@aidex/core": "workspace:*",
@@ -47,6 +52,11 @@
     "@aidex/document": "workspace:*",
     "@aidex/design": "workspace:*",
     "@aidex/marketing": "workspace:*",
-    "@aidex/evaluation": "workspace:*"
+    "@aidex/evaluation": "workspace:*",
+    "@aidex/adapters": "workspace:*",
+    "@aidex/memory": "workspace:*",
+    "@aidex/mcp": "workspace:*",
+    "@aidex/mcp-aidex": "workspace:*",
+    "@aidex/cli": "workspace:*"
   }
 }
