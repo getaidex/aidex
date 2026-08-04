@@ -1180,7 +1180,7 @@ import { fileURLToPath } from 'node:url';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider } from '@aidex/providers';
+import { GeminiProvider } from '@aidex/providers';
 import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
 
@@ -1421,7 +1421,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider } from '@aidex/providers';
+import { GeminiProvider } from '@aidex/providers';
 import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
 
@@ -1584,7 +1584,7 @@ git commit -m "feat(examples): add 08-resume-analyzer"
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider } from '@aidex/providers';
+import { GeminiProvider } from '@aidex/providers';
 import type { Provider } from '@aidex/core';
 import { DESIGN_FEATURE_PACKAGE, DesignEngineId } from '@aidex/design';
 
@@ -1795,7 +1795,7 @@ git commit -m "feat(examples): add 09-brand-kit-generator"
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import { AIBuilder } from '@aidex/sdk';
-import { GeminiProvider, StubProvider } from '@aidex/providers';
+import { GeminiProvider } from '@aidex/providers';
 import type { Provider } from '@aidex/core';
 import { MARKETING_FEATURE_PACKAGE, MarketingEngineId } from '@aidex/marketing';
 
@@ -2015,14 +2015,14 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { AIBuilder, type AI } from '@aidex/sdk';
-import { GeminiProvider, StubProvider } from '@aidex/providers';
+import { GeminiProvider } from '@aidex/providers';
 import type { Provider } from '@aidex/core';
 import { DOCUMENT_FEATURE_PACKAGE, DocumentEngineId } from '@aidex/document';
+import { Workflow, WorkflowExecutor, WorkflowCancelledError, type WorkflowEvent } from '@aidex/workflow';
 
 // `import.meta.dirname` needs Node 20.11+/21.2+ — this repo supports
 // Node >=18, so resolve __dirname the portable way instead.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-import { Workflow, WorkflowExecutor, WorkflowCancelledError, type WorkflowEvent } from '@aidex/workflow';
 
 interface PipelineState {
   source: { content: string; mimeType: string };
