@@ -3022,11 +3022,12 @@ build an `AI` instance.
 ## 4. Send your first prompt
 
 ```typescript
-async function main() {
-  const response = await ai.text('Give me a one-sentence pitch for a todo app.');
-  console.log(response);
-}
+const response = await ai.text('Give me a one-sentence pitch for a todo app.');
+console.log(response);
 ```
+
+(This snippet uses `await` directly — it'll live inside the one `main()`
+function Step 6 assembles everything into, not run standalone.)
 
 `ai.text(input)` is single-shot — no conversation memory. If you want a
 chat loop, see [03 — Interactive Chat](src/03-interactive-chat/README.md)
@@ -3058,8 +3059,14 @@ const aiWithEngine = new AIBuilder().provider(provider).engine(slugEngine).build
 
 ## 6. Execute it
 
+Put every `await` snippet above into one `main()` and call it — this is
+the only function declaration in the whole file:
+
 ```typescript
 async function main() {
+  const response = await ai.text('Give me a one-sentence pitch for a todo app.');
+  console.log(response);
+
   const slug = await aiWithEngine.engine<string>('text.slugify').execute({ title: 'Hello Aidex World' });
   console.log(slug); // "hello-aidex-world"
 }
