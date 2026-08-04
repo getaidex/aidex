@@ -2714,7 +2714,7 @@ pnpm --filter @aidex/examples custom-engine
 ```
 Title: Ten Tips For Better TypeScript
 Slug: ten-tips-for-better-typescript
-Word count: 84
+Word count: 72
 Estimated reading time: 1 minute(s)
 ```
 
