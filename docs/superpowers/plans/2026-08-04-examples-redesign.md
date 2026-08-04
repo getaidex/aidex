@@ -1682,7 +1682,7 @@ async function main() {
 
   const brief = (await ask('Describe your company in one sentence: ')) || 'A sustainable coffee subscription startup';
 
-  let engineId = DesignEngineId.Brand;
+  let engineId: string = DesignEngineId.Brand;
   const provider = createProvider(() => engineId);
   const ai = new AIBuilder().provider(provider).use(DESIGN_FEATURE_PACKAGE).build();
 
