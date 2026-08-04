@@ -2014,7 +2014,7 @@ git commit -m "feat(examples): add 10-marketing-campaign"
 - Create: `examples/src/11-workflow-orchestration/README.md`
 
 **Interfaces:**
-- Consumes: `AIBuilder`, `AI` from `@aidex/sdk`; `GeminiProvider`/`StubProvider` from `@aidex/providers`; `DOCUMENT_FEATURE_PACKAGE`, `DocumentEngineId` from `@aidex/document`; `Workflow`, `WorkflowExecutor`, `WorkflowCancelledError` from `@aidex/workflow`; `Provider` from `@aidex/core`.
+- Consumes: `AIBuilder`, `AI` from `@aidex/sdk`; `GeminiProvider` from `@aidex/providers`; `DOCUMENT_FEATURE_PACKAGE`, `DocumentEngineId` from `@aidex/document`; `Workflow`, `WorkflowExecutor`, `WorkflowCancelledError` from `@aidex/workflow`; `Provider` from `@aidex/core`.
 
 - [ ] **Step 1: Write fixture `fixtures/article.md`**
 
