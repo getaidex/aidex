@@ -1811,7 +1811,7 @@ git commit -m "feat(examples): add 09-brand-kit-generator"
 - Create: `examples/src/10-marketing-campaign/README.md`
 
 **Interfaces:**
-- Consumes: `AIBuilder` from `@aidex/sdk`; `GeminiProvider`/`StubProvider` from `@aidex/providers`; `MARKETING_FEATURE_PACKAGE`, `MarketingEngineId` from `@aidex/marketing`; `Provider` from `@aidex/core`; `createInterface` from `node:readline/promises`.
+- Consumes: `AIBuilder` from `@aidex/sdk`; `GeminiProvider` from `@aidex/providers`; `MARKETING_FEATURE_PACKAGE`, `MarketingEngineId` from `@aidex/marketing`; `Provider` from `@aidex/core`; `createInterface` from `node:readline/promises`.
 
 - [ ] **Step 1: Write `index.ts`**
 
