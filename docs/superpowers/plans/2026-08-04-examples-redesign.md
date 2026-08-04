@@ -1599,7 +1599,7 @@ git commit -m "feat(examples): add 08-resume-analyzer"
 - Create: `examples/src/09-brand-kit-generator/README.md`
 
 **Interfaces:**
-- Consumes: `AIBuilder` from `@aidex/sdk`; `GeminiProvider`/`StubProvider` from `@aidex/providers`; `DESIGN_FEATURE_PACKAGE`, `DesignEngineId` from `@aidex/design`; `Provider` from `@aidex/core`; `createInterface` from `node:readline/promises`.
+- Consumes: `AIBuilder` from `@aidex/sdk`; `GeminiProvider` from `@aidex/providers`; `DESIGN_FEATURE_PACKAGE`, `DesignEngineId` from `@aidex/design`; `Provider` from `@aidex/core`; `createInterface` from `node:readline/promises`.
 
 - [ ] **Step 1: Write `index.ts`**
 
