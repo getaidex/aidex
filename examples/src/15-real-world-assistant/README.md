@@ -38,6 +38,7 @@ else to chat, or `exit` to quit.
 
 ## Expected output
 ```
+Choose a provider — [1] Gemini  [2] Stub (demo):
 Optional system prompt (press Enter for a sensible default):
 Commands: type a request, 'summarize' to paste text to summarize, or 'exit' to quit.
 
@@ -48,6 +49,8 @@ Assistant: ...
 You: exit
 Goodbye!
 ```
+
+(The "Choose a provider" prompt only appears when `GEMINI_API_KEY` is set — omit the key and the demo-mode notice replaces it, same as 03-interactive-chat.)
 
 ## Concepts learned
 - Nothing new by design — recognizing every piece from levels 1-8, composed
