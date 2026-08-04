@@ -3190,8 +3190,8 @@ the levels above it, and 15 deliberately introduces nothing new.
 
 | Package | Used by | Explore next |
 |---|---|---|
-| `@aidex/sdk` | all | — |
-| `@aidex/providers` | 01, 03, 04, 05, 06, 07-15 | — |
+| `@aidex/sdk` | 01-11, 14, 15 (not 12, 13 — they use the kernel/tools APIs directly, no `AIBuilder`/`AI` façade) | — |
+| `@aidex/providers` | 01, 02, 03, 05, 06, 07-12, 14, 15 (not 04, which implements `Provider` itself instead of importing a built-in one; not 13, which has no provider) | — |
 | `@aidex/prompts` | 02, 15 | — |
 | `@aidex/document` | 07, 08, 11, 15 | — |
 | `@aidex/design` | 09 | — |
@@ -3199,10 +3199,10 @@ the levels above it, and 15 deliberately introduces nothing new.
 | `@aidex/evaluation` | 05 | — |
 | `@aidex/workflow` | 11 | — |
 | `@aidex/plugins` | 12 | — |
-| `@aidex/tools` | 12, 13 | — |
+| `@aidex/tools` | 13 (12 also exercises the tool registry, but indirectly via `PluginManager.getToolRegistry()`, not a direct import) | — |
 | `@aidex/observability` | 06, 15 | — |
 | `@aidex/engines` | 14 | — |
-| `@aidex/core` | 12, 14 | — |
+| `@aidex/core` | 03, 04, 05, 07, 08, 09, 10, 11, 12, 15 (wherever `Provider` is imported as a type, or the raw kernel is used) | — |
 | `@aidex/content` | none | Overlaps document/marketing scope for this course — worth exploring if you need general-purpose rewrite/tone/expand-style content generation |
 | `@aidex/media` | none | No real image/audio/video processing exists yet (provider abstraction is text-only) — explore its engine shapes if you're prototyping against that future |
 | `@aidex/cli` | none | A real "first application built on Aidex" — explore its README if you want to build your own CLI on top of the SDK |
