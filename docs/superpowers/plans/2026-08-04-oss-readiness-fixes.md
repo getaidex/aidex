@@ -644,7 +644,7 @@ ExpressAdapter result: stub:Suggest a name for a note-taking app.
 
 Both adapters delegate to the same ai.text() call underneath — identical output, as expected.
 
-Empty input correctly rejected: ...
+Empty input correctly rejected: TextGenerationStrategy requires a non-empty string request.input
 ```
 
 ## Concepts learned
@@ -966,7 +966,7 @@ pnpm --filter @aidex/examples mcp-server
 ## Expected output
 ```
 Response: {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"...","capabilities":{"tools":{},"resources":{},"prompts":{}},"serverInfo":{"name":"aidex-example-server","version":"1.0.0"}}}
-Response: {"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"echo","description":"Echoes back whatever text you send it","inputSchema":{...}}]}}
+Response: {"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"echo","description":"Echoes back whatever text you send it","inputSchema":{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}}]}}
 Response: {"jsonrpc":"2.0","id":3,"result":{"content":[{"type":"text","text":"You said: hello from the client"}]}}
 Response: {"jsonrpc":"2.0","id":4,"result":{"contents":[{"uri":"aidex://readme","mimeType":"text/plain","text":"Aidex is a modular, provider-agnostic AI application platform."}]}}
 
