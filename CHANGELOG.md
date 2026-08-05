@@ -36,13 +36,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - A pnpm-only publish/install guard (`scripts/assert-pnpm.cjs`, wired
-  into root `preinstall` and every package's `prepublishOnly`) — plain
-  `npm publish`/`npm pack` previously shipped the literal, unresolved
-  `"workspace:*"` string into published tarballs with no automated
-  guard against it.
+  into root `preinstall` and every package's `prepublishOnly` and
+  `prepack`) — plain `npm publish`/`npm pack` previously shipped the
+  literal, unresolved `"workspace:*"` string into published tarballs
+  with no automated guard against it.
 - A release CI workflow (`.github/workflows/release.yml`): a
-  `pnpm -r publish --dry-run` check on every PR, and a real
-  `pnpm -r publish` on `v*` tag pushes.
+  `pnpm -r publish --dry-run` check plus a version-independent
+  `pnpm -r exec -- npm pack --dry-run` packaging check on every PR
+  (the former only exercises packages whose version isn't already on
+  npm, so the latter unconditionally packs every package regardless of
+  its published-version state), and a real `pnpm -r publish` on `v*`
+  tag pushes.
 - A `LICENSE` file in every one of the 22 published packages (only the
   root `LICENSE` existed before — a standalone unpacked install shipped
   with no license text).

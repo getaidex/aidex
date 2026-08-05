@@ -48,9 +48,11 @@ Never use `npm publish` or `npm pack` on an individual package. Every
 internal `@aidex/*` dependency uses pnpm's `workspace:*` protocol, which
 only `pnpm publish` rewrites to the real resolved version at publish time —
 `npm`/`yarn` ship that string literally, producing a broken package. A
-`prepublishOnly` guard (`scripts/assert-pnpm.cjs`) fails loudly if this is
-ever attempted with the wrong tool, but `pnpm -r publish --dry-run` is the
-right way to catch problems before they matter.
+`prepublishOnly`/`prepack` guard (`scripts/assert-pnpm.cjs`, wired into
+both lifecycle scripts in every package) fails loudly if either `npm
+publish` or `npm pack` is ever attempted with the wrong tool, but
+`pnpm -r publish --dry-run` is the right way to catch problems before
+they matter.
 
 ## Project structure
 

@@ -48,7 +48,8 @@
   "scripts": {
     "build": "tsc -b && tsup",
     "typecheck": "tsc -b --noEmit",
-    "prepublishOnly": "node ../../scripts/assert-pnpm.cjs"
+    "prepublishOnly": "node ../../scripts/assert-pnpm.cjs",
+    "prepack": "node ../../scripts/assert-pnpm.cjs"
   },
   "dependencies": {
     "@aidex/core": "workspace:*"

@@ -54,8 +54,11 @@ the levels above it, and 15 deliberately introduces nothing new.
 ## Bonus: Package Coverage
 
 These 5 examples aren't part of the 9-level narrative arc — they exist
-so every publishable `@aidex/*` package has at least one runnable
+so more of Aidex's publishable `@aidex/*` packages have a runnable
 example, not just the ones a "build an app" story naturally visits.
+Coverage is 18 of 22 packages, not all of them — see the package
+cross-reference table below for the 4 that still have no dedicated
+example, and why.
 
 | # | Example | Difficulty | Time | Concept |
 |---|---------|------------|------|---------|
@@ -91,6 +94,8 @@ example, not just the ones a "build an app" story naturally visits.
 | `@aidex/workflow` | 11 | — |
 | `@aidex/plugins` | 12 | — |
 | `@aidex/tools` | 13 (12 also exercises the tool registry, but indirectly via `PluginManager.getToolRegistry()`, not a direct import) | — |
+| `@aidex/catalog` | none | A queryable metadata registry aggregating engines from installed Feature Packs — a supporting/internal package meant to be queried by an application's own code, not something an example calls directly |
+| `@aidex/strategies` | none (exercised indirectly) | Only exports `StubStrategy`/`TextGenerationStrategy`; `TextGenerationStrategy` is already exercised indirectly by every example that calls `ai.text()` (01-06, 15, 16, 17, 20) via the SDK's `AIBuilder`, so no dedicated example exists |
 | `@aidex/observability` | 06, 15 | — |
 | `@aidex/engines` | 14, 19 | — |
 | `@aidex/core` | 03, 04, 05, 07, 08, 09, 10, 11, 12, 15, 19 (wherever `Provider` is imported as a type, or the raw kernel is used) | — |

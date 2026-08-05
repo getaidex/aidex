@@ -61,7 +61,8 @@ Goodbye!
 
 ## Next example
 None — you've completed the course. See the master
-[examples/README.md](../../README.md) for what to explore next
-(`@aidex/content`, `@aidex/media`, `@aidex/cli`), or
+[examples/README.md](../../README.md)'s "Bonus: Package Coverage" section
+for 5 more examples (16-20) covering `@aidex/adapters`, `@aidex/memory`,
+`@aidex/mcp`, `@aidex/mcp-aidex`, and `@aidex/cli`, or
 [BUILD-YOUR-FIRST-AIDEX-APP.md](../../BUILD-YOUR-FIRST-AIDEX-APP.md) to
 build your own project from scratch.
