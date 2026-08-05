@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, Type } from '@angular/core';
 import type { NavTree } from '../navigation/navigation.types';
 
 export interface SiteConfig {
@@ -7,6 +7,8 @@ export interface SiteConfig {
   githubUrl: string;
   installCommand: string;
   nav: NavTree;
+  /** Rendered via NgComponentOutlet in the top bar — the engine never imports a concrete logo. */
+  logoComponent: Type<unknown>;
 }
 
 /** The one place the generic engine reaches out to product-specific config. */

@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AnimatedIcon } from '../../../../engine/motion/animated-icon';
+import { RevealOnScroll } from '../../../../engine/motion/reveal-on-scroll.directive';
 import { PageContext } from '../../../../engine/navigation/page-context.service';
+import { levelIconKind } from '../../icon-mapping';
 import type { ExampleDoc } from '../../types';
 
 import examplesData from '../../../../content/generated/examples.json';
@@ -38,7 +41,7 @@ const DIFFICULTY_TONE: Record<string, string> = {
 @Component({
   selector: 'docs-examples-page',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AnimatedIcon, RevealOnScroll],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article class="docs-page">
@@ -50,21 +53,24 @@ const DIFFICULTY_TONE: Record<string, string> = {
 
       <div class="mt-10 flex flex-col">
         @for (level of levels; track level.levelNumber) {
-          <div>
+          <div docsReveal>
             <div class="flex items-center gap-3">
               <span
-                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-[var(--docs-brand-contrast)]"
+                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[var(--docs-brand-contrast)]"
                 style="background-color: var(--docs-brand)"
-                >{{ level.levelNumber }}</span
               >
+                <docs-animated-icon [kind]="levelIcon(level.levelName)" class="h-5 w-5" />
+              </span>
               <h2 class="text-lg font-semibold">{{ level.levelName }}</h2>
             </div>
 
             <div class="mt-3 grid gap-3 pl-11 sm:grid-cols-2">
-              @for (example of level.examples; track example.slug) {
+              @for (example of level.examples; track example.slug; let i = $index) {
                 <a
                   [routerLink]="['/examples', example.slug]"
-                  class="flex flex-col gap-2 rounded-lg border border-[var(--docs-border)] p-4 hover:border-[var(--docs-brand)]"
+                  docsReveal
+                  [docsRevealDelay]="i * 60"
+                  class="docs-hover-lift flex flex-col gap-2 rounded-lg border border-[var(--docs-border)] p-4 hover:border-[var(--docs-brand)]"
                 >
                   <div class="flex items-center justify-between gap-2">
                     <span class="font-medium">{{ example.title }}</span>
@@ -103,5 +109,9 @@ export class ExamplesPage {
 
   protected difficultyTone(difficulty: string): string {
     return DIFFICULTY_TONE[difficulty] ?? 'bg-[var(--docs-bg-subtle)] text-[var(--docs-fg-muted)]';
+  }
+
+  protected levelIcon(levelName: string) {
+    return levelIconKind(levelName);
   }
 }

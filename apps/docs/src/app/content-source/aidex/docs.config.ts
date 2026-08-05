@@ -1,4 +1,5 @@
 import type { SiteConfig } from '../../engine/config/site-config';
+import { AidexLogo } from './brand/aidex-logo';
 
 /**
  * The one file that makes this deployment "the Aidex docs" instead of docs
@@ -11,6 +12,7 @@ export const aidexSiteConfig: SiteConfig = {
   tagline: 'A modular, provider-agnostic AI application platform.',
   githubUrl: 'https://github.com/getaidex/aidex',
   installCommand: 'pnpm add @aidex/sdk',
+  logoComponent: AidexLogo,
   nav: {
     sections: [
       {

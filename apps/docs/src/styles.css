@@ -85,3 +85,86 @@ kbd {
 .token.boolean {
   color: var(--prism-number);
 }
+
+/* Every clickable thing shows a pointer — native <button> doesn't get one by default. */
+a,
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+[role='tab']:not([aria-disabled='true']),
+summary,
+input[type='checkbox'],
+input[type='radio'],
+select,
+.docs-clickable {
+  cursor: pointer;
+}
+button:disabled,
+[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+/* --- Motion primitives ------------------------------------------------- */
+
+.docs-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.docs-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes docs-pulse-travel {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes docs-mesh-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(-2%, 2%) rotate(3deg);
+  }
+}
+
+.docs-hover-lift {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+.docs-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .docs-hover-lift:hover {
+    transform: none;
+  }
+}

@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AnimatedIcon } from '../../../../engine/motion/animated-icon';
+import { RevealOnScroll } from '../../../../engine/motion/reveal-on-scroll.directive';
 import { PageContext } from '../../../../engine/navigation/page-context.service';
+import { packageIconKind } from '../../icon-mapping';
 import type { PackageDoc } from '../../types';
 
 import packagesData from '../../../../content/generated/packages.json';
@@ -12,7 +15,7 @@ const CATEGORIES = ['All', ...Array.from(new Set(packages.map((p) => p.category)
 @Component({
   selector: 'docs-packages-page',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AnimatedIcon, RevealOnScroll],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article class="docs-page">
@@ -48,13 +51,18 @@ const CATEGORIES = ['All', ...Array.from(new Set(packages.map((p) => p.category)
       </div>
 
       <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        @for (pkg of filteredPackages(); track pkg.slug) {
+        @for (pkg of filteredPackages(); track pkg.slug; let i = $index) {
           <a
             [routerLink]="['/packages', pkg.slug]"
-            class="flex flex-col gap-2 rounded-lg border border-[var(--docs-border)] p-4 hover:border-[var(--docs-brand)]"
+            docsReveal
+            [docsRevealDelay]="(i % 6) * 50"
+            class="docs-hover-lift flex flex-col gap-2 rounded-lg border border-[var(--docs-border)] p-4 hover:border-[var(--docs-brand)]"
           >
             <div class="flex items-center justify-between gap-2">
-              <span class="font-medium">{{ pkg.name }}</span>
+              <div class="flex items-center gap-2">
+                <docs-animated-icon [kind]="packageIcon(pkg.slug)" class="h-5 w-5 text-[var(--docs-brand)]" />
+                <span class="font-medium">{{ pkg.name }}</span>
+              </div>
               <span class="shrink-0 text-xs text-[var(--docs-fg-muted)]">v{{ pkg.version }}</span>
             </div>
             <p class="line-clamp-2 text-sm text-[var(--docs-fg-muted)]">{{ pkg.description }}</p>
@@ -98,5 +106,9 @@ export class PackagesPage {
 
   protected inputValue(event: Event): string {
     return (event.target as HTMLInputElement).value;
+  }
+
+  protected packageIcon(slug: string) {
+    return packageIconKind(slug);
   }
 }

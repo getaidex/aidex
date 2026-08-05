@@ -12,7 +12,7 @@ import { SearchUiState } from './search-ui-state.service';
   template: `
     @if (ui.isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-4 pt-[10vh]"
+        class="fixed inset-0 z-50 flex cursor-pointer items-start justify-center bg-black/40 p-4 pt-[10vh]"
         (click)="ui.close()"
       >
         <div

@@ -1,3 +1,4 @@
+import { NgComponentOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { DOCS_SITE_CONFIG } from '../config/site-config';
@@ -15,7 +16,7 @@ import { ThemeToggle } from '../ui/theme-toggle';
 @Component({
   selector: 'docs-shell',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, NavigationTree, Breadcrumbs, ThemeToggle, SearchModal],
+  imports: [RouterLink, RouterOutlet, NavigationTree, Breadcrumbs, ThemeToggle, SearchModal, NgComponentOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <a
@@ -38,12 +39,7 @@ import { ThemeToggle } from '../ui/theme-toggle';
           ☰
         </button>
         <a routerLink="/" class="flex items-center gap-2 font-semibold">
-          <span
-            class="flex h-6 w-6 items-center justify-center rounded-md text-xs text-[var(--docs-brand-contrast)]"
-            style="background-color: var(--docs-brand)"
-            aria-hidden="true"
-            >A</span
-          >
+          <ng-container [ngComponentOutlet]="config.logoComponent" />
           <span>{{ config.title }}</span>
         </a>
       </div>
@@ -84,7 +80,11 @@ import { ThemeToggle } from '../ui/theme-toggle';
     </header>
 
     @if (sidebarOpen()) {
-      <div class="fixed inset-0 z-30 bg-black/40 lg:hidden" (click)="sidebarOpen.set(false)" aria-hidden="true"></div>
+      <div
+        class="fixed inset-0 z-30 cursor-pointer bg-black/40 lg:hidden"
+        (click)="sidebarOpen.set(false)"
+        aria-hidden="true"
+      ></div>
     }
 
     <div class="mx-auto max-w-7xl lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-8">

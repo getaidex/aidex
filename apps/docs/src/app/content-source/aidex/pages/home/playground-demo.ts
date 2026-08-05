@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 
 interface PlaygroundStep {
   id: string;
@@ -62,7 +62,7 @@ const STEPS: PlaygroundStep[] = [
             type="button"
             role="tab"
             [attr.aria-selected]="index === active()"
-            class="rounded-full border px-3 py-1.5 text-sm transition-colors"
+            class="rounded-full border px-3 py-1.5 text-sm transition-all hover:scale-105"
             [class]="
               index === active()
                 ? 'border-[var(--docs-brand)] bg-[var(--docs-brand)] text-[var(--docs-brand-contrast)]'
@@ -73,25 +73,53 @@ const STEPS: PlaygroundStep[] = [
             {{ step.label }}
           </button>
           @if (!$last) {
-            <span class="text-[var(--docs-fg-muted)]" aria-hidden="true">→</span>
+            <span
+              class="transition-colors"
+              [style.color]="index < active() ? 'var(--docs-brand)' : 'var(--docs-fg-muted)'"
+              aria-hidden="true"
+              >→</span
+            >
           }
         }
       </div>
 
-      <div class="mt-4 rounded-lg border border-[var(--docs-border)] bg-[var(--docs-bg)] p-4">
-        <p class="text-sm text-[var(--docs-fg-muted)]">{{ steps[active()].detail }}</p>
-        <pre
-          class="mt-3 overflow-x-auto rounded-md bg-[var(--docs-bg-subtle)] p-3 text-xs leading-5"
-        ><code>{{ steps[active()].snippet }}</code></pre>
-      </div>
+      @for (step of currentStep(); track step.id) {
+        <div class="mt-4 rounded-lg border border-[var(--docs-border)] bg-[var(--docs-bg)] p-4 step-content">
+          <p class="text-sm text-[var(--docs-fg-muted)]">{{ step.detail }}</p>
+          <pre
+            class="mt-3 overflow-x-auto rounded-md bg-[var(--docs-bg-subtle)] p-3 text-xs leading-5"
+          ><code>{{ step.snippet }}</code></pre>
+        </div>
+      }
 
       <p class="mt-3 text-xs text-[var(--docs-fg-muted)]">
         Illustrative walkthrough — no live API call is made on this page.
       </p>
     </div>
   `,
+  styles: `
+    .step-content {
+      animation: docs-step-fade 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes docs-step-fade {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .step-content {
+        animation: none;
+      }
+    }
+  `,
 })
 export class PlaygroundDemo {
   protected readonly steps = STEPS;
   protected readonly active = signal(0);
+  protected readonly currentStep = computed(() => [this.steps[this.active()]]);
 }
