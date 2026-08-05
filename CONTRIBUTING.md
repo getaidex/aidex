@@ -131,6 +131,34 @@ same interface). A new AI task is a `Strategy`. A cross-cutting concern is a
 - If your PR touches an architecture doc, verify the doc still matches the
   code exactly, with no drift in either direction.
 
+## What belongs in this repository
+
+Every committed file must provide value to end users, contributors, or
+maintainers. Before adding a file, ask: *would an external developer or
+contributor benefit from this file?* If the answer is no, it doesn't belong
+here.
+
+Internal AI/agent working artifacts — implementation plans, design specs
+written for agentic execution, audit reports, review reports, task or
+completion reports, progress logs, migration notes, investigation notes,
+root-cause reports, or any other document produced only to coordinate a
+development session — must never be committed. These are development
+artifacts, not project documentation, even when they're well-written and
+even when an AI agent produced them.
+
+If such documents are useful while a change is in progress, keep them
+outside the repository entirely (e.g. `.agent/`, `.ai/`, `.local/`, or
+`.workspace/` in your local checkout — all gitignored, see `.gitignore`).
+Nothing in those locations is ever referenced by public documentation.
+
+This does not apply to documentation that happens to describe a design or
+decision and is meant to last: `docs/architecture/`, `docs/decisions/`
+(ADRs), `docs/guides/`, `docs/roadmap/`, and package READMEs are all
+permanent, user/contributor-facing documentation and belong in the repo
+normally. The distinction is durability and audience — an ADR documents a
+decision for future contributors; a task-completion report documents a
+single agent session and has no reader once that session ends.
+
 ## Reporting bugs and requesting features
 
 Open an [issue](https://github.com/getaidex/aidex/issues) using the bug

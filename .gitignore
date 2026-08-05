@@ -11,3 +11,12 @@ coverage/
 .githooks/
 tmp/
 temp/
+
+# Internal AI/agent working artifacts (plans, specs, audits, task notes).
+# These must never be committed — see CONTRIBUTING.md.
+.agent/
+.ai/
+.local/
+.workspace/
+.superpowers/
+docs/superpowers/
