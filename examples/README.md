@@ -51,6 +51,20 @@ the levels above it, and 15 deliberately introduces nothing new.
 | 14 | [Custom Engine](src/14-custom-engine/README.md) | 8. Custom Engines | Advanced | 10 min | Building your own `Engine`, façade path |
 | 15 | [Real-World Assistant](src/15-real-world-assistant/README.md) | 9. Capstone | Advanced | 15 min | Every concept above, composed |
 
+## Bonus: Package Coverage
+
+These 5 examples aren't part of the 9-level narrative arc — they exist
+so every publishable `@aidex/*` package has at least one runnable
+example, not just the ones a "build an app" story naturally visits.
+
+| # | Example | Difficulty | Time | Concept |
+|---|---------|------------|------|---------|
+| 16 | [Framework Adapters](src/16-framework-adapters/README.md) | Beginner | 5 min | `@aidex/adapters` — thin translation layers over one `AI` |
+| 17 | [Memory Store](src/17-memory-store/README.md) | Beginner | 5 min | `@aidex/memory` — a generic, standalone KV primitive |
+| 18 | [MCP Server](src/18-mcp-server/README.md) | Intermediate | 10 min | `@aidex/mcp` — a real MCP protocol server, driven in-process |
+| 19 | [MCP Engine Bridge](src/19-mcp-engine-bridge/README.md) | Intermediate | 10 min | `@aidex/mcp-aidex` — expose Engines as MCP tools automatically |
+| 20 | [Build a CLI](src/20-build-a-cli/README.md) | Beginner | 5 min | `@aidex/cli` — a command-dispatch class over one `AI` |
+
 ## Which example teaches X?
 
 - **Provider abstraction:** 01, 04, 05
@@ -67,8 +81,8 @@ the levels above it, and 15 deliberately introduces nothing new.
 
 | Package | Used by | Explore next |
 |---|---|---|
-| `@aidex/sdk` | 01-11, 14, 15 (not 12, 13 — they use the kernel/tools APIs directly, no `AIBuilder`/`AI` façade) | — |
-| `@aidex/providers` | 01, 02, 03, 05, 06, 07-12, 14, 15 (not 04, which implements `Provider` itself instead of importing a built-in one; not 13, which has no provider) | — |
+| `@aidex/sdk` | 01-11, 14, 15, 16, 17, 20 (not 12, 13, 18, 19 — they use the kernel/tools/MCP APIs directly, no `AIBuilder`/`AI` façade) | — |
+| `@aidex/providers` | 01, 02, 03, 05, 06, 07-12, 14, 15, 16, 17, 19, 20 (not 04, which implements `Provider` itself instead of importing a built-in one; not 13 or 18, which use no provider) | — |
 | `@aidex/prompts` | 02, 15 | — |
 | `@aidex/document` | 07, 08, 11, 15 | — |
 | `@aidex/design` | 09 | — |
@@ -78,11 +92,15 @@ the levels above it, and 15 deliberately introduces nothing new.
 | `@aidex/plugins` | 12 | — |
 | `@aidex/tools` | 13 (12 also exercises the tool registry, but indirectly via `PluginManager.getToolRegistry()`, not a direct import) | — |
 | `@aidex/observability` | 06, 15 | — |
-| `@aidex/engines` | 14 | — |
-| `@aidex/core` | 03, 04, 05, 07, 08, 09, 10, 11, 12, 15 (wherever `Provider` is imported as a type, or the raw kernel is used) | — |
+| `@aidex/engines` | 14, 19 | — |
+| `@aidex/core` | 03, 04, 05, 07, 08, 09, 10, 11, 12, 15, 19 (wherever `Provider` is imported as a type, or the raw kernel is used) | — |
 | `@aidex/content` | none | Overlaps document/marketing scope for this course — worth exploring if you need general-purpose rewrite/tone/expand-style content generation |
 | `@aidex/media` | none | No real image/audio/video processing exists yet (provider abstraction is text-only) — explore its engine shapes if you're prototyping against that future |
-| `@aidex/cli` | none | A real "first application built on Aidex" — explore its README if you want to build your own CLI on top of the SDK |
+| `@aidex/adapters` | 16 | — |
+| `@aidex/memory` | 17 | — |
+| `@aidex/mcp` | 18, 19 | — |
+| `@aidex/mcp-aidex` | 19 | — |
+| `@aidex/cli` | 20 | — |
 
 ## Design notes
 
