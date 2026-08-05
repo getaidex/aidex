@@ -17,13 +17,11 @@
   "type": "module",
   "scripts": {
     "generate-content": "node scripts/generate-content.mjs",
-    "prestart": "npm run generate-content",
-    "start": "ng serve",
-    "prebuild": "npm run generate-content",
-    "build": "ng build --configuration production",
-    "build:pages": "npm run generate-content && ng build --configuration production --base-href /aidex/",
+    "start": "node scripts/generate-content.mjs && ng serve",
+    "build": "node scripts/generate-content.mjs && ng build --configuration production",
+    "build:pages": "node scripts/generate-content.mjs && ng build --configuration production --base-href /aidex/",
     "preview": "node scripts/serve-dist.mjs",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "typecheck": "node scripts/generate-content.mjs && tsc --noEmit -p tsconfig.app.json",
     "test": "vitest run --root ."
   },
   "engines": {

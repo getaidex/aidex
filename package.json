@@ -28,10 +28,10 @@
     "preinstall": "node scripts/assert-pnpm.cjs",
     "build": "pnpm -r run build",
     "clean": "tsc -b --clean",
-    "typecheck": "tsc -b",
+    "typecheck": "node apps/docs/scripts/generate-content.mjs && tsc -b",
     "test": "vitest run",
     "lint": "eslint packages/*/src apps/*/src examples/src",
-    "docs": "pnpm --filter @aidex/docs run start",
+    "docs:dev": "pnpm --filter @aidex/docs run start",
     "docs:build": "pnpm --filter @aidex/docs run build:pages",
     "docs:serve": "pnpm --filter @aidex/docs run preview"
   },
