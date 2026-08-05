@@ -38,6 +38,12 @@ importers:
 
   examples:
     dependencies:
+      '@aidex/adapters':
+        specifier: workspace:*
+        version: link:../packages/adapters
+      '@aidex/cli':
+        specifier: workspace:*
+        version: link:../packages/cli
       '@aidex/core':
         specifier: workspace:*
         version: link:../packages/core
@@ -56,6 +62,15 @@ importers:
       '@aidex/marketing':
         specifier: workspace:*
         version: link:../packages/marketing
+      '@aidex/mcp':
+        specifier: workspace:*
+        version: link:../packages/mcp
+      '@aidex/mcp-aidex':
+        specifier: workspace:*
+        version: link:../packages/mcp-aidex
+      '@aidex/memory':
+        specifier: workspace:*
+        version: link:../packages/memory
       '@aidex/observability':
         specifier: workspace:*
         version: link:../packages/observability

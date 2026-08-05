@@ -36,6 +36,15 @@ const ai = new AIBuilder().provider(new GeminiProvider(...)).build();
 const result = await ai.text('hi');
 ```
 
+`@aidex/sdk` ships a CommonJS build too — the same example with `require`:
+
+```js
+const { AIBuilder } = require('@aidex/sdk');
+
+const ai = new AIBuilder().provider(new GeminiProvider(...)).build();
+ai.text('hi').then(console.log);
+```
+
 ## Contents
 
 - **`AI`** — the main façade. Holds exactly one `Aidex` instance and

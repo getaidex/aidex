@@ -644,7 +644,7 @@ ExpressAdapter result: stub:Suggest a name for a note-taking app.
 
 Both adapters delegate to the same ai.text() call underneath — identical output, as expected.
 
-Empty input correctly rejected: ...
+Empty input correctly rejected: TextGenerationStrategy requires a non-empty string request.input
 ```
 
 ## Concepts learned
@@ -966,7 +966,7 @@ pnpm --filter @aidex/examples mcp-server
 ## Expected output
 ```
 Response: {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"...","capabilities":{"tools":{},"resources":{},"prompts":{}},"serverInfo":{"name":"aidex-example-server","version":"1.0.0"}}}
-Response: {"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"echo","description":"Echoes back whatever text you send it","inputSchema":{...}}]}}
+Response: {"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"echo","description":"Echoes back whatever text you send it","inputSchema":{"type":"object","properties":{"text":{"type":"string"}},"required":["text"]}}]}}
 Response: {"jsonrpc":"2.0","id":3,"result":{"content":[{"type":"text","text":"You said: hello from the client"}]}}
 Response: {"jsonrpc":"2.0","id":4,"result":{"contents":[{"uri":"aidex://readme","mimeType":"text/plain","text":"Aidex is a modular, provider-agnostic AI application platform."}]}}
 
@@ -1390,6 +1390,20 @@ Add/update these 5 rows (verify each against the actual `import` statements in t
 ```
 
 Remove these packages from any "explore next, no example yet" callout if the existing table has one (check the current file — `@aidex/content`/`@aidex/media` remain uncovered and stay in that callout; only `adapters`/`memory`/`mcp`/`mcp-aidex`/`cli` move from "not covered" to "covered").
+
+**Also update these 4 pre-existing rows** — examples 16-20 use some packages the 01-15 course already covers, and leaving those rows unchanged would make them stale/incomplete (verified against actual imports in `examples/src/16-*` through `20-*`: 16 imports `adapters,providers,sdk`; 17 imports `memory,providers,sdk`; 18 imports only `mcp`; 19 imports `core,engines,mcp,mcp-aidex,providers`; 20 imports `cli,providers,sdk`):
+
+```markdown
+| `@aidex/sdk` | 01-11, 14, 15, 16, 17, 20 (not 12, 13, 18, 19 — they use the kernel/tools/MCP APIs directly, no `AIBuilder`/`AI` façade) | — |
+| `@aidex/providers` | 01, 02, 03, 05, 06, 07-12, 14, 15, 16, 17, 19, 20 (not 04, which implements `Provider` itself instead of importing a built-in one; not 13 or 18, which use no provider) | — |
+```
+
+and, further down the table:
+
+```markdown
+| `@aidex/engines` | 14, 19 | — |
+| `@aidex/core` | 03, 04, 05, 07, 08, 09, 10, 11, 12, 15, 19 (wherever `Provider` is imported as a type, or the raw kernel is used) | — |
+```
 
 - [ ] **Step 4: Verify every new link resolves**
 

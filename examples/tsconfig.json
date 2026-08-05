@@ -18,6 +18,11 @@
     { "path": "../packages/document" },
     { "path": "../packages/design" },
     { "path": "../packages/marketing" },
-    { "path": "../packages/evaluation" }
+    { "path": "../packages/evaluation" },
+    { "path": "../packages/adapters" },
+    { "path": "../packages/memory" },
+    { "path": "../packages/mcp" },
+    { "path": "../packages/mcp-aidex" },
+    { "path": "../packages/cli" }
   ]
 }

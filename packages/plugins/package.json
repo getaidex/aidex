@@ -37,7 +37,8 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "sideEffects": false,
   "publishConfig": {
@@ -45,7 +46,9 @@
   },
   "scripts": {
     "build": "tsc -b && tsup",
-    "typecheck": "tsc -b --noEmit"
+    "typecheck": "tsc -b --noEmit",
+    "prepublishOnly": "node ../../scripts/assert-pnpm.cjs",
+    "prepack": "node ../../scripts/assert-pnpm.cjs"
   },
   "dependencies": {
     "@aidex/core": "workspace:*",
@@ -54,6 +57,7 @@
     "@aidex/tools": "workspace:*"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=18",
+    "pnpm": ">=9"
   }
 }

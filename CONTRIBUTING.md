@@ -34,6 +34,26 @@ All four must pass before a PR is reviewed. Node `>=18` is required (see
 [pnpm](https://pnpm.io) — install it first if you don't have it
 (`corepack enable` on Node 16.9+, or see pnpm's own install docs).
 
+## Publishing
+
+This repository publishes exclusively via `pnpm`:
+
+```bash
+pnpm build
+pnpm -r publish --dry-run   # sanity check first — safe, changes nothing
+pnpm -r publish             # the real thing
+```
+
+Never use `npm publish` or `npm pack` on an individual package. Every
+internal `@aidex/*` dependency uses pnpm's `workspace:*` protocol, which
+only `pnpm publish` rewrites to the real resolved version at publish time —
+`npm`/`yarn` ship that string literally, producing a broken package. A
+`prepublishOnly`/`prepack` guard (`scripts/assert-pnpm.cjs`, wired into
+both lifecycle scripts in every package) fails loudly if either `npm
+publish` or `npm pack` is ever attempted with the wrong tool, but
+`pnpm -r publish --dry-run` is the right way to catch problems before
+they matter.
+
 ## Project structure
 
 This is a pnpm-workspace monorepo (see `pnpm-workspace.yaml`). `packages/core` is the frozen kernel;

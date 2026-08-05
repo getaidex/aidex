@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1-alpha] - 2026-08-04
+
+### Changed
+
+- Synchronized every package's version number — root `package.json` had
+  drifted to `0.2.1-alpha` while all 22 published packages remained at
+  `0.2.0-alpha`. This repo uses fixed/lockstep versioning; all 24
+  `package.json` files (22 packages + 2 private apps) now match.
+- Rewrote the root README's `## Status` and `## Installation` sections,
+  which previously told visitors the project wasn't published to npm and
+  pointed them at `git clone` + `file:` dependencies — both false as of
+  `0.2.0-alpha`'s actual publish.
+- Reworded `@aidex/cli`'s `package.json` description off "the first
+  executable application" (it has no `bin` field — it's a
+  command-dispatch class, not a terminal executable).
+- Replaced the entire `examples/` folder: 8 API-demonstration scripts
+  became a 15-example, 9-level learning-path course (Getting Started →
+  Providers → Documents → Design → Marketing → Workflow → Plugins →
+  Custom Engines → Capstone), plus a `BUILD-YOUR-FIRST-AIDEX-APP.md`
+  tutorial and a rewritten `examples/README.md` portal. Every example
+  runs with zero setup, falling back to a deterministic demo provider
+  without a `GEMINI_API_KEY`.
+- Added 5 more examples (`16`-`20`) covering the previously-uncovered
+  `@aidex/adapters`, `@aidex/memory`, `@aidex/mcp`, `@aidex/mcp-aidex`,
+  and `@aidex/cli` packages.
+
+### Added
+
+- A pnpm-only publish/install guard (`scripts/assert-pnpm.cjs`, wired
+  into root `preinstall` and every package's `prepublishOnly` and
+  `prepack`) — plain `npm publish`/`npm pack` previously shipped the
+  literal, unresolved `"workspace:*"` string into published tarballs
+  with no automated guard against it.
+- A release CI workflow (`.github/workflows/release.yml`): a
+  `pnpm -r publish --dry-run` check plus a version-independent
+  `pnpm -r exec -- npm pack --dry-run` packaging check on every PR
+  (the former only exercises packages whose version isn't already on
+  npm, so the latter unconditionally packs every package regardless of
+  its published-version state), and a real `pnpm -r publish` on `v*`
+  tag pushes.
+- A `LICENSE` file in every one of the 22 published packages (only the
+  root `LICENSE` existed before — a standalone unpacked install shipped
+  with no license text).
+- CommonJS (`require()`) usage examples in the root README and
+  `packages/sdk/README.md`, alongside the existing ESM ones — the dual
+  ESM/CJS build support shipped in `0.2.0-alpha` had no corresponding
+  CJS documentation until now.
+
 ## [0.2.0-alpha] - 2026-08-03
 
 ### Added

@@ -1,0 +1,84 @@
+name: Release
+
+on:
+  pull_request:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish-dry-run:
+    if: github.event_name == 'pull_request'
+    name: Publish dry-run (PR safety check)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Dry-run publish every package
+        run: pnpm -r publish --dry-run --no-git-checks
+
+      - name: Pack every package (version-independent packaging check)
+        # `publish --dry-run` above only actually attempts to publish
+        # packages whose version isn't already on the npm registry, so on
+        # an ordinary PR (no version bump) it's a no-op. `npm pack` packs
+        # every package's tarball manifest unconditionally, regardless of
+        # published-version state — this is what catches an unresolved
+        # `workspace:*` string leaking into a tarball on every PR, not
+        # just release-version-bump ones.
+        run: pnpm -r exec -- npm pack --dry-run
+
+  publish:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+      - name: Publish every package
+        run: pnpm -r publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
