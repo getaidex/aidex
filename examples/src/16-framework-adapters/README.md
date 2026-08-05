@@ -41,7 +41,7 @@ ExpressAdapter result: stub:Suggest a name for a note-taking app.
 
 Both adapters delegate to the same ai.text() call underneath — identical output, as expected.
 
-Empty input correctly rejected: ...
+Empty input correctly rejected: TextGenerationStrategy requires a non-empty string request.input
 ```
 
 ## Concepts learned
