@@ -1,0 +1,56 @@
+{
+  "name": "@aidex/docs",
+  "version": "0.2.1-alpha",
+  "private": true,
+  "description": "Aidex Docs — the official documentation website, built on a generic, content-agnostic documentation engine.",
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex/tree/main/apps/docs#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git",
+    "directory": "apps/docs"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "generate-content": "node scripts/generate-content.mjs",
+    "prestart": "npm run generate-content",
+    "start": "ng serve",
+    "prebuild": "npm run generate-content",
+    "build": "ng build --configuration production",
+    "build:pages": "npm run generate-content && ng build --configuration production --base-href /aidex/",
+    "preview": "node scripts/serve-dist.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "test": "vitest run --root ."
+  },
+  "engines": {
+    "node": ">=20.19.0",
+    "pnpm": ">=9"
+  },
+  "dependencies": {
+    "@angular/animations": "21.2.19",
+    "@angular/common": "21.2.19",
+    "@angular/compiler": "21.2.19",
+    "@angular/core": "21.2.19",
+    "@angular/platform-browser": "21.2.19",
+    "@angular/router": "21.2.19",
+    "marked": "18.0.9",
+    "minisearch": "7.2.0",
+    "prismjs": "1.30.0",
+    "rxjs": "^7.8.1",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@angular/build": "21.2.19",
+    "@angular/cli": "21.2.19",
+    "@angular/compiler-cli": "21.2.19",
+    "@tailwindcss/postcss": "4.3.3",
+    "@tailwindcss/typography": "0.5.20",
+    "@types/prismjs": "^1.26.5",
+    "tailwindcss": "4.3.3",
+    "typescript": "^5.6.3"
+  }
+}

@@ -30,7 +30,10 @@
     "clean": "tsc -b --clean",
     "typecheck": "tsc -b",
     "test": "vitest run",
-    "lint": "eslint packages/*/src apps/*/src examples/src"
+    "lint": "eslint packages/*/src apps/*/src examples/src",
+    "docs": "pnpm --filter @aidex/docs run start",
+    "docs:build": "pnpm --filter @aidex/docs run build:pages",
+    "docs:serve": "pnpm --filter @aidex/docs run preview"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

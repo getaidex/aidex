@@ -1,0 +1,87 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --docs-brand: #4338ca;
+  --docs-brand-contrast: #ffffff;
+  --docs-bg: #ffffff;
+  --docs-bg-subtle: #f8f8fb;
+  --docs-fg: #18181b;
+  --docs-fg-muted: #52525b;
+  --docs-border: #e4e4e7;
+  color-scheme: light;
+}
+
+:root.dark {
+  --docs-brand: #818cf8;
+  --docs-brand-contrast: #0b0b12;
+  --docs-bg: #0b0b0f;
+  --docs-bg-subtle: #131318;
+  --docs-fg: #f4f4f5;
+  --docs-fg-muted: #a1a1aa;
+  --docs-border: #27272a;
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--docs-bg);
+  color: var(--docs-fg);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+code,
+pre,
+kbd {
+  font-family:
+    ui-monospace,
+    'SF Mono',
+    'Cascadia Code',
+    Menlo,
+    Consolas,
+    monospace;
+}
+
+/* Prism token colors — kept minimal and theme-aware rather than importing a full Prism theme. */
+:root {
+  --prism-comment: #6b7280;
+  --prism-keyword: #7c3aed;
+  --prism-string: #059669;
+  --prism-function: #2563eb;
+  --prism-number: #d97706;
+}
+:root.dark {
+  --prism-comment: #71717a;
+  --prism-keyword: #c4b5fd;
+  --prism-string: #6ee7b7;
+  --prism-function: #93c5fd;
+  --prism-number: #fbbf24;
+}
+.token.comment {
+  color: var(--prism-comment);
+}
+.token.keyword {
+  color: var(--prism-keyword);
+}
+.token.string {
+  color: var(--prism-string);
+}
+.token.function {
+  color: var(--prism-function);
+}
+.token.number,
+.token.boolean {
+  color: var(--prism-number);
+}

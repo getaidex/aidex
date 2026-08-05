@@ -28,6 +28,7 @@
     { "path": "packages/media" },
     { "path": "packages/marketing" },
     { "path": "apps/playground" },
+    { "path": "apps/docs" },
     { "path": "examples" }
   ]
 }
