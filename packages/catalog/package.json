@@ -60,7 +60,7 @@
     "@aidex/engines": "workspace:*"
   },
   "engines": {
-    "node": ">=18",
+    "node": ">=20.19.0",
     "pnpm": ">=9"
   }
 }

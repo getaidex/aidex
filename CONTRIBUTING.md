@@ -29,7 +29,7 @@ pnpm test        # vitest run
 pnpm build       # pnpm -r run build (tsc -b && tsup in each package)
 ```
 
-All four must pass before a PR is reviewed. Node `>=18` is required (see
+All four must pass before a PR is reviewed. Node `>=20.19` is required (see
 `engines` in the root `package.json`), and this repo uses
 [pnpm](https://pnpm.io) — install it first if you don't have it
 (`corepack enable` on Node 16.9+, or see pnpm's own install docs).

@@ -51,7 +51,7 @@
     "prepack": "node ../../scripts/assert-pnpm.cjs"
   },
   "engines": {
-    "node": ">=18",
+    "node": ">=20.19.0",
     "pnpm": ">=9"
   }
 }
