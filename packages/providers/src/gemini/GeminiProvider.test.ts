@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { JsonSchema } from '../structured-output/JsonSchema.js';
 
 const generateContentMock = vi.fn();
 
@@ -26,6 +27,9 @@ const {
   ProviderUnavailableError,
 } = await import('../shared/errors.js');
 const { TimeoutError } = await import('../shared/withAbort.js');
+const { StructuredOutputGenerationError, StructuredOutputValidationError } = await import(
+  '../structured-output/errors.js'
+);
 
 describe('GeminiProvider', () => {
   beforeEach(() => {
@@ -148,6 +152,91 @@ describe('GeminiProvider', () => {
       const response = await provider.generate({ content: 'hi' });
 
       expect(response.raw).toBe(sdkResponse);
+    });
+  });
+
+  describe('generateStructured() — request translation', () => {
+    it('sets responseMimeType and responseJsonSchema instead of appending prompt text', async () => {
+      generateContentMock.mockResolvedValue({ text: '{"title":"x"}' });
+      const provider = new GeminiProvider({ apiKey: 'test-key' });
+      const schema: JsonSchema = {
+        type: 'object',
+        properties: { title: { type: 'string' } },
+        required: ['title'],
+      };
+
+      await provider.generateStructured({ content: 'extract the title' }, { schema });
+
+      expect(generateContentMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          contents: 'extract the title',
+          config: expect.objectContaining({
+            responseMimeType: 'application/json',
+            responseJsonSchema: schema,
+          }),
+        })
+      );
+    });
+  });
+
+  describe('generateStructured() — response handling', () => {
+    const schema: JsonSchema = {
+      type: 'object',
+      properties: { title: { type: 'string' } },
+      required: ['title'],
+    };
+
+    it('returns parsed, validated data on schema-conformant JSON text', async () => {
+      generateContentMock.mockResolvedValue({ text: '{"title":"Team sync"}' });
+      const provider = new GeminiProvider({ apiKey: 'test-key' });
+
+      const result = await provider.generateStructured<{ title: string }>(
+        { content: 'extract' },
+        { schema }
+      );
+
+      expect(result.data).toEqual({ title: 'Team sync' });
+    });
+
+    it('rejects with StructuredOutputGenerationError when the SDK text is not valid JSON', async () => {
+      generateContentMock.mockResolvedValue({ text: 'not json' });
+      const provider = new GeminiProvider({ apiKey: 'test-key' });
+
+      await expect(
+        provider.generateStructured({ content: 'extract' }, { schema })
+      ).rejects.toBeInstanceOf(StructuredOutputGenerationError);
+    });
+
+    it('rejects with StructuredOutputValidationError when the JSON does not match the schema', async () => {
+      generateContentMock.mockResolvedValue({ text: '{}' });
+      const provider = new GeminiProvider({ apiKey: 'test-key' });
+
+      const error = await provider
+        .generateStructured({ content: 'extract' }, { schema })
+        .catch((e: unknown) => e);
+
+      expect(error).toBeInstanceOf(StructuredOutputValidationError);
+      expect((error as StructuredOutputValidationError).provider).toBe('gemini');
+    });
+
+    it('still translates vendor errors (e.g. 401) the same way generate() does', async () => {
+      generateContentMock.mockRejectedValue(new ApiError({ message: 'bad key', status: 401 }));
+      const provider = new GeminiProvider({ apiKey: 'test-key' });
+
+      await expect(
+        provider.generateStructured({ content: 'extract' }, { schema })
+      ).rejects.toBeInstanceOf(ProviderAuthenticationError);
+    });
+
+    it('propagates result.metadata and result.raw from the mapped ProviderResponse', async () => {
+      const sdkResponse = { text: '{"title":"x"}', modelVersion: 'gemini-2.0-flash' };
+      generateContentMock.mockResolvedValue(sdkResponse);
+      const provider = new GeminiProvider({ apiKey: 'test-key' });
+
+      const result = await provider.generateStructured({ content: 'extract' }, { schema });
+
+      expect(result.raw).toBe(sdkResponse);
+      expect(result.metadata).toMatchObject({ provider: 'gemini', model: 'gemini-2.0-flash' });
     });
   });
 
@@ -430,12 +519,12 @@ describe('GeminiProvider', () => {
   });
 
   describe('getCapabilities()', () => {
-    it('reports only text-generation as supported — nothing else is wired up in generate()/mapping.ts today', () => {
+    it('reports text-generation and structured-output as supported — nothing else is wired up today', () => {
       const provider = new GeminiProvider({ apiKey: 'test-key' });
 
       expect(provider.getCapabilities()).toEqual({
         'text-generation': true,
-        'structured-output': false,
+        'structured-output': true,
         'image-generation': false,
         'image-understanding': false,
         embeddings: false,

@@ -1,6 +1,7 @@
 import type { GenerateContentParameters, GenerateContentResponse } from '@google/genai';
 import type { Prompt, ProviderResponse } from '@aidex/core';
 import type { ProviderResponseMetadata } from '../shared/ProviderResponseMetadata.js';
+import type { JsonSchema } from '../structured-output/JsonSchema.js';
 
 /**
  * Translate a provider-agnostic Prompt into the Gemini SDK's request shape.
@@ -15,6 +16,31 @@ export function toGeminiRequest(
     model,
     contents: prompt.content,
     ...(abortSignal ? { config: { abortSignal } } : {}),
+  };
+}
+
+/**
+ * Translate a Prompt + JsonSchema into a Gemini request that constrains the
+ * model to schema-conformant JSON output natively, via the SDK's own
+ * `responseJsonSchema` (real JSON Schema, as opposed to `responseSchema`'s
+ * OpenAPI-3.0 subset — see @google/genai's GenerateContentConfig). No prompt
+ * text is appended asking the model to "return JSON": the constraint is
+ * expressed through the request config, not the prompt.
+ */
+export function toGeminiStructuredRequest(
+  prompt: Prompt,
+  model: string,
+  schema: JsonSchema,
+  abortSignal?: AbortSignal
+): GenerateContentParameters {
+  return {
+    model,
+    contents: prompt.content,
+    config: {
+      responseMimeType: 'application/json',
+      responseJsonSchema: schema,
+      ...(abortSignal ? { abortSignal } : {}),
+    },
   };
 }
 

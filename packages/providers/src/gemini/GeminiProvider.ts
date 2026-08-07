@@ -5,13 +5,19 @@ import { GoogleGenAI } from '@google/genai';
 import { AbortedError, rejectOnAbort, throwIfAborted, withTimeoutSignal } from '../shared/withAbort.js';
 import type { ProviderResponseMetadata } from '../shared/ProviderResponseMetadata.js';
 import { translateGeminiError } from './errors.js';
-import { fromGeminiResponse, toGeminiRequest } from './mapping.js';
+import { fromGeminiResponse, toGeminiRequest, toGeminiStructuredRequest } from './mapping.js';
 import {
   ProviderCapability,
   createProviderCapabilities,
   type ProviderCapabilities,
   type CapableProvider,
 } from '../capabilities/index.js';
+import { parseAndValidateStructuredOutput } from '../structured-output/parseAndValidateStructuredOutput.js';
+import type {
+  StructuredOutputProvider,
+  StructuredOutputRequest,
+  StructuredOutputResult,
+} from '../structured-output/types.js';
 
 export interface GeminiPricing {
   readonly inputPricePerMillion: number;
@@ -29,17 +35,21 @@ export interface GeminiProviderConfig {
 
 const DEFAULT_MODEL = 'gemini-2.0-flash';
 
-export class GeminiProvider implements Provider, CapableProvider {
+export class GeminiProvider implements Provider, CapableProvider, StructuredOutputProvider {
   readonly name = 'gemini';
 
   private readonly client: GoogleGenAI;
   private readonly model: string;
   private readonly pricing?: GeminiPricing;
   private readonly observability?: ObservabilityBus;
-  // Reflects what generate()/mapping.ts below actually wire up today, not the
-  // Gemini API's full theoretical surface — flip a capability to true only
-  // once the matching implementation genuinely exists.
-  private readonly capabilities = createProviderCapabilities([ProviderCapability.TextGeneration]);
+  // Reflects what generate()/generateStructured()/mapping.ts below actually
+  // wire up today, not the Gemini API's full theoretical surface — flip a
+  // capability to true only once the matching implementation genuinely
+  // exists.
+  private readonly capabilities = createProviderCapabilities([
+    ProviderCapability.TextGeneration,
+    ProviderCapability.StructuredOutput,
+  ]);
 
   constructor(config: GeminiProviderConfig = {}) {
     this.client = new GoogleGenAI({ apiKey: config.apiKey });
@@ -72,6 +82,41 @@ export class GeminiProvider implements Provider, CapableProvider {
     this.recordSuccess(metrics, response, options?.executionId);
 
     return response;
+  }
+
+  async generateStructured<T = unknown>(
+    prompt: Prompt,
+    request: StructuredOutputRequest,
+    options?: AidexOptions
+  ): Promise<StructuredOutputResult<T>> {
+    const signal = withTimeoutSignal(options?.timeout, options?.signal);
+    throwIfAborted(signal);
+
+    const sdkRequest = toGeminiStructuredRequest(prompt, this.model, request.schema, signal);
+    const metrics = new ExecutionMetrics();
+    metrics.recordStart();
+
+    let sdkResponse: GenerateContentResponse;
+    try {
+      sdkResponse = await rejectOnAbort(this.client.models.generateContent(sdkRequest), signal);
+    } catch (error) {
+      metrics.recordEnd();
+      this.recordFailure(metrics, error, options?.executionId);
+      throw error instanceof AbortedError ? error : translateGeminiError(error, this.name);
+    }
+
+    metrics.recordEnd();
+    const response = fromGeminiResponse(sdkResponse, prompt, this.name);
+    this.recordSuccess(metrics, response, options?.executionId);
+
+    const data = parseAndValidateStructuredOutput<T>(
+      this.name,
+      response.content,
+      request.schema,
+      options?.executionId
+    );
+
+    return { data, metadata: response.metadata, raw: response.raw };
   }
 
   getCapabilities(): ProviderCapabilities {

@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
+import type { JsonSchema } from '../structured-output/JsonSchema.js';
+import { StructuredOutputGenerationError, StructuredOutputValidationError } from '../structured-output/errors.js';
 import { StubProvider } from './StubProvider.js';
+
+const personSchema: JsonSchema = {
+  type: 'object',
+  properties: { name: { type: 'string' }, age: { type: 'integer' } },
+  required: ['name', 'age'],
+};
 
 describe('StubProvider', () => {
   describe('name', () => {
@@ -104,13 +112,81 @@ describe('StubProvider', () => {
     });
   });
 
+  describe('generateStructured() — Prompt + schema -> StructuredOutputResult lifecycle', () => {
+    it('returns schema-conformant data deterministically derived from the schema', async () => {
+      const provider = new StubProvider();
+
+      const result = await provider.generateStructured<{ name: string; age: number }>(
+        { content: 'describe a person' },
+        { schema: personSchema }
+      );
+
+      expect(result.data).toEqual({ name: '', age: 0 });
+    });
+
+    it('is deterministic across repeated calls with the same schema', async () => {
+      const provider = new StubProvider();
+      const first = await provider.generateStructured({ content: 'x' }, { schema: personSchema });
+      const second = await provider.generateStructured({ content: 'x' }, { schema: personSchema });
+      expect(first).toEqual(second);
+    });
+
+    it('propagates prompt metadata and provider identity into result.metadata', async () => {
+      const provider = new StubProvider();
+      const result = await provider.generateStructured(
+        { content: 'x', metadata: { traceId: 'abc' } },
+        { schema: personSchema }
+      );
+      expect(result.metadata).toEqual({ traceId: 'abc', provider: 'stub' });
+    });
+
+    it('throws StructuredOutputGenerationError when the prompt carries the invalid-JSON trigger', async () => {
+      const provider = new StubProvider();
+
+      await expect(
+        provider.generateStructured(
+          { content: `describe ${StubProvider.INVALID_JSON_TRIGGER}` },
+          { schema: personSchema }
+        )
+      ).rejects.toBeInstanceOf(StructuredOutputGenerationError);
+    });
+
+    it('throws StructuredOutputValidationError when the prompt carries the schema-mismatch trigger', async () => {
+      const provider = new StubProvider();
+
+      const error = await provider
+        .generateStructured(
+          { content: `describe ${StubProvider.SCHEMA_MISMATCH_TRIGGER}` },
+          { schema: personSchema }
+        )
+        .catch((e: unknown) => e);
+
+      expect(error).toBeInstanceOf(StructuredOutputValidationError);
+      expect((error as StructuredOutputValidationError).issues.length).toBeGreaterThan(0);
+    });
+
+    it('propagates executionId into thrown structured-output errors', async () => {
+      const provider = new StubProvider();
+
+      const error = await provider
+        .generateStructured(
+          { content: StubProvider.INVALID_JSON_TRIGGER },
+          { schema: personSchema },
+          { executionId: 'exec-1' }
+        )
+        .catch((e: unknown) => e);
+
+      expect((error as StructuredOutputGenerationError).executionId).toBe('exec-1');
+    });
+  });
+
   describe('getCapabilities()', () => {
-    it('reports only text-generation as supported', () => {
+    it('reports text-generation and structured-output as supported', () => {
       const provider = new StubProvider();
 
       expect(provider.getCapabilities()).toEqual({
         'text-generation': true,
-        'structured-output': false,
+        'structured-output': true,
         'image-generation': false,
         'image-understanding': false,
         embeddings: false,
