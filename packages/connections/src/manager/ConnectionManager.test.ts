@@ -325,6 +325,16 @@ describe('ConnectionManager', () => {
       expect(() => manager.resolve('conn-1')).toThrow(ProviderFactoryNotFoundError);
     });
 
+    it('throws DisabledConnectionError (not ProviderFactoryNotFoundError) for a disabled connection with no factory registered', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ enabled: false }));
+      // Deliberately no registerProviderFactory() call — this is the combined
+      // case that actually pins resolve()'s check order: disabled must be
+      // reported before factory-not-found, even when both conditions apply.
+
+      expect(() => manager.resolve('conn-1')).toThrow(DisabledConnectionError);
+    });
+
     it('uses the correct factory when multiple providerTypes are registered', () => {
       const manager = new ConnectionManager();
       manager.register(makeInput({ id: 'conn-gemini', providerType: 'gemini' }));
