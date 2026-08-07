@@ -70,4 +70,10 @@ describe('@aidex/connections public API (via package barrel)', () => {
       manager.register({ id: '', providerType: 'stub', config: {} })
     ).toThrow(InvalidConnectionConfigError);
   });
+
+  it('rejects with ProviderFactoryNotFoundError when resolving with no factory registered via the barrel import', () => {
+    const manager = new ConnectionManager();
+    manager.register({ id: 'conn-2', providerType: 'unregistered', config: {} });
+    expect(() => manager.resolve('conn-2')).toThrow(ProviderFactoryNotFoundError);
+  });
 });
