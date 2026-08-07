@@ -21,7 +21,9 @@ export class TextGenerationStrategy implements Strategy<string> {
 
     const prompt: Prompt = {
       content: request.input,
-      metadata: request.metadata,
+      metadata: request.executionId
+        ? { ...request.metadata, executionId: request.executionId }
+        : request.metadata,
     };
 
     const response = await context.provider.generate(prompt, request.options);

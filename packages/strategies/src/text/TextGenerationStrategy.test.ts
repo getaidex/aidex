@@ -177,4 +177,46 @@ describe('TextGenerationStrategy', () => {
       strategy.execute({ strategy: 'text-generation', input: 'hi' }, makeContext(provider))
     ).rejects.toBe(providerError);
   });
+
+  it('merges request.executionId into the Prompt metadata alongside request.metadata', async () => {
+    let seenPrompt: unknown;
+    const provider: Provider = {
+      name: 'inline',
+      async generate(prompt) {
+        seenPrompt = prompt;
+        return { content: 'ok' };
+      },
+    };
+    const strategy = new TextGenerationStrategy();
+
+    await strategy.execute(
+      {
+        strategy: 'text-generation',
+        input: 'hi',
+        metadata: { traceId: 'abc' },
+        executionId: 'exec-123',
+      },
+      makeContext(provider)
+    );
+
+    expect(seenPrompt).toMatchObject({
+      metadata: { traceId: 'abc', executionId: 'exec-123' },
+    });
+  });
+
+  it('omits executionId from Prompt metadata when the request has none', async () => {
+    let seenPrompt: unknown;
+    const provider: Provider = {
+      name: 'inline',
+      async generate(prompt) {
+        seenPrompt = prompt;
+        return { content: 'ok' };
+      },
+    };
+    const strategy = new TextGenerationStrategy();
+
+    await strategy.execute({ strategy: 'text-generation', input: 'hi' }, makeContext(provider));
+
+    expect((seenPrompt as { metadata?: { executionId?: string } }).metadata?.executionId).toBeUndefined();
+  });
 });

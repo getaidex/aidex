@@ -14,7 +14,9 @@ export class StubStrategy implements Strategy<string> {
   async execute(request: AidexRequest, context: ExecutionContext): Promise<string> {
     const prompt: Prompt = {
       content: String(request.input ?? ''),
-      metadata: { strategy: this.name },
+      metadata: request.executionId
+        ? { strategy: this.name, executionId: request.executionId }
+        : { strategy: this.name },
     };
 
     const response = await context.provider.generate(prompt, request.options);

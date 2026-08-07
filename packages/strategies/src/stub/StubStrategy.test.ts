@@ -83,4 +83,23 @@ describe('StubStrategy', () => {
 
     expect(seenOptions).toEqual({ debug: true });
   });
+
+  it('merges request.executionId into the Prompt metadata alongside the strategy tag', async () => {
+    let seenPrompt: unknown;
+    const provider: Provider = {
+      name: 'inline-stub',
+      async generate(prompt) {
+        seenPrompt = prompt;
+        return { content: prompt.content };
+      },
+    };
+    const strategy = new StubStrategy();
+
+    await strategy.execute(
+      { strategy: 'stub', input: 'x', executionId: 'exec-123' },
+      makeContext(provider)
+    );
+
+    expect(seenPrompt).toMatchObject({ metadata: { strategy: 'stub', executionId: 'exec-123' } });
+  });
 });
