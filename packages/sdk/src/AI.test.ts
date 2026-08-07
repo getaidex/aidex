@@ -33,7 +33,11 @@ describe('AI', () => {
     const result = await ai.execute<string>({ strategy: 'custom', input: 'hello' });
 
     expect(result).toBe('handled:hello');
-    expect(calls).toEqual([{ strategy: 'custom', input: 'hello' }]);
+    expect(calls).toHaveLength(1);
+    const [call] = calls;
+    expect(typeof call.executionId).toBe('string');
+    expect(call.options?.executionId).toBe(call.executionId);
+    expect(call).toMatchObject({ strategy: 'custom', input: 'hello' });
   });
 
   it('text() delegates to the kernel using the "text-generation" strategy name', async () => {
@@ -45,7 +49,11 @@ describe('AI', () => {
     const result = await ai.text('hello world');
 
     expect(result).toBe('handled:hello world');
-    expect(calls).toEqual([{ strategy: 'text-generation', input: 'hello world' }]);
+    expect(calls).toHaveLength(1);
+    const [call] = calls;
+    expect(typeof call.executionId).toBe('string');
+    expect(call.options?.executionId).toBe(call.executionId);
+    expect(call).toMatchObject({ strategy: 'text-generation', input: 'hello world' });
   });
 
   it('does not duplicate strategy logic — text() works with whatever strategy is registered under that name', async () => {
