@@ -1,3 +1,5 @@
+export { AidexError } from './errors/AidexError.js';
+export type { AidexErrorOptions } from './errors/AidexError.js';
 export { Aidex } from './kernel/Aidex.js';
 export type { AidexConfig } from './kernel/configuration/AidexConfig.js';
 export { StrategyNotFoundError } from './kernel/errors/StrategyNotFoundError.js';

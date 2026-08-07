@@ -1,4 +1,6 @@
-export class DuplicateRegistrationError extends Error {
+import { AidexError } from '../../errors/AidexError.js';
+
+export class DuplicateRegistrationError extends AidexError {
   readonly kind: string;
   readonly registeredName: string;
 

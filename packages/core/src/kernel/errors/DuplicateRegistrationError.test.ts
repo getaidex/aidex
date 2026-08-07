@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { AidexError } from '../../errors/AidexError.js';
 import { DuplicateRegistrationError } from './DuplicateRegistrationError.js';
 
 describe('DuplicateRegistrationError', () => {
@@ -6,6 +7,7 @@ describe('DuplicateRegistrationError', () => {
     const error = new DuplicateRegistrationError('Strategy', 'summarize');
 
     expect(error).toBeInstanceOf(Error);
+    expect(error).toBeInstanceOf(AidexError);
     expect(error).toBeInstanceOf(DuplicateRegistrationError);
     expect(error.name).toBe('DuplicateRegistrationError');
     expect(error.kind).toBe('Strategy');
