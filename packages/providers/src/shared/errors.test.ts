@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { AidexError } from '@aidex/core';
 import {
   ProviderAuthenticationError,
   ProviderError,
@@ -13,6 +14,7 @@ describe('ProviderError', () => {
     const error = new ProviderError('gemini: something went wrong', 'gemini', cause);
 
     expect(error).toBeInstanceOf(Error);
+    expect(error).toBeInstanceOf(AidexError);
     expect(error.name).toBe('ProviderError');
     expect(error.provider).toBe('gemini');
     expect(error.cause).toBe(cause);
@@ -31,10 +33,11 @@ describe.each([
   [ProviderInvalidRequestError, 'ProviderInvalidRequestError', 'invalid request'],
   [ProviderUnavailableError, 'ProviderUnavailableError', 'temporarily unavailable'],
 ] as const)('%s', (ErrorClass, expectedName, expectedMessageFragment) => {
-  it(`is a ProviderError with name "${expectedName}"`, () => {
+  it(`is a ProviderError and an AidexError with name "${expectedName}"`, () => {
     const error = new ErrorClass('gemini');
 
     expect(error).toBeInstanceOf(ProviderError);
+    expect(error).toBeInstanceOf(AidexError);
     expect(error).toBeInstanceOf(Error);
     expect(error.name).toBe(expectedName);
     expect(error.provider).toBe('gemini');

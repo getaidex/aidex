@@ -1,3 +1,5 @@
+import { AidexError } from '@aidex/core';
+
 /**
  * Vendor-agnostic errors any Provider implementation can translate its own
  * SDK's errors into, so a caller never needs to import a vendor SDK just to
@@ -5,7 +7,7 @@
  * is down." Lives here (packages/providers/shared), not in @aidex/core —
  * these are a provider-abstraction convention, not a kernel contract.
  */
-export class ProviderError extends Error {
+export class ProviderError extends AidexError {
   readonly provider: string;
   readonly cause?: unknown;
 
