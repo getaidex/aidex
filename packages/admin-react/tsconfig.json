@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "emitDeclarationOnly": true,
+    "types": ["node", "react"]
+  },
+  "include": [
+    "src"
+  ],
+  "references": [
+    { "path": "../admin" }
+  ]
+}
