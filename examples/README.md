@@ -56,7 +56,7 @@ the levels above it, and 15 deliberately introduces nothing new.
 These 5 examples aren't part of the 9-level narrative arc — they exist
 so more of Aidex's publishable `@aidex/*` packages have a runnable
 example, not just the ones a "build an app" story naturally visits.
-Coverage is 18 of 22 packages, not all of them — see the package
+Coverage is 22 of 26 packages, not all of them — see the package
 cross-reference table below for the 4 that still have no dedicated
 example, and why.
 
@@ -67,6 +67,7 @@ example, and why.
 | 18 | [MCP Server](src/18-mcp-server/README.md) | Intermediate | 10 min | `@aidex/mcp` — a real MCP protocol server, driven in-process |
 | 19 | [MCP Engine Bridge](src/19-mcp-engine-bridge/README.md) | Intermediate | 10 min | `@aidex/mcp-aidex` — expose Engines as MCP tools automatically |
 | 20 | [Build a CLI](src/20-build-a-cli/README.md) | Beginner | 5 min | `@aidex/cli` — a command-dispatch class over one `AI` |
+| 21 | [Admin Panel](src/21-admin-panel/README.md) | Intermediate | 10 min | `@aidex/admin` + `@aidex/admin-react` — a reactive Admin UI composing `@aidex/connections`/`@aidex/ai-control`/`@aidex/observability` |
 
 ## Which example teaches X?
 
@@ -106,6 +107,10 @@ example, and why.
 | `@aidex/mcp` | 18, 19 | — |
 | `@aidex/mcp-aidex` | 19 | — |
 | `@aidex/cli` | 20 | — |
+| `@aidex/connections` | 21 | — |
+| `@aidex/ai-control` | 21 | — |
+| `@aidex/admin` | 21 | — |
+| `@aidex/admin-react` | 21 | — |
 
 ## Design notes
 

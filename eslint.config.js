@@ -6,7 +6,12 @@ export default tseslint.config(
   },
   ...tseslint.configs.recommended,
   {
-    files: ['packages/*/src/**/*.ts', 'apps/*/src/**/*.ts', 'examples/src/**/*.ts'],
+    files: [
+      'packages/*/src/**/*.ts',
+      'apps/*/src/**/*.ts',
+      'examples/src/**/*.ts',
+      'examples/src/**/*.tsx',
+    ],
     rules: {
       '@typescript-eslint/no-unused-vars': [
         'error',

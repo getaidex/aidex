@@ -2,7 +2,10 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM"],
+    "types": ["node", "react"]
   },
   "include": ["src"],
   "references": [
@@ -13,6 +16,7 @@
     { "path": "../packages/prompts" },
     { "path": "../packages/providers" },
     { "path": "../packages/sdk" },
+    { "path": "../packages/strategies" },
     { "path": "../packages/tools" },
     { "path": "../packages/workflow" },
     { "path": "../packages/document" },
@@ -23,6 +27,10 @@
     { "path": "../packages/memory" },
     { "path": "../packages/mcp" },
     { "path": "../packages/mcp-aidex" },
-    { "path": "../packages/cli" }
+    { "path": "../packages/cli" },
+    { "path": "../packages/connections" },
+    { "path": "../packages/ai-control" },
+    { "path": "../packages/admin" },
+    { "path": "../packages/admin-react" }
   ]
 }
