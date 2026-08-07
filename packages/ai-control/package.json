@@ -1,0 +1,65 @@
+{
+  "name": "@aidex/ai-control",
+  "version": "0.2.1-alpha",
+  "description": "Aidex AI Control — framework-agnostic global/per-feature AI enable-disable, enforced before any Provider call. Foundation for a future @aidex/admin.",
+  "keywords": [
+    "ai",
+    "feature-flag",
+    "configuration",
+    "kill-switch"
+  ],
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex/tree/main/packages/ai-control#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git",
+    "directory": "packages/ai-control"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -b && tsup",
+    "typecheck": "tsc -b --noEmit",
+    "prepublishOnly": "node ../../scripts/assert-pnpm.cjs",
+    "prepack": "node ../../scripts/assert-pnpm.cjs"
+  },
+  "dependencies": {
+    "@aidex/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@aidex/connections": "workspace:*",
+    "@aidex/providers": "workspace:*",
+    "@aidex/strategies": "workspace:*"
+  },
+  "engines": {
+    "node": ">=20.19.0",
+    "pnpm": ">=9"
+  }
+}
