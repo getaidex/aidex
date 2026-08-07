@@ -13,6 +13,7 @@
     { "path": "packages/admin" },
     { "path": "packages/admin-react" },
     { "path": "packages/admin-angular" },
+    { "path": "packages/admin-vue" },
     { "path": "packages/engines" },
     { "path": "packages/mcp-aidex" },
     { "path": "packages/prompts" },
