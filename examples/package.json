@@ -37,7 +37,8 @@
     "memory-store": "node dist/17-memory-store/index.js",
     "mcp-server": "node dist/18-mcp-server/index.js",
     "mcp-engine-bridge": "node dist/19-mcp-engine-bridge/index.js",
-    "build-a-cli": "node dist/20-build-a-cli/index.js"
+    "build-a-cli": "node dist/20-build-a-cli/index.js",
+    "admin-panel": "node dist/21-admin-panel/index.js"
   },
   "dependencies": {
     "@aidex/core": "workspace:*",
@@ -47,6 +48,7 @@
     "@aidex/prompts": "workspace:*",
     "@aidex/providers": "workspace:*",
     "@aidex/sdk": "workspace:*",
+    "@aidex/strategies": "workspace:*",
     "@aidex/tools": "workspace:*",
     "@aidex/workflow": "workspace:*",
     "@aidex/document": "workspace:*",
@@ -57,6 +59,19 @@
     "@aidex/memory": "workspace:*",
     "@aidex/mcp": "workspace:*",
     "@aidex/mcp-aidex": "workspace:*",
-    "@aidex/cli": "workspace:*"
+    "@aidex/cli": "workspace:*",
+    "@aidex/connections": "workspace:*",
+    "@aidex/ai-control": "workspace:*",
+    "@aidex/admin": "workspace:*",
+    "@aidex/admin-react": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "jsdom": "^25.0.0"
   }
 }
