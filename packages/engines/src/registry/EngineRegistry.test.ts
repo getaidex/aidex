@@ -178,6 +178,37 @@ describe('EngineRegistry', () => {
     });
   });
 
+  describe('execute() — executionId propagation', () => {
+    it('passes context.executionId to EngineNotFoundError when the engine is missing', async () => {
+      const registry = new EngineRegistry();
+      const context: ExecutionContext = { ...makeContext(), executionId: 'exec-123' };
+
+      await expect(registry.execute('missing.engine', context)).rejects.toMatchObject({
+        executionId: 'exec-123',
+      });
+    });
+
+    it('passes context.executionId to UnsupportedProviderCapabilityError when a capability is missing', async () => {
+      const registry = new EngineRegistry();
+      const engine: Engine = {
+        id: 'needs-streaming',
+        name: 'needs-streaming',
+        description: 'test',
+        version: '1.0.0',
+        requiredCapabilities: [ProviderCapability.Streaming],
+        async execute() {
+          return 'ran';
+        },
+      };
+      registry.register(engine);
+      const context: ExecutionContext = { ...makeContext(), executionId: 'exec-456' };
+
+      await expect(registry.execute('needs-streaming', context)).rejects.toMatchObject({
+        executionId: 'exec-456',
+      });
+    });
+  });
+
   describe('execute() — capability requirements', () => {
     function makeCapableContext(supported: ProviderCapability[]): ExecutionContext {
       const capabilities = createProviderCapabilities(supported);

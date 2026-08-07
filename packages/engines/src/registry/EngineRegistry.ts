@@ -44,12 +44,12 @@ export class EngineRegistry {
   ): Promise<TResult> {
     const engine = this.engines.get(id) as Engine<TResult, TContext> | undefined;
     if (!engine) {
-      throw new EngineNotFoundError(id);
+      throw new EngineNotFoundError(id, context.executionId);
     }
 
     const missing = missingCapabilities(engine, context.provider);
     if (missing.length > 0) {
-      throw new UnsupportedProviderCapabilityError(engine.id, missing);
+      throw new UnsupportedProviderCapabilityError(engine.id, missing, context.executionId);
     }
 
     return engine.execute(context);
