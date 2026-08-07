@@ -8,6 +8,7 @@
     { "path": "packages/core" },
     { "path": "packages/mcp" },
     { "path": "packages/catalog" },
+    { "path": "packages/connections" },
     { "path": "packages/engines" },
     { "path": "packages/mcp-aidex" },
     { "path": "packages/prompts" },

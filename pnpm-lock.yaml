@@ -187,6 +187,12 @@ importers:
         specifier: workspace:*
         version: link:../providers
 
+  packages/connections:
+    dependencies:
+      '@aidex/core':
+        specifier: workspace:*
+        version: link:../core
+
   packages/content:
     dependencies:
       '@aidex/catalog':
