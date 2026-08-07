@@ -405,4 +405,117 @@ describe('ConnectionManager', () => {
       expect(manager.resolve('conn-1').name).toBe('second');
     });
   });
+
+  describe('secret safety', () => {
+    const SECRET = 'sk-super-secret-do-not-leak-1234567890';
+
+    it('get() never includes config, and its serialized form never contains the secret', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ config: { apiKey: SECRET } }));
+
+      const connection = manager.get('conn-1')!;
+
+      expect(connection).not.toHaveProperty('config');
+      expect(Object.keys(connection)).not.toContain('config');
+      expect(JSON.stringify(connection)).not.toContain(SECRET);
+    });
+
+    it('list() never includes config, and its serialized form never contains the secret', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ config: { apiKey: SECRET } }));
+
+      const list = manager.list();
+
+      expect(list[0]).not.toHaveProperty('config');
+      expect(JSON.stringify(list)).not.toContain(SECRET);
+    });
+
+    it('register()\'s return value never contains the secret', () => {
+      const manager = new ConnectionManager();
+      const connection = manager.register(makeInput({ config: { apiKey: SECRET } }));
+
+      expect(JSON.stringify(connection)).not.toContain(SECRET);
+    });
+
+    it('update()\'s return value never contains the secret, even when updating config', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput());
+      const updated = manager.update('conn-1', { config: { apiKey: SECRET } });
+
+      expect(JSON.stringify(updated)).not.toContain(SECRET);
+    });
+
+    it('DuplicateRegistrationError thrown by register() never contains the secret', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ config: { apiKey: SECRET } }));
+
+      let thrown: unknown;
+      try {
+        manager.register(makeInput({ config: { apiKey: SECRET } }));
+      } catch (error) {
+        thrown = error;
+      }
+
+      expect(JSON.stringify(thrown)).not.toContain(SECRET);
+      expect((thrown as Error).message).not.toContain(SECRET);
+    });
+
+    it('InvalidConnectionConfigError thrown by register() never contains the secret value', () => {
+      const manager = new ConnectionManager();
+
+      let thrown: unknown;
+      try {
+        manager.register(
+          makeInput({ config: SECRET as unknown as Record<string, unknown> })
+        );
+      } catch (error) {
+        thrown = error;
+      }
+
+      expect(JSON.stringify(thrown)).not.toContain(SECRET);
+      expect((thrown as Error).message).not.toContain(SECRET);
+    });
+
+    it('DisabledConnectionError thrown by resolve() never contains the secret', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ config: { apiKey: SECRET }, enabled: false }));
+
+      let thrown: unknown;
+      try {
+        manager.resolve('conn-1');
+      } catch (error) {
+        thrown = error;
+      }
+
+      expect(JSON.stringify(thrown)).not.toContain(SECRET);
+    });
+
+    it('ProviderFactoryNotFoundError thrown by resolve() never contains the secret', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ config: { apiKey: SECRET } }));
+
+      let thrown: unknown;
+      try {
+        manager.resolve('conn-1');
+      } catch (error) {
+        thrown = error;
+      }
+
+      expect(JSON.stringify(thrown)).not.toContain(SECRET);
+    });
+
+    it('the secret only ever reaches the registered ProviderFactory, nothing else', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ config: { apiKey: SECRET } }));
+      let factorySawSecret = false;
+      manager.registerProviderFactory('gemini', (config) => {
+        factorySawSecret = config.apiKey === SECRET;
+        return makeStubProvider();
+      });
+
+      manager.resolve('conn-1');
+
+      expect(factorySawSecret).toBe(true);
+    });
+  });
 });
