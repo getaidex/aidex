@@ -1,12 +1,12 @@
 /**
- * Intentionally minimal: no design system, no styling, no charts. Every
- * piece of Admin state comes from useAdmin(controller) — there is no
- * second React state store here. The only local state is ephemeral UI
- * state (the input text box, the last run result/error), exactly as
- * @aidex/admin-react's own docs describe as the acceptable case for it.
+ * Composes @aidex/admin-react's four reusable components — no inline
+ * reimplementation of Admin state/UI here. The only local state is
+ * ephemeral, app-specific Run AI state (input text, last result/error);
+ * that section stays inline since it's specific to this example's strategy
+ * and input shape, not a generic Admin concern.
  */
 import { useState } from 'react';
-import { useAdmin } from '@aidex/admin-react';
+import { AdminOverview, AIControl, ConnectionList, ObservabilitySummary } from '@aidex/admin-react';
 import type { AdminController } from '@aidex/admin';
 import { STRATEGY_NAME } from './setup.js';
 
@@ -16,12 +16,9 @@ export interface AdminPanelProps {
 }
 
 export function AdminPanel({ controller, onRun }: AdminPanelProps) {
-  const snapshot = useAdmin(controller);
   const [input, setInput] = useState('why is the sky blue?');
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const featureEnabled = snapshot.aiControl.features[STRATEGY_NAME] ?? true;
 
   async function handleRun() {
     setResult(null);
@@ -36,63 +33,10 @@ export function AdminPanel({ controller, onRun }: AdminPanelProps) {
 
   return (
     <div>
-      <section data-testid="overview">
-        <h2>Admin Overview</h2>
-        <p data-testid="health">Health: {snapshot.health}</p>
-      </section>
-
-      <section data-testid="ai-control">
-        <h2>AI Control</h2>
-        <label>
-          <input
-            type="checkbox"
-            data-testid="ai-enabled-toggle"
-            checked={snapshot.aiControl.enabled}
-            onChange={(event) => controller.setAIEnabled(event.target.checked)}
-          />
-          AI enabled globally
-        </label>
-        <br />
-        <label>
-          <input
-            type="checkbox"
-            data-testid="feature-enabled-toggle"
-            checked={featureEnabled}
-            onChange={(event) => controller.setFeatureEnabled(STRATEGY_NAME, event.target.checked)}
-          />
-          {STRATEGY_NAME} feature enabled
-        </label>
-      </section>
-
-      <section data-testid="connections">
-        <h2>Connections</h2>
-        <ul>
-          {snapshot.connections.map((connection) => (
-            <li key={connection.id} data-testid={`connection-${connection.id}`}>
-              {connection.id} ({connection.providerType}) —{' '}
-              {connection.enabled ? 'enabled' : 'disabled'}
-              <button
-                type="button"
-                data-testid={`connection-toggle-${connection.id}`}
-                onClick={() =>
-                  connection.enabled
-                    ? controller.disableConnection(connection.id)
-                    : controller.enableConnection(connection.id)
-                }
-              >
-                Toggle
-              </button>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section data-testid="observability">
-        <h2>Observability Summary</h2>
-        <p data-testid="observability-tokens">Total tokens: {snapshot.observability.totalTokens ?? 0}</p>
-        <p data-testid="observability-cost">Total cost (USD): {snapshot.observability.totalCostUsd ?? 0}</p>
-        <p data-testid="observability-errors">Errors: {snapshot.observability.errorCount}</p>
-      </section>
+      <AdminOverview controller={controller} />
+      <AIControl controller={controller} features={[STRATEGY_NAME]} />
+      <ConnectionList controller={controller} />
+      <ObservabilitySummary controller={controller} />
 
       <section data-testid="run-ai">
         <h2>Run AI</h2>
