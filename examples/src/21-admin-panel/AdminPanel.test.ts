@@ -22,29 +22,33 @@ function renderPanel(demo: AdminPanelDemo) {
   );
 }
 
-describe('AdminPanel — real-world Admin architecture flow', () => {
-  it('1. renders the initial Admin state', () => {
+describe('AdminPanel — composes the reusable @aidex/admin-react components', () => {
+  it('1. renders the initial Admin state via AdminOverview/AIControl/ConnectionList/ObservabilitySummary', () => {
     const demo = buildDemo();
     renderPanel(demo);
 
-    expect(screen.getByTestId('health')).toHaveTextContent('ok');
-    expect(screen.getByTestId('ai-enabled-toggle')).toBeChecked();
-    expect(screen.getByTestId('feature-enabled-toggle')).toBeChecked();
-    expect(screen.getByTestId('connection-primary')).toHaveTextContent('primary (stub) — enabled');
-    expect(screen.getByTestId('observability-tokens')).toHaveTextContent('Total tokens: 0');
-    expect(screen.getByTestId('observability-errors')).toHaveTextContent('Errors: 0');
+    expect(screen.getByTestId('admin-overview-health')).toHaveTextContent('Health: ok');
+    expect(screen.getByRole('checkbox', { name: /ai enabled globally/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: STRATEGY_NAME })).toBeChecked();
+    expect(screen.getByTestId('connection-list-item-primary')).toHaveTextContent(
+      'primary (stub) — enabled'
+    );
+    expect(screen.getByTestId('observability-summary-errors')).toHaveTextContent('Errors: 0');
+    expect(screen.queryByTestId('observability-summary-tokens')).not.toBeInTheDocument();
   });
 
-  it('2-5. disabling AI from the UI blocks execution before the provider is called, without breaking the UI', async () => {
+  it('2-5. disabling AI via AIControl blocks execution before the provider is called, without breaking the UI', async () => {
     const demo = buildDemo();
     const generateSpy = vi.spyOn(StubProvider.prototype, 'generate');
     renderPanel(demo);
 
-    // 2. Disable AI from UI
-    fireEvent.click(screen.getByTestId('ai-enabled-toggle'));
-    expect(screen.getByTestId('health')).toHaveTextContent('ai-disabled');
+    // 2. Disable AI from the reusable AIControl component
+    fireEvent.click(screen.getByRole('checkbox', { name: /ai enabled globally/i }));
+    expect(screen.getByTestId('admin-overview-health')).toHaveTextContent('Health: ai-disabled');
+    // AdminOverview reads the same controller — no duplicated/stale state.
+    expect(demo.admin.getSnapshot().health).toBe('ai-disabled');
 
-    // 3. Attempt execution
+    // 3. Attempt execution via the app-specific Run AI section
     fireEvent.click(screen.getByTestId('run-button'));
 
     // 4. Verify controlled AI-disabled failure
@@ -55,63 +59,64 @@ describe('AdminPanel — real-world Admin architecture flow', () => {
     expect(generateSpy).not.toHaveBeenCalled();
   });
 
-  it('6-7. re-enabling AI allows the next execution to succeed', async () => {
+  it('6-7. re-enabling AI via AIControl allows the next execution to succeed', async () => {
     const demo = buildDemo();
     renderPanel(demo);
 
-    fireEvent.click(screen.getByTestId('ai-enabled-toggle')); // disable
+    fireEvent.click(screen.getByRole('checkbox', { name: /ai enabled globally/i })); // disable
     fireEvent.click(screen.getByTestId('run-button'));
     await screen.findByTestId('run-error');
 
     // 6. Re-enable AI
-    fireEvent.click(screen.getByTestId('ai-enabled-toggle'));
-    expect(screen.getByTestId('health')).toHaveTextContent('ok');
+    fireEvent.click(screen.getByRole('checkbox', { name: /ai enabled globally/i }));
+    expect(screen.getByTestId('admin-overview-health')).toHaveTextContent('Health: ok');
 
-    // 7. Execute again successfully
+    // 7. Execute again successfully — existing app-specific Run AI behavior unchanged
     fireEvent.click(screen.getByTestId('run-button'));
     const resultEl = await screen.findByTestId('run-result');
     expect(resultEl).toHaveTextContent('stub:why is the sky blue?');
   });
 
-  it('8-9. disabling a feature blocks only that feature, leaving global AI state untouched', async () => {
+  it('8-9. disabling a feature via AIControl blocks only that feature, leaving global AI state untouched', async () => {
     const demo = buildDemo();
     renderPanel(demo);
 
-    // 8. Disable a feature
-    fireEvent.click(screen.getByTestId('feature-enabled-toggle'));
+    // 8. Disable the feature
+    fireEvent.click(screen.getByRole('checkbox', { name: STRATEGY_NAME }));
     fireEvent.click(screen.getByTestId('run-button'));
 
     // 9. Verify only that feature is blocked (global AI stays enabled)
     const errorEl = await screen.findByTestId('run-error');
     expect(errorEl).toHaveTextContent(STRATEGY_NAME);
     expect(demo.admin.getSnapshot().aiControl.enabled).toBe(true);
-    expect(screen.getByTestId('ai-enabled-toggle')).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /ai enabled globally/i })).toBeChecked();
   });
 
-  it('10. connection state appears correctly and reacts to the toggle button', () => {
+  it('10. ConnectionList renders connection state and enable/disable actions work', () => {
     const demo = buildDemo();
     renderPanel(demo);
 
-    expect(screen.getByTestId('connection-primary')).toHaveTextContent('enabled');
+    expect(screen.getByTestId('connection-list-item-primary')).toHaveTextContent('enabled');
 
-    fireEvent.click(screen.getByTestId('connection-toggle-primary'));
-    expect(screen.getByTestId('connection-primary')).toHaveTextContent('disabled');
+    fireEvent.click(screen.getByRole('button', { name: 'Disable connection primary' }));
+    expect(screen.getByTestId('connection-list-item-primary')).toHaveTextContent('disabled');
+    expect(demo.connectionManager.get('primary')?.enabled).toBe(false);
 
-    fireEvent.click(screen.getByTestId('connection-toggle-primary'));
-    expect(screen.getByTestId('connection-primary')).toHaveTextContent('enabled');
+    fireEvent.click(screen.getByRole('button', { name: 'Enable connection primary' }));
+    expect(screen.getByTestId('connection-list-item-primary')).toHaveTextContent('enabled');
   });
 
-  it('11. observability summary updates after a successful run', async () => {
+  it('11. ObservabilitySummary updates after a successful AI execution', async () => {
     const demo = buildDemo();
     renderPanel(demo);
 
-    expect(screen.getByTestId('observability-tokens')).toHaveTextContent('Total tokens: 0');
+    expect(screen.queryByTestId('observability-summary-tokens')).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('run-button'));
     await screen.findByTestId('run-result');
 
     await waitFor(() => {
-      expect(screen.getByTestId('observability-tokens')).not.toHaveTextContent('Total tokens: 0');
+      expect(screen.getByTestId('observability-summary-tokens')).toBeInTheDocument();
     });
   });
 });
