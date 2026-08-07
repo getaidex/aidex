@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import type { AidexConfig } from './configuration/AidexConfig.js';
 import type { AidexRequest } from '../types/AidexRequest.js';
 import type { ExecutionContext } from '../types/ExecutionContext.js';
@@ -50,17 +51,24 @@ export class Aidex {
   async execute<TResult = unknown, TContext = unknown>(
     request: AidexRequest<TContext>
   ): Promise<TResult> {
-    const context = this.buildContext(request);
+    const executionId = request.executionId ?? randomUUID();
+    const normalizedRequest: AidexRequest<TContext> = {
+      ...request,
+      executionId,
+      options: { ...request.options, executionId },
+    };
+
+    const context = this.buildContext(normalizedRequest);
     await this.lifecycle.emit('beforeExecute', context);
 
-    const strategy = this.strategyRegistry.get(request.strategy) as
+    const strategy = this.strategyRegistry.get(normalizedRequest.strategy) as
       | Strategy<TResult, TContext>
       | undefined;
     if (!strategy) {
-      throw new StrategyNotFoundError(request.strategy);
+      throw new StrategyNotFoundError(normalizedRequest.strategy, executionId);
     }
 
-    const result = await strategy.execute(request, context);
+    const result = await strategy.execute(normalizedRequest, context);
     await this.lifecycle.emit('afterExecute', context);
     return result;
   }
@@ -74,6 +82,7 @@ export class Aidex {
       logger: this.config.logger,
       request,
       metadata: this.config.metadata,
+      executionId: request?.executionId,
     };
   }
 }

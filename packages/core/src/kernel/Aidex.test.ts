@@ -187,4 +187,108 @@ describe('Aidex', () => {
       request: { strategy: 'inspect' },
     });
   });
+
+  it('generates an executionId when the request does not supply one, and puts it on context, request, and options', async () => {
+    const aidex = new Aidex(makeConfig());
+    let seenRequest: unknown;
+    let seenContext: unknown;
+    aidex.registerStrategy({
+      name: 'inspect',
+      async execute(request, context) {
+        seenRequest = request;
+        seenContext = context;
+        return null;
+      },
+    });
+
+    await aidex.execute({ strategy: 'inspect' });
+
+    const request = seenRequest as { executionId?: string; options?: { executionId?: string } };
+    const context = seenContext as { executionId?: string };
+
+    expect(typeof request.executionId).toBe('string');
+    expect(request.executionId).toHaveLength(36); // UUID
+    expect(request.options?.executionId).toBe(request.executionId);
+    expect(context.executionId).toBe(request.executionId);
+  });
+
+  it('preserves a caller-supplied executionId instead of generating a new one', async () => {
+    const aidex = new Aidex(makeConfig());
+    let seenRequest: unknown;
+    aidex.registerStrategy({
+      name: 'inspect',
+      async execute(request) {
+        seenRequest = request;
+        return null;
+      },
+    });
+
+    await aidex.execute({ strategy: 'inspect', executionId: 'caller-supplied-id' });
+
+    expect((seenRequest as { executionId?: string }).executionId).toBe('caller-supplied-id');
+  });
+
+  it('merges a caller-supplied executionId into request.options alongside existing options', async () => {
+    const aidex = new Aidex(makeConfig());
+    let seenRequest: unknown;
+    aidex.registerStrategy({
+      name: 'inspect',
+      async execute(request) {
+        seenRequest = request;
+        return null;
+      },
+    });
+
+    await aidex.execute({
+      strategy: 'inspect',
+      executionId: 'caller-supplied-id',
+      options: { timeout: 100 },
+    });
+
+    expect((seenRequest as { options?: unknown }).options).toEqual({
+      timeout: 100,
+      executionId: 'caller-supplied-id',
+    });
+  });
+
+  it('does not mutate the original request object passed to execute()', async () => {
+    const aidex = new Aidex(makeConfig());
+    aidex.registerStrategy({
+      name: 'inspect',
+      async execute() {
+        return null;
+      },
+    });
+    const originalRequest = { strategy: 'inspect' };
+
+    await aidex.execute(originalRequest);
+
+    expect(originalRequest).toEqual({ strategy: 'inspect' });
+  });
+
+  it('generates two different executionIds for two separate execute() calls', async () => {
+    const aidex = new Aidex(makeConfig());
+    const seen: string[] = [];
+    aidex.registerStrategy({
+      name: 'inspect',
+      async execute(request) {
+        seen.push((request as { executionId: string }).executionId);
+        return null;
+      },
+    });
+
+    await aidex.execute({ strategy: 'inspect' });
+    await aidex.execute({ strategy: 'inspect' });
+
+    expect(seen).toHaveLength(2);
+    expect(seen[0]).not.toBe(seen[1]);
+  });
+
+  it('passes the same generated executionId to StrategyNotFoundError', async () => {
+    const aidex = new Aidex(makeConfig());
+
+    await expect(
+      aidex.execute({ strategy: 'missing', executionId: 'caller-supplied-id' })
+    ).rejects.toMatchObject({ executionId: 'caller-supplied-id' });
+  });
 });

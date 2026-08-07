@@ -10,4 +10,6 @@ export interface ExecutionContext<TContext = unknown> {
   logger?: ILogger;
   request?: AidexRequest<TContext>;
   metadata?: Metadata;
+  /** Set whenever this context was built for a specific request/execution. */
+  executionId?: string;
 }
