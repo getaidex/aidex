@@ -81,7 +81,12 @@ breakdown, an owner, or a target date.
   needing multiple providers constructs multiple `Aidex`/`AI` instances — an
   application-level composition, not a kernel capability. If this is ever
   revisited, it requires a new ADR superseding ADR-001, not a quiet
-  addition.
+  addition. `@aidex/connections` is not that revisiting: it's a separate,
+  standalone package that manages connection *configuration* and
+  `resolve()`s it into a single `Provider` for the application to hand to
+  `AIBuilder`/`Aidex` itself. `AidexConfig.provider` remains exactly one
+  `Provider` per `Aidex` instance, unchanged, so this doesn't require
+  superseding ADR-001.
 - **Configuration loading, env-var parsing, secrets management inside the
   kernel** — `packages/core` never reads `process.env`; every value in
   `AidexConfig` is supplied by the caller. This stays that way.

@@ -3,7 +3,7 @@ import { AidexError } from '@aidex/core';
 /**
  * Thrown by ConnectionManager.register()/update() when the given input
  * fails structural validation (id/providerType must be non-empty strings,
- * config must be a plain object). Never validates provider-specific
+ * config must be a non-null object). Never validates provider-specific
  * requirements — this package has no dependency on any concrete provider.
  */
 export class InvalidConnectionConfigError extends AidexError {

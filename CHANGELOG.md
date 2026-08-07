@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `@aidex/connections` — a standalone package for managing named
+  AI-provider connection configurations (identity/config/enabled-state),
+  resolved into `Provider` instances via application-registered
+  `ProviderFactory` functions. Depends only on `@aidex/core`; lives
+  entirely at the application-composition layer, the same relationship
+  `@aidex/engines` has with the kernel, consistent with
+  `ADR-001`'s one-`Provider`-per-`Aidex`-instance contract.
+- `ConnectionManager`'s stored `config` (which may hold secrets) is
+  reachable through exactly one method, `resolve()`: `get()`/`list()`
+  return a `Connection` type with no `config` field at all, and the
+  connection map itself is a true `#`-private class field, not just
+  TypeScript `private` — so it can't leak via `console.log`/
+  `util.inspect` on the manager instance either.
+
 ## [0.2.1-alpha] - 2026-08-04
 
 ### Changed

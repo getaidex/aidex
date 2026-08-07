@@ -34,7 +34,10 @@ export interface ResolveOptions {
  * guarantee, not a redaction pass.
  */
 export class ConnectionManager {
-  private readonly connections = new Map<string, StoredConnection>();
+  // # (true private field, not TS "private") — connections' config values
+  // may contain secrets, and TS "private" is compile-time-only: it would
+  // still show up via console.log/util.inspect on the manager instance.
+  readonly #connections = new Map<string, StoredConnection>();
   private readonly factories = new Map<string, ProviderFactory>();
 
   registerProviderFactory(providerType: string, factory: ProviderFactory): void {
@@ -44,7 +47,7 @@ export class ConnectionManager {
   register(input: RegisterConnectionInput): Connection {
     this.validateRegistration(input);
 
-    if (this.connections.has(input.id)) {
+    if (this.#connections.has(input.id)) {
       throw new DuplicateRegistrationError('Connection', input.id);
     }
 
@@ -54,24 +57,24 @@ export class ConnectionManager {
       enabled: input.enabled ?? true,
       metadata: input.metadata,
     };
-    this.connections.set(input.id, { connection, config: input.config });
+    this.#connections.set(input.id, { connection, config: input.config });
     return connection;
   }
 
   get(id: string): Connection | undefined {
-    return this.connections.get(id)?.connection;
+    return this.#connections.get(id)?.connection;
   }
 
   list(): Connection[] {
-    return Array.from(this.connections.values(), (stored) => stored.connection);
+    return Array.from(this.#connections.values(), (stored) => stored.connection);
   }
 
   has(id: string): boolean {
-    return this.connections.has(id);
+    return this.#connections.has(id);
   }
 
   update(id: string, updates: UpdateConnectionInput): Connection {
-    const stored = this.connections.get(id);
+    const stored = this.#connections.get(id);
     if (!stored) {
       throw new ConnectionNotFoundError(id);
     }
@@ -87,12 +90,12 @@ export class ConnectionManager {
     };
     const nextConfig = updates.config ?? stored.config;
 
-    this.connections.set(id, { connection: nextConnection, config: nextConfig });
+    this.#connections.set(id, { connection: nextConnection, config: nextConfig });
     return nextConnection;
   }
 
   remove(id: string): boolean {
-    return this.connections.delete(id);
+    return this.#connections.delete(id);
   }
 
   enable(id: string): Connection {
@@ -104,7 +107,7 @@ export class ConnectionManager {
   }
 
   resolve(id: string, options: ResolveOptions = {}): Provider {
-    const stored = this.connections.get(id);
+    const stored = this.#connections.get(id);
     if (!stored) {
       throw new ConnectionNotFoundError(id, options.executionId);
     }
@@ -132,7 +135,7 @@ export class ConnectionManager {
 
   private validateConfigShape(id: string, config: unknown): void {
     if (typeof config !== 'object' || config === null || Array.isArray(config)) {
-      throw new InvalidConnectionConfigError(id, 'config must be a plain object');
+      throw new InvalidConnectionConfigError(id, 'config must be a non-null object');
     }
   }
 }

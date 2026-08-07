@@ -504,6 +504,14 @@ describe('ConnectionManager', () => {
       expect(JSON.stringify(thrown)).not.toContain(SECRET);
     });
 
+    it('never exposes the secret through console.log/util.inspect on the manager itself', async () => {
+      const { inspect } = await import('node:util');
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ config: { apiKey: SECRET } }));
+
+      expect(inspect(manager)).not.toContain(SECRET);
+    });
+
     it('the secret only ever reaches the registered ProviderFactory, nothing else', () => {
       const manager = new ConnectionManager();
       manager.register(makeInput({ config: { apiKey: SECRET } }));
