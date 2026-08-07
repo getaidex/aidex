@@ -84,6 +84,14 @@ describe('fromGeminiResponse', () => {
     expect(response.metadata?.usage).toBeUndefined();
   });
 
+  it('propagates executionId from prompt.metadata through to response.metadata', () => {
+    const sdkResponse = { text: 'ok' } as GenerateContentResponse;
+
+    const response = fromGeminiResponse(sdkResponse, { content: 'q', metadata: { executionId: 'exec-e2e-2' } }, 'gemini');
+
+    expect(response.metadata?.executionId).toBe('exec-e2e-2');
+  });
+
   it('keeps the full native SDK response on raw', () => {
     const sdkResponse = { text: 'ok', modelVersion: 'x' } as GenerateContentResponse;
 

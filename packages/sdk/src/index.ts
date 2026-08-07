@@ -6,6 +6,14 @@ export type { AIConfiguration } from './configuration/AIConfiguration.js';
 export type { AidexWorkflowContext } from './workflow/WorkflowHandle.js';
 export type { FeaturePackage } from './featurePackage/FeaturePackage.js';
 
+// AidexError is exported here as the one deliberate exception to the
+// "domain errors aren't re-exported" convention below — it's not a
+// domain-specific error like StrategyNotFoundError; it's the universal
+// base type every application-level catch needs regardless of which
+// package threw, so it belongs alongside this SDK's other public types.
+export { AidexError } from '@aidex/core';
+export type { AidexErrorOptions } from '@aidex/core';
+
 // Re-exported because they're direct parameter types of this SDK's own
 // public methods (AIBuilder.provider()/.plugin(), AIConfiguration.provider/
 // .plugins) — a developer authoring a custom Provider or Plugin to pass into

@@ -2,7 +2,7 @@ import type { AidexOptions, Prompt, Provider, ProviderResponse } from '@aidex/co
 import { ExecutionMetrics, type ObservabilityBus } from '@aidex/observability';
 import type { GenerateContentResponse } from '@google/genai';
 import { GoogleGenAI } from '@google/genai';
-import { AbortedError, rejectOnAbort, throwIfAborted, TimeoutError, withTimeoutSignal } from '../shared/withAbort.js';
+import { AbortedError, rejectOnAbort, throwIfAborted, withTimeoutSignal } from '../shared/withAbort.js';
 import type { ProviderResponseMetadata } from '../shared/ProviderResponseMetadata.js';
 import { translateGeminiError } from './errors.js';
 import { fromGeminiResponse, toGeminiRequest } from './mapping.js';
@@ -63,9 +63,8 @@ export class GeminiProvider implements Provider, CapableProvider {
       metrics.recordEnd();
       this.recordFailure(metrics, error, options?.executionId);
       // Our own cancellation is not a vendor error — leave it untranslated.
-      throw error instanceof AbortedError || error instanceof TimeoutError
-        ? error
-        : translateGeminiError(error, this.name);
+      // TimeoutError extends AbortedError, so this catches both.
+      throw error instanceof AbortedError ? error : translateGeminiError(error, this.name);
     }
 
     metrics.recordEnd();
@@ -91,7 +90,7 @@ export class GeminiProvider implements Provider, CapableProvider {
     bus.trackDurationFromMetrics(metrics, { provider: this.name, model: this.model, executionId });
 
     if (usage) {
-      bus.trackTokens({ provider: this.name, model: this.model, executionId, ...usage });
+      bus.trackTokens({ provider: this.name, model: this.model, ...usage, executionId });
 
       if (
         this.pricing &&

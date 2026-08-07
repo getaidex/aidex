@@ -81,6 +81,15 @@ describe('StubProvider', () => {
       expect(withoutOptions.content).toBe('stub:x');
     });
 
+    it('propagates executionId from prompt.metadata through to response.metadata (end-to-end)', async () => {
+      const provider = new StubProvider();
+      const prompt = { content: 'hi', metadata: { executionId: 'exec-e2e-1' } };
+
+      const response = await provider.generate(prompt);
+
+      expect(response.metadata?.executionId).toBe('exec-e2e-1');
+    });
+
     it('produces an identical response across repeated calls with the same input (determinism)', async () => {
       const provider = new StubProvider();
       const prompt = { content: 'repeat me', metadata: { traceId: 'xyz' } };

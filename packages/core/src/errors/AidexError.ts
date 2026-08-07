@@ -27,11 +27,13 @@ export class AidexError extends Error {
   }
 
   toJSON(): Record<string, unknown> {
-    return {
-      name: this.name,
-      message: this.message,
-      code: this.code,
-      executionId: this.executionId,
-    };
+    // Spread every own enumerable property (so subclass-specific fields like
+    // ProviderError's `provider` or StrategyNotFoundError's `strategyName`
+    // survive JSON.stringify(), matching the pre-toJSON() behavior), except
+    // `cause` (avoid serializing a nested Error / risking cycles). name/
+    // message are applied last so they're never shadowed by a same-named
+    // own property set earlier in a subclass constructor.
+    const { cause: _cause, ...rest } = this as unknown as Record<string, unknown>;
+    return { ...rest, name: this.name, message: this.message };
   }
 }

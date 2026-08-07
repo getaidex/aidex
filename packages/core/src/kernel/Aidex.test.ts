@@ -284,11 +284,18 @@ describe('Aidex', () => {
     expect(seen[0]).not.toBe(seen[1]);
   });
 
-  it('passes the same generated executionId to StrategyNotFoundError', async () => {
+  it('passes the auto-generated executionId to StrategyNotFoundError when the caller supplied none', async () => {
     const aidex = new Aidex(makeConfig());
 
-    await expect(
-      aidex.execute({ strategy: 'missing', executionId: 'caller-supplied-id' })
-    ).rejects.toMatchObject({ executionId: 'caller-supplied-id' });
+    const rejection = aidex.execute({ strategy: 'missing' });
+
+    try {
+      await rejection;
+      throw new Error('expected rejection');
+    } catch (err) {
+      expect(err).toBeInstanceOf(StrategyNotFoundError);
+      expect(typeof (err as { executionId?: string }).executionId).toBe('string');
+      expect((err as { executionId: string }).executionId).toHaveLength(36);
+    }
   });
 });

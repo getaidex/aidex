@@ -51,7 +51,7 @@ export class Aidex {
   async execute<TResult = unknown, TContext = unknown>(
     request: AidexRequest<TContext>
   ): Promise<TResult> {
-    const executionId = request.executionId ?? randomUUID();
+    const executionId = request.executionId || randomUUID();
     const normalizedRequest: AidexRequest<TContext> = {
       ...request,
       executionId,

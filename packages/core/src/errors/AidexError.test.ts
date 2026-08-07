@@ -58,4 +58,23 @@ describe('AidexError', () => {
       message: 'custom failure',
     });
   });
+
+  it("preserves a subclass's own fields in JSON.stringify(), not just the base fields", () => {
+    class CustomError extends AidexError {
+      readonly detail: string;
+      constructor(detail: string) {
+        super('custom failure');
+        this.name = 'CustomError';
+        this.detail = detail;
+        Object.setPrototypeOf(this, CustomError.prototype);
+      }
+    }
+    const error = new CustomError('extra info');
+
+    expect(JSON.parse(JSON.stringify(error))).toEqual({
+      name: 'CustomError',
+      message: 'custom failure',
+      detail: 'extra info',
+    });
+  });
 });

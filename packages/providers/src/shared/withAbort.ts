@@ -13,20 +13,24 @@ import { AidexError } from '@aidex/core';
  * translating it into a ProviderError.
  */
 export class AbortedError extends AidexError {
-  constructor() {
-    super('Aborted');
+  constructor(message = 'Aborted') {
+    super(message);
     this.name = 'AbortedError';
     Object.setPrototypeOf(this, AbortedError.prototype);
   }
 }
 
 /**
- * Thrown instead of AbortedError when the SDK's own timeout deadline (not
- * the caller) is what triggered the abort — set as the AbortSignal's
+ * Thrown instead of a plain AbortedError when the SDK's own timeout deadline
+ * (not the caller) is what triggered the abort — set as the AbortSignal's
  * `.reason` by withTimeoutSignal()'s internal timer, and detected by
- * throwIfAborted()/rejectOnAbort() below.
+ * throwIfAborted()/rejectOnAbort() below. Extends AbortedError (rather than
+ * AidexError directly) so pre-existing `instanceof AbortedError` handling
+ * for "the request was aborted, for any reason" keeps matching timeouts too
+ * — `instanceof TimeoutError` remains available for code that wants to
+ * discriminate the two cases specifically.
  */
-export class TimeoutError extends AidexError {
+export class TimeoutError extends AbortedError {
   readonly timeoutMs: number;
 
   constructor(timeoutMs: number) {
