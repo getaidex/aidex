@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { DuplicateRegistrationError } from '@aidex/core';
+import type { Provider } from '@aidex/core';
 import { InvalidConnectionConfigError } from '../errors/InvalidConnectionConfigError.js';
 import { ConnectionNotFoundError } from '../errors/ConnectionNotFoundError.js';
+import { DisabledConnectionError } from '../errors/DisabledConnectionError.js';
+import { ProviderFactoryNotFoundError } from '../errors/ProviderFactoryNotFoundError.js';
 import { ConnectionManager } from './ConnectionManager.js';
 import type { RegisterConnectionInput } from '../types/RegisterConnectionInput.js';
 
@@ -11,6 +14,15 @@ function makeInput(overrides: Partial<RegisterConnectionInput> = {}): RegisterCo
     providerType: 'gemini',
     config: { apiKey: 'test-key' },
     ...overrides,
+  };
+}
+
+function makeStubProvider(name = 'stub'): Provider {
+  return {
+    name,
+    async generate(prompt) {
+      return { content: prompt.content };
+    },
   };
 }
 
@@ -274,6 +286,113 @@ describe('ConnectionManager', () => {
     it('enable() throws ConnectionNotFoundError for a missing connection', () => {
       const manager = new ConnectionManager();
       expect(() => manager.enable('missing')).toThrow(ConnectionNotFoundError);
+    });
+  });
+
+  describe('resolve()', () => {
+    it('calls the registered factory for the connection\'s providerType with its stored config', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ config: { apiKey: 'secret-value', model: 'x' } }));
+      let seenConfig: unknown;
+      manager.registerProviderFactory('gemini', (config) => {
+        seenConfig = config;
+        return makeStubProvider('resolved');
+      });
+
+      const provider = manager.resolve('conn-1');
+
+      expect(seenConfig).toEqual({ apiKey: 'secret-value', model: 'x' });
+      expect(provider.name).toBe('resolved');
+    });
+
+    it('throws ConnectionNotFoundError for a missing connection', () => {
+      const manager = new ConnectionManager();
+      expect(() => manager.resolve('missing')).toThrow(ConnectionNotFoundError);
+    });
+
+    it('throws DisabledConnectionError for a disabled connection, even with a factory registered', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ enabled: false }));
+      manager.registerProviderFactory('gemini', () => makeStubProvider());
+
+      expect(() => manager.resolve('conn-1')).toThrow(DisabledConnectionError);
+    });
+
+    it('throws ProviderFactoryNotFoundError when no factory is registered for the providerType', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput());
+
+      expect(() => manager.resolve('conn-1')).toThrow(ProviderFactoryNotFoundError);
+    });
+
+    it('uses the correct factory when multiple providerTypes are registered', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ id: 'conn-gemini', providerType: 'gemini' }));
+      manager.register(makeInput({ id: 'conn-stub', providerType: 'stub' }));
+      manager.registerProviderFactory('gemini', () => makeStubProvider('gemini-instance'));
+      manager.registerProviderFactory('stub', () => makeStubProvider('stub-instance'));
+
+      expect(manager.resolve('conn-gemini').name).toBe('gemini-instance');
+      expect(manager.resolve('conn-stub').name).toBe('stub-instance');
+    });
+  });
+
+  describe('resolve() — executionId propagation', () => {
+    it('attaches options.executionId to ConnectionNotFoundError', () => {
+      const manager = new ConnectionManager();
+      let thrown: unknown;
+      try {
+        manager.resolve('missing', { executionId: 'exec-1' });
+      } catch (error) {
+        thrown = error;
+      }
+      expect(thrown).toBeInstanceOf(ConnectionNotFoundError);
+      expect(thrown).toMatchObject({ executionId: 'exec-1' });
+    });
+
+    it('attaches options.executionId to DisabledConnectionError', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput({ enabled: false }));
+      let thrown: unknown;
+      try {
+        manager.resolve('conn-1', { executionId: 'exec-2' });
+      } catch (error) {
+        thrown = error;
+      }
+      expect(thrown).toBeInstanceOf(DisabledConnectionError);
+      expect(thrown).toMatchObject({ executionId: 'exec-2' });
+    });
+
+    it('attaches options.executionId to ProviderFactoryNotFoundError', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput());
+      let thrown: unknown;
+      try {
+        manager.resolve('conn-1', { executionId: 'exec-3' });
+      } catch (error) {
+        thrown = error;
+      }
+      expect(thrown).toBeInstanceOf(ProviderFactoryNotFoundError);
+      expect(thrown).toMatchObject({ executionId: 'exec-3' });
+    });
+
+    it('does not require executionId — resolve() works with no options at all', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput());
+      manager.registerProviderFactory('gemini', () => makeStubProvider());
+
+      expect(() => manager.resolve('conn-1')).not.toThrow();
+    });
+  });
+
+  describe('registerProviderFactory()', () => {
+    it('replaces a previously registered factory for the same providerType', () => {
+      const manager = new ConnectionManager();
+      manager.register(makeInput());
+      manager.registerProviderFactory('gemini', () => makeStubProvider('first'));
+      manager.registerProviderFactory('gemini', () => makeStubProvider('second'));
+
+      expect(manager.resolve('conn-1').name).toBe('second');
     });
   });
 });

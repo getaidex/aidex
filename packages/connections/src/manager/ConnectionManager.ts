@@ -1,8 +1,11 @@
-import { DuplicateRegistrationError, type Metadata } from '@aidex/core';
+import { DuplicateRegistrationError, type Metadata, type Provider } from '@aidex/core';
 import type { Connection } from '../types/Connection.js';
+import type { ProviderFactory } from '../types/ProviderFactory.js';
 import type { RegisterConnectionInput } from '../types/RegisterConnectionInput.js';
 import { ConnectionNotFoundError } from '../errors/ConnectionNotFoundError.js';
+import { DisabledConnectionError } from '../errors/DisabledConnectionError.js';
 import { InvalidConnectionConfigError } from '../errors/InvalidConnectionConfigError.js';
+import { ProviderFactoryNotFoundError } from '../errors/ProviderFactoryNotFoundError.js';
 
 interface StoredConnection {
   connection: Connection;
@@ -13,6 +16,10 @@ export interface UpdateConnectionInput {
   config?: Record<string, unknown>;
   enabled?: boolean;
   metadata?: Metadata;
+}
+
+export interface ResolveOptions {
+  executionId?: string;
 }
 
 /**
@@ -28,6 +35,11 @@ export interface UpdateConnectionInput {
  */
 export class ConnectionManager {
   private readonly connections = new Map<string, StoredConnection>();
+  private readonly factories = new Map<string, ProviderFactory>();
+
+  registerProviderFactory(providerType: string, factory: ProviderFactory): void {
+    this.factories.set(providerType, factory);
+  }
 
   register(input: RegisterConnectionInput): Connection {
     this.validateRegistration(input);
@@ -89,6 +101,23 @@ export class ConnectionManager {
 
   disable(id: string): Connection {
     return this.update(id, { enabled: false });
+  }
+
+  resolve(id: string, options: ResolveOptions = {}): Provider {
+    const stored = this.connections.get(id);
+    if (!stored) {
+      throw new ConnectionNotFoundError(id, options.executionId);
+    }
+    if (!stored.connection.enabled) {
+      throw new DisabledConnectionError(id, options.executionId);
+    }
+
+    const factory = this.factories.get(stored.connection.providerType);
+    if (!factory) {
+      throw new ProviderFactoryNotFoundError(stored.connection.providerType, options.executionId);
+    }
+
+    return factory(stored.config);
   }
 
   private validateRegistration(input: RegisterConnectionInput): void {
