@@ -8,6 +8,7 @@ export default tseslint.config(
   {
     files: [
       'packages/*/src/**/*.ts',
+      'packages/*/src/**/*.tsx',
       'apps/*/src/**/*.ts',
       'examples/src/**/*.ts',
       'examples/src/**/*.tsx',

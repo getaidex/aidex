@@ -1,7 +1,7 @@
 {
   "name": "@aidex/admin-react",
   "version": "0.2.1-alpha",
-  "description": "Aidex Admin React adapter — a single useAdmin(controller) hook over @aidex/admin's AdminController. No business logic, no UI components; React is the entire concern this package owns.",
+  "description": "Aidex Admin React adapter — useAdmin(controller) plus a small set of headless, unstyled Admin components (AdminOverview, AIControl, ConnectionList, ObservabilitySummary) over @aidex/admin's AdminController. No business logic — React is the entire concern this package owns.",
   "keywords": [
     "ai",
     "admin",
@@ -60,6 +60,7 @@
     "@aidex/ai-control": "workspace:*",
     "@aidex/connections": "workspace:*",
     "@aidex/observability": "workspace:*",
+    "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
