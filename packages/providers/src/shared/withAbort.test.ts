@@ -4,6 +4,7 @@ import {
   isAborted,
   rejectOnAbort,
   throwIfAborted,
+  TimeoutError,
   withTimeoutSignal,
 } from './withAbort.js';
 
@@ -36,6 +37,33 @@ describe('throwIfAborted', () => {
     const controller = new AbortController();
     controller.abort();
     expect(() => throwIfAborted(controller.signal)).toThrow(AbortedError);
+  });
+
+  it('throws TimeoutError (not AbortedError) once the merged timeout signal fires', () => {
+    vi.useFakeTimers();
+    try {
+      const merged = withTimeoutSignal(10, undefined);
+      vi.advanceTimersByTime(10);
+
+      expect(() => throwIfAborted(merged)).toThrow(TimeoutError);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('still throws plain AbortedError for a caller-triggered abort (no timeout involved)', () => {
+    const controller = new AbortController();
+    controller.abort();
+
+    let thrown: unknown;
+    try {
+      throwIfAborted(controller.signal);
+    } catch (error) {
+      thrown = error;
+    }
+
+    expect(thrown).toBeInstanceOf(AbortedError);
+    expect(thrown).not.toBeInstanceOf(TimeoutError);
   });
 });
 
@@ -110,5 +138,31 @@ describe('rejectOnAbort', () => {
     controller.abort();
 
     await expect(pending).rejects.toBeInstanceOf(AbortedError);
+  });
+
+  it('rejects with TimeoutError once a merged timeout signal fires mid-request', async () => {
+    vi.useFakeTimers();
+    try {
+      const merged = withTimeoutSignal(10, undefined);
+      const never = new Promise(() => {});
+
+      const pending = rejectOnAbort(never, merged);
+      await vi.advanceTimersByTimeAsync(10);
+
+      await expect(pending).rejects.toBeInstanceOf(TimeoutError);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe('TimeoutError', () => {
+  it('carries the timeout duration and a descriptive message', () => {
+    const error = new TimeoutError(5000);
+
+    expect(error).toBeInstanceOf(Error);
+    expect(error.name).toBe('TimeoutError');
+    expect(error.timeoutMs).toBe(5000);
+    expect(error.message).toBe('Timed out after 5000ms');
   });
 });

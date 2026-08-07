@@ -1,3 +1,5 @@
+import { AidexError } from '@aidex/core';
+
 /**
  * Reusable AidexOptions.signal / .timeout helpers for Provider implementations.
  * Plain functions only — no class, no shared state, composed by whichever
@@ -10,12 +12,33 @@
  * cancelled this" apart from a real vendor/network error and skip
  * translating it into a ProviderError.
  */
-export class AbortedError extends Error {
+export class AbortedError extends AidexError {
   constructor() {
     super('Aborted');
     this.name = 'AbortedError';
     Object.setPrototypeOf(this, AbortedError.prototype);
   }
+}
+
+/**
+ * Thrown instead of AbortedError when the SDK's own timeout deadline (not
+ * the caller) is what triggered the abort — set as the AbortSignal's
+ * `.reason` by withTimeoutSignal()'s internal timer, and detected by
+ * throwIfAborted()/rejectOnAbort() below.
+ */
+export class TimeoutError extends AidexError {
+  readonly timeoutMs: number;
+
+  constructor(timeoutMs: number) {
+    super(`Timed out after ${timeoutMs}ms`);
+    this.name = 'TimeoutError';
+    this.timeoutMs = timeoutMs;
+    Object.setPrototypeOf(this, TimeoutError.prototype);
+  }
+}
+
+function abortErrorFor(signal: AbortSignal): AbortedError | TimeoutError {
+  return signal.reason instanceof TimeoutError ? signal.reason : new AbortedError();
 }
 
 export function isAborted(signal?: AbortSignal): boolean {
@@ -24,7 +47,7 @@ export function isAborted(signal?: AbortSignal): boolean {
 
 export function throwIfAborted(signal?: AbortSignal): void {
   if (signal?.aborted) {
-    throw new AbortedError();
+    throw abortErrorFor(signal);
   }
 }
 
@@ -39,7 +62,7 @@ export function withTimeoutSignal(timeoutMs?: number, signal?: AbortSignal): Abo
   }
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const timer = setTimeout(() => controller.abort(new TimeoutError(timeoutMs)), timeoutMs);
   signal?.addEventListener('abort', () => {
     clearTimeout(timer);
     controller.abort();
@@ -49,22 +72,22 @@ export function withTimeoutSignal(timeoutMs?: number, signal?: AbortSignal): Abo
 }
 
 /**
- * Rejects with an "Aborted" error as soon as `signal` fires, racing whichever
- * SDK call `promise` represents. A vendor SDK that honors `AbortSignal`
- * internally will usually reject on its own once aborted; this guarantees the
- * same outcome even when the SDK's own abort handling is slow, absent, or
- * (as in tests) mocked out entirely.
+ * Rejects with an "Aborted"/"Timed out" error as soon as `signal` fires,
+ * racing whichever SDK call `promise` represents. A vendor SDK that honors
+ * `AbortSignal` internally will usually reject on its own once aborted;
+ * this guarantees the same outcome even when the SDK's own abort handling
+ * is slow, absent, or (as in tests) mocked out entirely.
  */
 export function rejectOnAbort<T>(promise: Promise<T>, signal?: AbortSignal): Promise<T> {
   if (!signal) {
     return promise;
   }
   if (signal.aborted) {
-    return Promise.reject(new AbortedError());
+    return Promise.reject(abortErrorFor(signal));
   }
 
   return new Promise<T>((resolve, reject) => {
-    const onAbort = (): void => reject(new AbortedError());
+    const onAbort = (): void => reject(abortErrorFor(signal));
     signal.addEventListener('abort', onAbort, { once: true });
     promise.then(
       (value) => {
