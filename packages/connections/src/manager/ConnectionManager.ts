@@ -1,11 +1,18 @@
-import { DuplicateRegistrationError } from '@aidex/core';
+import { DuplicateRegistrationError, type Metadata } from '@aidex/core';
 import type { Connection } from '../types/Connection.js';
 import type { RegisterConnectionInput } from '../types/RegisterConnectionInput.js';
+import { ConnectionNotFoundError } from '../errors/ConnectionNotFoundError.js';
 import { InvalidConnectionConfigError } from '../errors/InvalidConnectionConfigError.js';
 
 interface StoredConnection {
   connection: Connection;
   config: Record<string, unknown>;
+}
+
+export interface UpdateConnectionInput {
+  config?: Record<string, unknown>;
+  enabled?: boolean;
+  metadata?: Metadata;
 }
 
 /**
@@ -49,6 +56,39 @@ export class ConnectionManager {
 
   has(id: string): boolean {
     return this.connections.has(id);
+  }
+
+  update(id: string, updates: UpdateConnectionInput): Connection {
+    const stored = this.connections.get(id);
+    if (!stored) {
+      throw new ConnectionNotFoundError(id);
+    }
+
+    if (updates.config !== undefined) {
+      this.validateConfigShape(id, updates.config);
+    }
+
+    const nextConnection: Connection = {
+      ...stored.connection,
+      enabled: updates.enabled ?? stored.connection.enabled,
+      metadata: updates.metadata ?? stored.connection.metadata,
+    };
+    const nextConfig = updates.config ?? stored.config;
+
+    this.connections.set(id, { connection: nextConnection, config: nextConfig });
+    return nextConnection;
+  }
+
+  remove(id: string): boolean {
+    return this.connections.delete(id);
+  }
+
+  enable(id: string): Connection {
+    return this.update(id, { enabled: true });
+  }
+
+  disable(id: string): Connection {
+    return this.update(id, { enabled: false });
   }
 
   private validateRegistration(input: RegisterConnectionInput): void {
