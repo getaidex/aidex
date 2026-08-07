@@ -25,6 +25,7 @@ const {
   ProviderInvalidRequestError,
   ProviderUnavailableError,
 } = await import('../shared/errors.js');
+const { TimeoutError } = await import('../shared/withAbort.js');
 
 describe('GeminiProvider', () => {
   beforeEach(() => {
@@ -244,14 +245,30 @@ describe('GeminiProvider', () => {
       releaseSdkCall({ text: 'too late' });
     });
 
-    it('rejects an in-flight call once options.timeout elapses', async () => {
+    it('rejects an in-flight call with TimeoutError once options.timeout elapses', async () => {
       vi.useFakeTimers();
       try {
         generateContentMock.mockImplementation(() => new Promise(() => {}));
         const provider = new GeminiProvider({ apiKey: 'test-key' });
 
         const pending = provider.generate({ content: 'hi' }, { timeout: 50 });
-        const assertion = expect(pending).rejects.toThrow('Aborted');
+        const assertion = expect(pending).rejects.toBeInstanceOf(TimeoutError);
+
+        await vi.advanceTimersByTimeAsync(50);
+        await assertion;
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('never translates a TimeoutError into a ProviderError', async () => {
+      vi.useFakeTimers();
+      try {
+        generateContentMock.mockImplementation(() => new Promise(() => {}));
+        const provider = new GeminiProvider({ apiKey: 'test-key' });
+
+        const pending = provider.generate({ content: 'hi' }, { timeout: 50 });
+        const assertion = expect(pending).rejects.not.toBeInstanceOf(ProviderError);
 
         await vi.advanceTimersByTimeAsync(50);
         await assertion;
@@ -360,6 +377,55 @@ describe('GeminiProvider', () => {
 
       const errorEvent = events.find((e) => e.event === 'error');
       expect(errorEvent?.metadata?.error).toBe(failure);
+    });
+
+    it('includes options.executionId in every observability event when provided', async () => {
+      generateContentMock.mockResolvedValue({
+        text: 'ok',
+        usageMetadata: { promptTokenCount: 1, candidatesTokenCount: 1, totalTokenCount: 2 },
+      });
+      const bus = new ObservabilityBus();
+      const events: { event: string; metadata?: Record<string, unknown> }[] = [];
+      bus.subscribe((event) => events.push(event));
+      const provider = new GeminiProvider({
+        apiKey: 'test-key',
+        observability: bus,
+        pricing: { inputPricePerMillion: 1, outputPricePerMillion: 1 },
+      });
+
+      await provider.generate({ content: 'hi' }, { executionId: 'exec-123' });
+
+      for (const event of events) {
+        expect(event.metadata).toMatchObject({ executionId: 'exec-123' });
+      }
+    });
+
+    it('includes options.executionId in the error event on a failed call', async () => {
+      generateContentMock.mockRejectedValue(new ApiError({ message: 'down', status: 503 }));
+      const bus = new ObservabilityBus();
+      const events: { event: string; metadata?: Record<string, unknown> }[] = [];
+      bus.subscribe((event) => events.push(event));
+      const provider = new GeminiProvider({ apiKey: 'test-key', observability: bus });
+
+      await expect(
+        provider.generate({ content: 'hi' }, { executionId: 'exec-456' })
+      ).rejects.toBeInstanceOf(ProviderUnavailableError);
+
+      const errorEvent = events.find((e) => e.event === 'error');
+      expect(errorEvent?.metadata).toMatchObject({ executionId: 'exec-456' });
+    });
+
+    it('omits executionId cleanly (undefined) when options carry none', async () => {
+      generateContentMock.mockResolvedValue({ text: 'ok' });
+      const bus = new ObservabilityBus();
+      const events: { event: string; metadata?: Record<string, unknown> }[] = [];
+      bus.subscribe((event) => events.push(event));
+      const provider = new GeminiProvider({ apiKey: 'test-key', observability: bus });
+
+      await provider.generate({ content: 'hi' });
+
+      const providerEvent = events.find((e) => e.event === 'provider');
+      expect(providerEvent?.metadata?.executionId).toBeUndefined();
     });
   });
 

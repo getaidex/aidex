@@ -2,7 +2,7 @@ import type { AidexOptions, Prompt, Provider, ProviderResponse } from '@aidex/co
 import { ExecutionMetrics, type ObservabilityBus } from '@aidex/observability';
 import type { GenerateContentResponse } from '@google/genai';
 import { GoogleGenAI } from '@google/genai';
-import { AbortedError, rejectOnAbort, throwIfAborted, withTimeoutSignal } from '../shared/withAbort.js';
+import { AbortedError, rejectOnAbort, throwIfAborted, TimeoutError, withTimeoutSignal } from '../shared/withAbort.js';
 import type { ProviderResponseMetadata } from '../shared/ProviderResponseMetadata.js';
 import { translateGeminiError } from './errors.js';
 import { fromGeminiResponse, toGeminiRequest } from './mapping.js';
@@ -61,14 +61,16 @@ export class GeminiProvider implements Provider, CapableProvider {
       sdkResponse = await rejectOnAbort(this.client.models.generateContent(request), signal);
     } catch (error) {
       metrics.recordEnd();
-      this.recordFailure(metrics, error);
+      this.recordFailure(metrics, error, options?.executionId);
       // Our own cancellation is not a vendor error — leave it untranslated.
-      throw error instanceof AbortedError ? error : translateGeminiError(error, this.name);
+      throw error instanceof AbortedError || error instanceof TimeoutError
+        ? error
+        : translateGeminiError(error, this.name);
     }
 
     metrics.recordEnd();
     const response = fromGeminiResponse(sdkResponse, prompt, this.name);
-    this.recordSuccess(metrics, response);
+    this.recordSuccess(metrics, response, options?.executionId);
 
     return response;
   }
@@ -77,7 +79,7 @@ export class GeminiProvider implements Provider, CapableProvider {
     return this.capabilities;
   }
 
-  private recordSuccess(metrics: ExecutionMetrics, response: ProviderResponse): void {
+  private recordSuccess(metrics: ExecutionMetrics, response: ProviderResponse, executionId?: string): void {
     const bus = this.observability;
     if (!bus) {
       return;
@@ -85,11 +87,11 @@ export class GeminiProvider implements Provider, CapableProvider {
 
     const usage = (response.metadata as ProviderResponseMetadata | undefined)?.usage;
 
-    bus.trackProvider({ provider: this.name, model: this.model, success: true });
-    bus.trackDurationFromMetrics(metrics, { provider: this.name, model: this.model });
+    bus.trackProvider({ provider: this.name, model: this.model, success: true, executionId });
+    bus.trackDurationFromMetrics(metrics, { provider: this.name, model: this.model, executionId });
 
     if (usage) {
-      bus.trackTokens({ provider: this.name, model: this.model, ...usage });
+      bus.trackTokens({ provider: this.name, model: this.model, executionId, ...usage });
 
       if (
         this.pricing &&
@@ -103,20 +105,20 @@ export class GeminiProvider implements Provider, CapableProvider {
             inputPricePerMillion: this.pricing.inputPricePerMillion,
             outputPricePerMillion: this.pricing.outputPricePerMillion,
           },
-          { provider: this.name, model: this.model }
+          { provider: this.name, model: this.model, executionId }
         );
       }
     }
   }
 
-  private recordFailure(metrics: ExecutionMetrics, error: unknown): void {
+  private recordFailure(metrics: ExecutionMetrics, error: unknown, executionId?: string): void {
     const bus = this.observability;
     if (!bus) {
       return;
     }
 
-    bus.trackProvider({ provider: this.name, model: this.model, success: false });
-    bus.trackDurationFromMetrics(metrics, { provider: this.name, model: this.model });
-    bus.trackError({ provider: this.name, model: this.model, error });
+    bus.trackProvider({ provider: this.name, model: this.model, success: false, executionId });
+    bus.trackDurationFromMetrics(metrics, { provider: this.name, model: this.model, executionId });
+    bus.trackError({ provider: this.name, model: this.model, error, executionId });
   }
 }

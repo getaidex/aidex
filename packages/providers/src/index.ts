@@ -11,5 +11,5 @@ export {
   ProviderInvalidRequestError,
   ProviderUnavailableError,
 } from './shared/errors.js';
-export { AbortedError } from './shared/withAbort.js';
+export { AbortedError, TimeoutError } from './shared/withAbort.js';
 export type { ProviderResponseMetadata } from './shared/ProviderResponseMetadata.js';
