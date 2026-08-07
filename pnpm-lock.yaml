@@ -164,6 +164,21 @@ importers:
         specifier: workspace:*
         version: link:../providers
 
+  packages/admin:
+    dependencies:
+      '@aidex/ai-control':
+        specifier: workspace:*
+        version: link:../ai-control
+      '@aidex/connections':
+        specifier: workspace:*
+        version: link:../connections
+      '@aidex/core':
+        specifier: workspace:*
+        version: link:../core
+      '@aidex/observability':
+        specifier: workspace:*
+        version: link:../observability
+
   packages/ai-control:
     dependencies:
       '@aidex/core':

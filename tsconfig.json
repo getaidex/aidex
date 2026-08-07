@@ -10,6 +10,7 @@
     { "path": "packages/catalog" },
     { "path": "packages/connections" },
     { "path": "packages/ai-control" },
+    { "path": "packages/admin" },
     { "path": "packages/engines" },
     { "path": "packages/mcp-aidex" },
     { "path": "packages/prompts" },
