@@ -147,9 +147,10 @@ describe('rejectOnAbort', () => {
       const never = new Promise(() => {});
 
       const pending = rejectOnAbort(never, merged);
-      await vi.advanceTimersByTimeAsync(10);
+      const assertion = expect(pending).rejects.toBeInstanceOf(TimeoutError);
 
-      await expect(pending).rejects.toBeInstanceOf(TimeoutError);
+      await vi.advanceTimersByTimeAsync(10);
+      await assertion;
     } finally {
       vi.useRealTimers();
     }
