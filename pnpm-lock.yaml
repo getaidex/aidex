@@ -216,6 +216,25 @@ importers:
         specifier: workspace:*
         version: link:../observability
 
+  packages/admin-angular:
+    dependencies:
+      '@aidex/admin':
+        specifier: workspace:*
+        version: link:../admin
+    devDependencies:
+      '@aidex/ai-control':
+        specifier: workspace:*
+        version: link:../ai-control
+      '@aidex/connections':
+        specifier: workspace:*
+        version: link:../connections
+      '@aidex/observability':
+        specifier: workspace:*
+        version: link:../observability
+      '@angular/core':
+        specifier: 21.2.19
+        version: 21.2.19(@angular/compiler@21.2.19)(rxjs@7.8.2)
+
   packages/admin-react:
     dependencies:
       '@aidex/admin':
