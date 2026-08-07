@@ -25,3 +25,6 @@ docs/superpowers/
 .angular/
 out-tsc/
 apps/docs/src/app/content/generated/
+
+# Git worktrees
+.worktrees/
