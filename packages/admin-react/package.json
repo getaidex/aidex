@@ -60,7 +60,7 @@
     "@aidex/ai-control": "workspace:*",
     "@aidex/connections": "workspace:*",
     "@aidex/observability": "workspace:*",
-    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "^16.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
