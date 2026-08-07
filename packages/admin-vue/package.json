@@ -1,6 +1,6 @@
 {
   "name": "@aidex/admin-vue",
-  "version": "0.2.1-alpha",
+  "version": "0.2.2-alpha",
   "description": "Aidex Admin Vue adapter — a useAdmin(controller) composable wrapping @aidex/admin's AdminController in a Vue ref. No business logic, no UI components; Vue is the entire concern this package owns.",
   "keywords": [
     "ai",

@@ -1,6 +1,6 @@
 {
   "name": "@aidex/admin",
-  "version": "0.2.1-alpha",
+  "version": "0.2.2-alpha",
   "description": "Aidex Admin — framework-agnostic composition layer over @aidex/connections, @aidex/ai-control, and @aidex/observability. Owns no state itself; the foundation for future React/Angular/Vue admin UI adapters.",
   "keywords": [
     "ai",

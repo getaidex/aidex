@@ -1,6 +1,6 @@
 {
   "name": "@aidex/ai-control",
-  "version": "0.2.1-alpha",
+  "version": "0.2.2-alpha",
   "description": "Aidex AI Control — framework-agnostic global/per-feature AI enable-disable, enforced before any Provider call. Foundation for a future @aidex/admin.",
   "keywords": [
     "ai",

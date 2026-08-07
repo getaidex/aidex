@@ -1,6 +1,6 @@
 {
   "name": "@aidex/admin-angular",
-  "version": "0.2.1-alpha",
+  "version": "0.2.2-alpha",
   "description": "Aidex Admin Angular adapter — an AdminService wrapping @aidex/admin's AdminController in an Angular Signal. No business logic, no UI components; Angular is the entire concern this package owns.",
   "keywords": [
     "ai",

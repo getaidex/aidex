@@ -1,6 +1,6 @@
 {
   "name": "@aidex/connections",
-  "version": "0.2.1-alpha",
+  "version": "0.2.2-alpha",
   "description": "Aidex Connection Manager — framework-agnostic management of named AI-provider connection configurations, resolved into Provider instances.",
   "keywords": [
     "ai",

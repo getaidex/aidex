@@ -1,6 +1,6 @@
 {
   "name": "@aidex/admin-react",
-  "version": "0.2.1-alpha",
+  "version": "0.2.2-alpha",
   "description": "Aidex Admin React adapter — useAdmin(controller) plus a small set of headless, unstyled Admin components (AdminOverview, AIControl, ConnectionList, ObservabilitySummary) over @aidex/admin's AdminController. No business logic — React is the entire concern this package owns.",
   "keywords": [
     "ai",
