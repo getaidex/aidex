@@ -11,6 +11,7 @@
     { "path": "packages/connections" },
     { "path": "packages/ai-control" },
     { "path": "packages/admin" },
+    { "path": "packages/admin-react" },
     { "path": "packages/engines" },
     { "path": "packages/mcp-aidex" },
     { "path": "packages/prompts" },

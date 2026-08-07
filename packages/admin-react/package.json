@@ -1,0 +1,74 @@
+{
+  "name": "@aidex/admin-react",
+  "version": "0.2.1-alpha",
+  "description": "Aidex Admin React adapter — a single useAdmin(controller) hook over @aidex/admin's AdminController. No business logic, no UI components; React is the entire concern this package owns.",
+  "keywords": [
+    "ai",
+    "admin",
+    "react",
+    "hook"
+  ],
+  "license": "MIT",
+  "author": "Sudheer Babu <isudheerbabu.dev@gmail.com>",
+  "homepage": "https://github.com/getaidex/aidex/tree/main/packages/admin-react#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getaidex/aidex.git",
+    "directory": "packages/admin-react"
+  },
+  "bugs": {
+    "url": "https://github.com/getaidex/aidex/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -b && tsup",
+    "typecheck": "tsc -b --noEmit",
+    "prepublishOnly": "node ../../scripts/assert-pnpm.cjs",
+    "prepack": "node ../../scripts/assert-pnpm.cjs"
+  },
+  "dependencies": {
+    "@aidex/admin": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@aidex/ai-control": "workspace:*",
+    "@aidex/connections": "workspace:*",
+    "@aidex/observability": "workspace:*",
+    "@testing-library/react": "^16.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "jsdom": "^25.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "engines": {
+    "node": ">=20.19.0",
+    "pnpm": ">=9"
+  }
+}
