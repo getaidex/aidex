@@ -76,4 +76,30 @@ describe('EngineHandle', () => {
 
     expect(contexts[0].request).toEqual({ strategy: 'document.extract', input: undefined });
   });
+
+  it('sets a fresh executionId on the ExecutionContext for every execute() call', async () => {
+    const registry = new EngineRegistry();
+    const { engine, contexts } = makeRecordingEngine('document.extract');
+    registry.register(engine);
+    const handle = new EngineHandle(registry, makeConfig(), 'document.extract');
+
+    await handle.execute('first');
+    await handle.execute('second');
+
+    expect(contexts).toHaveLength(2);
+    expect(typeof contexts[0].executionId).toBe('string');
+    expect(contexts[0].executionId).toHaveLength(36);
+    expect(contexts[0].executionId).not.toBe(contexts[1].executionId);
+  });
+
+  it('does not add executionId onto context.request — request stays exactly { strategy, input }', async () => {
+    const registry = new EngineRegistry();
+    const { engine, contexts } = makeRecordingEngine('document.extract');
+    registry.register(engine);
+    const handle = new EngineHandle(registry, makeConfig(), 'document.extract');
+
+    await handle.execute('hello');
+
+    expect(contexts[0].request).toEqual({ strategy: 'document.extract', input: 'hello' });
+  });
 });
