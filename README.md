@@ -1,7 +1,21 @@
-# Aidex
+<p align="center">
+  <a href="https://getaidex.github.io/">
+    <img src="brand/logo-256x256.png" alt="Aidex Logo" width="128" height="128" />
+  </a>
+</p>
 
-[![CI](https://github.com/getaidex/aidex/actions/workflows/ci.yml/badge.svg)](https://github.com/getaidex/aidex/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+<h1 align="center">Aidex</h1>
+
+<p align="center">
+  <strong>A modular, provider-agnostic AI application platform.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/getaidex/aidex/actions/workflows/ci.yml"><img src="https://github.com/getaidex/aidex/actions/workflows/ci.yml/badge.svg" alt="CI Status" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
+</p>
+
+***
 
 **Aidex is a modular, provider-agnostic AI application platform.** A frozen,
 minimal kernel at its center, and a set of independent packages around it —
