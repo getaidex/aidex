@@ -19,7 +19,7 @@
     "generate-content": "node scripts/generate-content.mjs",
     "start": "node scripts/generate-content.mjs && ng serve",
     "build": "node scripts/generate-content.mjs && ng build --configuration production",
-    "build:pages": "node scripts/generate-content.mjs && ng build --configuration production --base-href /",
+    "build:pages": "node scripts/generate-content.mjs && ng build --configuration production --base-href /aidex/",
     "preview": "node scripts/serve-dist.mjs",
     "typecheck": "node scripts/generate-content.mjs && tsc --noEmit -p tsconfig.app.json",
     "test": "vitest run --root ."
